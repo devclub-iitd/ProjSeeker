@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+.navbar nav {
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.5em;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li a {
+    margin-left: 2.5rem;
+}
+
+#login-btn {
+    border: 3px solid white;
+    border-radius: 1000px;
+    padding: 8px 40px;
+}
+
+img[alt='homepage'] {
+    position: fixed;
+    z-index: -1;
+    width: 100vw;
+    height: 100%;
+    object-fit: cover;
+}
+
+.home {
+    width: 100vw;
+    height: 100vh;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+.root-container {
+    z-index: 1;
+    padding-top: 2.5rem;
+    margin: auto;
+    width: 80%;
+}
+
+.main-section {
+    margin-top: 150px;
+}
+
+.main-section > .tagline {
+    font-family: 'Raleway', sans-serif;
+    font-size: 2.75rem;
+    letter-spacing: 2.5px;
+    margin-bottom: 2rem;
+}
+
+.tagline span {
+    font-family: 'Raleway';
+    color: #ffb1b1;
+    text-shadow: 0 4px 5px black;
+}
+
+.main-section .subtext {
+    font-size: 1.4rem;
+    font-weight: 400;
+}
+
+.divider-line {
+    height: 1px;
+    background-color: white;
+    width: 40%;
+    margin: 2rem 0;
+}
+
+.cta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 400px;
+    gap: 2rem;
+}
+
+.btn {
+    color: white;
+    text-align: center;
+    background-color: #0071da;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.cta1 {
+    background-color: #da0041;
+}
+
+.cta2 {
+    background-color: #0071da;
+}
+
+@media (max-width: 720px) {
+    .root-container {
+        width: 90%;
+        padding-top: 1.5rem;
+    }
+
+    .nav-links {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .main-section > .tagline {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .main-section .subtext {
+        font-size: 1rem;
+    }
+
+    .divider-line {
+        margin: 1.25rem 0;
+    }
+
+    .cta-grid {
+        width: 300px;
+        gap: 1.5rem;
+    }
+
+    .cta-grid .btn {
+        font-size: 12px;
+    }
+}

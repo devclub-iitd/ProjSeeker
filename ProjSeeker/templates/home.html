@@ -1,14 +1,43 @@
 <!-- templates/home.html-->
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Home{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'portal/css/home.css' %}">
+{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
+<img src="{% static 'portal/assets/main-bg.jpg' %}" alt="homepage">
+<section class="home">
+    <div class="root-container">
+        <header class="navbar">
+            <nav>
+                <h1 class="logo">ProjectPortal</h1>
+                <ul class="nav-links">
+                    <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">FAQ</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link" id="login-btn">Kerberos Login</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div class="main-section">
+            <h1 class="tagline">Find <span>Projects</span> you'll love</h1>
+            <p class="subtext">IITD's own project collaboration portal -</p>
+            <p class="subtext">Find what you love and start building.</p>
+            <div class="divider-line"></div>
+            <div class="cta-grid">
+                <a href="#" class="btn cta1">Find Projects</a>
+                <a href="#" class="btn cta2">Register</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- {% if user.is_authenticated %}
 Hi {{ user.username }}!
 <p><a href="{% url 'logout' %}">Log Out</a></p>
 {% else %}
 <p>You are not logged in</p>
 <a href="{% url 'login' %}">Log In</a>
-{% endif %}
+{% endif %} -->
 {% endblock %}
