@@ -34,6 +34,12 @@ a {
     border: 3px solid white;
     border-radius: 1000px;
     padding: 8px 40px;
+    transition: all 200ms ease-in-out;
+}
+
+#login-btn:hover {
+    background-color: #fff;
+    color: black;
 }
 
 img[alt='homepage'] {
@@ -95,12 +101,18 @@ img[alt='homepage'] {
     gap: 2rem;
 }
 
-.btn {
+.cta {
     color: white;
     text-align: center;
     background-color: #0071da;
     padding: 10px 20px;
     border-radius: 5px;
+    transition: all 200ms ease-in-out;
+}
+
+.cta:hover {
+    filter: brightness(70%);
+    transform: translateY(-3px);
 }
 
 .cta1 {

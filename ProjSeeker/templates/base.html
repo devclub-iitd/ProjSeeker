@@ -1,5 +1,5 @@
 <!-- templates/base.html -->
-
+{% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -7,6 +7,7 @@
     <meta charset="utf-8">
     <title>ProjSeeker-{% block title %}{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Raleway:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'portal/css/master.css' %}">
     {% block style %}{% endblock %}
 </head>
 

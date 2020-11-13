@@ -1,0 +1,133 @@
+* {
+    --dash-width: 350px;
+}
+
+body {
+    background-color: var(--bg-grey);
+}
+.sidebar-wrapper {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--dash-width);
+    height: 100vh;
+    background-color: white;
+    padding: 2.5rem 30px;
+    border-radius: 0 40px 40px 0;
+    -webkit-box-shadow: 10px 0px 35px -8px rgba(0, 0, 0, 0.34);
+    -moz-box-shadow: 10px 0px 35px -8px rgba(0, 0, 0, 0.34);
+    box-shadow: 10px 0px 35px -8px rgba(0, 0, 0, 0.34);
+}
+
+.profile-picture {
+    align-self: center;
+    width: 180px;
+    border-radius: 5000px;
+}
+
+.name {
+    margin: 1rem 0 3rem;
+    font-size: 1.6rem;
+    align-self: center;
+    font-weight: 400;
+}
+
+.dashboard-heading {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    margin-left: 5px;
+}
+
+.dash-nav {
+    margin: 2rem 0;
+    list-style: none;
+}
+
+.dash-links {
+    margin-bottom: 0.5rem;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.dash-links:hover {
+    background-color: var(--primary-blue);
+    color: white;
+    cursor: pointer;
+}
+
+.dash-active {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.dashboard-wrapper {
+    padding: 2rem 5rem;
+    margin-left: var(--dash-width);
+}
+
+.top-nav {
+    display: grid;
+    grid-template-columns: 9fr 1fr;
+    gap: 2rem;
+}
+
+.search-bar {
+    border-radius: 500px;
+    padding: 10px 30px;
+    outline: none;
+    border: none;
+    width: 80%;
+    min-width: 300px;
+    -webkit-box-shadow: 0px 5px 14px 1px rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0px 5px 14px 1px rgba(0, 0, 0, 0.19);
+    box-shadow: 0px 5px 14px 1px rgba(0, 0, 0, 0.19);
+}
+
+.search-bar::placeholder {
+    color: grey;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.project-grid {
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.project-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: white;
+    height: min-content;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 5px 13px -2px rgba(0, 0, 0, 0.27);
+    -moz-box-shadow: 0px 5px 13px -2px rgba(0, 0, 0, 0.27);
+    box-shadow: 0px 5px 13px -2px rgba(0, 0, 0, 0.27);
+}
+
+.project-title {
+    font-size: 20px;
+    border-bottom: 1px solid black;
+}
+
+.prof-name {
+    margin: 5px 0 15px;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.project-desc {
+    font-size: 12px;
+}
+
+.card-btn {
+    text-align: center;
+    margin: 1rem 0 0;
+}

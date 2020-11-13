@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'portal/css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="sidebar-wrapper">
+    <img src="{% static 'portal/assets/dp.jpg' %}" alt="#" class="profile-picture">
+    <h1 class="name">Vishal Asthana</h1>
+    <h3 class="dashboard-heading wide-text">Dashboard</h3>
+    <ul class="dash-nav">
+        <li class="dash-links dash-active">Ongoing</li>
+        <li class="dash-links">Applied</li>
+        <li class="dash-links">Bookmarked</li>
+        <li class="dash-links">Profile</li>
+    </ul>
+</div>
+<div class="dashboard-wrapper">
+    <div class="top-nav">
+        <input type="text" class="search-bar" placeholder="Search for projects">
+        <a href="#" class="btn btn-red round wide-text bold" id="logout-btn">Logout</a>
+    </div>
+    <div class="project-grid">
+        <div class="project-card">
+            <h2 class="project-title">Rosetta Simulation on ARM</h2>
+            <h3 class="prof-name">Prof. Someone Someone</h3>
+            <p class="project-desc">Simulation layer development for x86-x64 on ARM based processors</p>
+            <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+        </div>
+        <div class="project-card">
+            <h2 class="project-title">Rosetta Simulation on ARM</h2>
+            <h3 class="prof-name">Prof. Someone Someone</h3>
+            <p class="project-desc">Simulation layer development for x86-x64 on ARM based processors</p>
+            <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+        </div>
+        <div class="project-card">
+            <h2 class="project-title">Rosetta Simulation on ARM</h2>
+            <h3 class="prof-name">Prof. Someone Someone</h3>
+            <p class="project-desc">Simulation layer development for x86-x64 on ARM based processors</p>
+            <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+        </div>
+        <div class="project-card">
+            <h2 class="project-title">Rosetta Simulation on ARM</h2>
+            <h3 class="prof-name">Prof. Someone Someone</h3>
+            <p class="project-desc">Simulation layer development for x86-x64 on ARM based processors</p>
+            <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
