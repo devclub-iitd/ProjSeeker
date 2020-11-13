@@ -3,7 +3,7 @@ from .models import *
 # Register your models here.
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ['user']
+    list_display = ['user', 'cgpa', 'bio']
 @admin.register(Professor)
 class ProfessorAdmin(admin.ModelAdmin):
     list_display = ['user', 'dept']
@@ -13,4 +13,7 @@ class ApplicationAdmin(admin.ModelAdmin):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ['prof', 'title']
+@admin.register(Interests)
+class InterestAdmin(admin.ModelAdmin):
+    list_display = ['research_field']
 
