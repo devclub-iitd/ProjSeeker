@@ -30,10 +30,11 @@ class Student(models.Model):
     cv = models.FileField(_("Resume"), upload_to= upload_cv, max_length=100, null=True)
     transcript = models.FileField(_("Transcripts"), upload_to= upload_transcript , max_length=100, null=True)
     pic = models.FileField(_("Profile Pic"), upload_to=upload_handler, max_length=100, null=True)
-    cgpa = models.PositiveSmallIntegerField(_("CGPA"), validators=[MaxValueValidator(10)], null=True)
-    interests = models.ManyToManyField("Interests")
+    cgpa = models.FloatField(_("CGPA"), validators=[MaxValueValidator(10)], null=True)
+    interests = models.ManyToManyField("Interests",null=True)
 
-
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name}'
 
 class Interests(models.Model):
     research_field = models.CharField(_("Research Area of Interest"), max_length=50)
@@ -48,6 +49,9 @@ class Professor(models.Model):
     interests = models.ManyToManyField("Interests")
     webpage_link = models.URLField(_("Webpage Link"), max_length=200, null=True)
     pic = models.FileField(_("Profile Pic"), upload_to=upload_handler, max_length=100, null=True)
+
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name} @ {self.dept}'
     
 
 class Project(models.Model):
@@ -64,6 +68,10 @@ class Project(models.Model):
     release_date = models.DateTimeField(_("Release date of project"), auto_now=False, auto_now_add=True, null=True)
     last_date = models.DateTimeField(_("Last date to apply"), auto_now=False, auto_now_add=False, null=True)
 
+    def __str__(self):
+        return f'{self.title} | {self.prof}'
+    
+
     
 class Application(models.Model):
     student = models.ForeignKey("Student", verbose_name=_("Student"), on_delete=models.CASCADE)
@@ -71,3 +79,5 @@ class Application(models.Model):
     preference = models.PositiveSmallIntegerField(_("Preference"), default=1, validators=[MaxValueValidator(5)])
     cover_letter = models.TextField(_("Cover letter for the application"))
 
+    def __str__(self):
+        return f'{self.student} | {self.project}'
