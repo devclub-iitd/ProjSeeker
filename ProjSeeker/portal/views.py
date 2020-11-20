@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.http.response import HttpResponse
+from django.urls.base import reverse_lazy
 from rest_framework.response import Response
 from rest_framework.viewsets import *
 from .models import *
 from .serializers import *
-from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.decorators import action
+
 # Create your views here.
 def index(request):
     return HttpResponse("Hello World!")
@@ -20,6 +22,14 @@ class ProjectViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         qset = self.get_queryset()
         serializer = self.get_serializer(qset, many=True)
+        return render(request, template_name="dashboard.html", context={'projects': serializer.data})
+
+    @action(detail=False)
+    def get_applied(self, request):
+        user = request.user
+        applied = Application.objects.filter(student__user=user)
+        projects = [appl.project for appl in applied]
+        serializer = self.get_serializer(projects, many=True)
         return render(request, template_name="dashboard.html", context={'projects': serializer.data})
 
 class StudentViewSet(ModelViewSet):

@@ -12,8 +12,8 @@
     <h1 class="name">Vishal Asthana</h1>
     <h3 class="dashboard-heading wide-text">Dashboard</h3>
     <ul class="dash-nav">
-        <li class="dash-links dash-active">Ongoing</li>
-        <li class="dash-links">Applied</li>
+        <a href="/projects"><li class="dash-links">Ongoing</li></a>
+        <a href="{% url 'applied-projects' %}"><li class="dash-links">Applied</li></a>
         <li class="dash-links">Bookmarked</li>
         <li class="dash-links">Profile</li>
     </ul>
@@ -21,7 +21,7 @@
 <div class="dashboard-wrapper">
     <div class="top-nav">
         <input type="text" class="search-bar" placeholder="Search for projects">
-        <a href="#" class="btn btn-red round wide-text bold" id="logout-btn">Logout</a>
+        <a href="{% url 'logout' %}" class="btn btn-red round wide-text bold" id="logout-btn">Logout</a>
     </div>
     <div class="project-grid">
         {% for proj in projects %}
@@ -34,4 +34,15 @@
         {% endfor %}
     </div>
 </div>
+<script>
+    var sideBarLinks = document.querySelector("body > main > div.sidebar-wrapper > ul").children;
+    for (let i = 0; i < sideBarLinks.length; i++) {
+        const link = sideBarLinks[i];
+        if(location.href.replaceAll('/','') == link.href.replaceAll('/','')){
+            link.firstElementChild.classList.add('dash-active')
+            break;
+        }
+        
+    }
+</script>
 {% endblock content %}
