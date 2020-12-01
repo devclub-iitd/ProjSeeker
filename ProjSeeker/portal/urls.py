@@ -11,6 +11,7 @@ router.register(r'applications',ApplicationViewSet)
 router.register(r'students',StudentViewSet)
 router.register(r'profs',ProfViewSet)
 router.register(r'interests',InterestViewSet)
+router.register(r'bookmarks',BookmarkViewSet)
 
 urlpatterns = [
     url("",include(router.urls)),
@@ -18,6 +19,6 @@ urlpatterns = [
     url(r'^$',TemplateView.as_view(template_name='home.html'),name='home'),
     url(r'^dashboard$',TemplateView.as_view(template_name='dashboard.html'),name='dashboard'),
     
-    url(r'^applied-projects$', login_required(ProjectViewSet.as_view(
-        {'get': 'get_applied'}), login_url='/accounts/login'), name='applied-projects'),
+    url(r'^applied-projects$', login_required(ProjectViewSet.as_view({'get': 'get_applied'}), login_url='/accounts/login'), name='applied-projects'),
+    url(r'^bookmarked-projects$', login_required(ProjectViewSet.as_view({'get': 'get_bookmarked'}), login_url='/accounts/login'), name='bookmarked-projects'),
 ]

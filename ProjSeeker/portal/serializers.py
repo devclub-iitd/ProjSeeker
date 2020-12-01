@@ -48,6 +48,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = ['id','prof','title','description','cpi','vacancy','min_year','duration','learning_outcome','prereq','selection_procedure','release_date','last_date']
 
+class BookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bookmark
+        fields = '__all__'
 
 class ApplicationSerializer(serializers.ModelSerializer):
     student = StudentSerializer(many=False, read_only=True)

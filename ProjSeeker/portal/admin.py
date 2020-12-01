@@ -16,4 +16,7 @@ class ProjectAdmin(admin.ModelAdmin):
 @admin.register(Interests)
 class InterestAdmin(admin.ModelAdmin):
     list_display = ['research_field']
+@admin.register(Bookmark)
+class InterestAdmin(admin.ModelAdmin):
+    list_display = ['user', 'project']
 

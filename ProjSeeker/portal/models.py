@@ -31,7 +31,7 @@ class Student(models.Model):
     transcript = models.FileField(_("Transcripts"), upload_to= upload_transcript , max_length=100, null=True)
     pic = models.FileField(_("Profile Pic"), upload_to=upload_handler, max_length=100, null=True)
     cgpa = models.FloatField(_("CGPA"), validators=[MaxValueValidator(10)], null=True)
-    interests = models.ManyToManyField("Interests",null=True)
+    interests = models.ManyToManyField("Interests")
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
@@ -71,7 +71,13 @@ class Project(models.Model):
     def __str__(self):
         return f'{self.title} | {self.prof}'
     
+class Bookmark(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey("Project", on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.user} -> {self.project}'
+    
     
 class Application(models.Model):
     student = models.ForeignKey("Student", verbose_name=_("Student"), on_delete=models.CASCADE)
