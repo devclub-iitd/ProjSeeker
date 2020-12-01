@@ -9,7 +9,7 @@ from rest_framework.decorators import action
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello World!")
+    return render(request, 'home.html');
 
 
 def dashboard(request):

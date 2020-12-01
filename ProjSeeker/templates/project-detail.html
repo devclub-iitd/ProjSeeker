@@ -9,7 +9,7 @@
 {% block content %}
 
 <body>
-    <div class="blur-bg" style="background: url('{% static 'portal/assets/main-bg.jpg' %}');"></div>
+    <div class="blur-bg"></div>
     <div class="blur-drop"></div>
     <section class="home">
         <div class="root-container">
@@ -39,8 +39,8 @@
                     <div class="tag-container">
                         <h5 class="tag-header">Tags</h1>
                             {% for interest in project.prof.interests  %}
-                                <div class="tag">{{ interest.research_field }}</div>
-                            {% endfor %}    
+                            <div class="tag">{{ interest.research_field }}</div>
+                            {% endfor %}
                     </div>
                     <div class="project-basic project-details">
                         <nav>

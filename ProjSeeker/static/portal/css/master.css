@@ -91,7 +91,7 @@ ul {
 }
 
 .blur-bg {
-    /* background: url(../assets/main-bg.jpg); */
+    background: url(../assets/main-bg.jpg);
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
