@@ -12,8 +12,12 @@
     <h1 class="name">Vishal Asthana</h1>
     <h3 class="dashboard-heading wide-text">Dashboard</h3>
     <ul class="dash-nav">
-        <a href="/projects"><li class="dash-links">Ongoing</li></a>
-        <a href="{% url 'applied-projects' %}"><li class="dash-links">Applied</li></a>
+        <a href="/projects">
+            <li class="dash-links">Ongoing</li>
+        </a>
+        <a href="{% url 'applied-projects' %}">
+            <li class="dash-links">Applied</li>
+        </a>
         <li class="dash-links">Bookmarked</li>
         <li class="dash-links">Profile</li>
     </ul>
@@ -26,10 +30,10 @@
     <div class="project-grid">
         {% for proj in projects %}
         <div class="project-card">
-            <h2 class="project-title">{{ proj.title }}</h2>
+            <h2 class="project-title">{{ proj.title|truncatewords:4 }}</h2>
             <h3 class="prof-name">Prof. {{ proj.prof.user.first_name }} {{proj.prof.user.last_name}}</h3>
-            <p class="project-desc">{{ proj.description }}</p>
-            <a href="/projects/{{proj.id}}" class="btn btn-xs card-btn wide-text bold">More</a>
+            <p class="project-desc">{{ proj.description|truncatewords:30 }}</p>
+            <a href="{% url 'project-detail' proj.id %}" class="btn btn-xs card-btn wide-text bold">More</a>
         </div>
         {% endfor %}
     </div>
@@ -38,11 +42,11 @@
     var sideBarLinks = document.querySelector("body > main > div.sidebar-wrapper > ul").children;
     for (let i = 0; i < sideBarLinks.length; i++) {
         const link = sideBarLinks[i];
-        if(location.href.replaceAll('/','') == link.href.replaceAll('/','')){
+        if (location.href.replaceAll('/', '') == link.href.replaceAll('/', '')) {
             link.firstElementChild.classList.add('dash-active')
             break;
         }
-        
+
     }
 </script>
 {% endblock content %}

@@ -95,13 +95,18 @@ body {
 
 .project-grid {
     margin-top: 4rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    column-count: 3;
+    /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem; */
+    column-gap: 2rem;
 }
 
 .project-card {
+    -webkit-column-break-inside: avoid;
+          page-break-inside: avoid;
+               break-inside: avoid;
     display: flex;
+    margin-bottom: 2rem;
     flex-direction: column;
     padding: 1rem;
     background-color: white;

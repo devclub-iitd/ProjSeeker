@@ -1,70 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-a {
-    text-decoration: none;
-    color: white;
-}
-
-.navbar nav {
-    display: flex;
-    align-items: center;
-    font-weight: 400;
-    justify-content: space-between;
-}
-
-.logo {
-    font-size: 1.5em;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-}
-
-.nav-links li a {
-    margin-left: 2.5rem;
-}
-
-#login-btn {
-    border: 3px solid white;
-    border-radius: 1000px;
-    padding: 8px 40px;
-    transition: all 200ms ease-in-out;
-}
-
-#login-btn:hover {
-    background-color: #fff;
-    color: black;
-}
-
-img[alt='homepage'] {
-    position: fixed;
-    z-index: -1;
-    width: 100vw;
-    height: 100%;
-    object-fit: cover;
-}
-
-.home {
-    width: 100vw;
-    height: 100vh;
-    color: white;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
-}
-
-.root-container {
-    z-index: 1;
-    padding-top: 2.5rem;
-    margin: auto;
-    width: 80%;
-}
-
 .main-section {
     margin-top: 150px;
 }
@@ -121,17 +54,6 @@ img[alt='homepage'] {
 
 .cta2 {
     background-color: #0071da;
-}
-
-@media (max-width: 720px) {
-    .root-container {
-        width: 90%;
-        padding-top: 1.5rem;
-    }
-
-    .nav-links {
-        display: none;
-    }
 }
 
 @media (max-width: 500px) {

@@ -1,0 +1,152 @@
+.project-container {
+    margin: 2rem 0;
+    border-radius: 10px;
+    background-color: rgba(0, 132, 255, 0.37);
+    color: black;
+}
+
+.project-header {
+    padding: 10px 30px;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+
+.inline {
+    display: grid;
+    grid-template-columns: 5fr 9fr;
+    gap: 2rem;
+}
+
+.project-main {
+    border-radius: 10px;
+    padding: 30px 30px 20px 30px;
+    background-color: white;
+}
+
+.detail-list li {
+    margin-bottom: 1rem;
+}
+
+.detail-list li:last-child {
+    margin-bottom: 0;
+}
+
+.project-basic {
+    background-color: #E8E8E8;
+    padding: 15px 20px;
+    border-radius: 10px;
+    height: auto;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.project-desc {
+    font-size: 14px;
+}
+
+.project-details {
+    font-size: 14px;
+    max-height: unset;
+}
+
+.project-details li {
+    margin-bottom: .5rem;
+}
+
+.project-details li:last-child {
+    margin-bottom: 0;
+}
+
+.tag-header {
+    margin-bottom: 0;
+    font-size: 16px;
+}
+
+.tag-container {
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.tag-container .tag {
+    border-radius: 500px;
+    background-color: #0487ff;
+    padding: 8px 30px;
+    font-size: 12px;
+    color: white;
+    font-weight: 500;
+}
+
+.tag-container .tag:nth-of-type(2n) {
+    background-color: #005EB5;
+}
+
+.action-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.action-container > a {
+    background-color: var(--bright-blue);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-align: center;
+    padding: 10px 40px;
+}
+
+.action-container > a.btn-red {
+    background-color:#ff0e56;
+}
+
+.custom-tabs {
+    margin-bottom: 1rem;
+    border-bottom: 0.2px solid rgba(128, 128, 128, 0.247);
+    font-weight: 500;
+}
+
+.cnav-link {
+    color : black;
+}
+
+@media(max-width:900px) {
+    .project-basic {
+        font-size: 12px;
+    }
+}
+
+@media(max-width:620px) {
+    .inline {
+        grid-template-columns: 1fr;
+    }
+
+    .action-container {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit,minmax(200px, 1fr));
+    }
+
+    .action-container > a:last-child {
+        margin: auto;
+        grid-column: 1/-1;
+    }
+
+    .tag-container .tag-header{
+        font-size: 14px;
+    }
+
+    .tag-container {
+        gap:5px;
+    }
+
+    .tag-container .tag {
+        font-size: 8px;
+        padding: 5px 10px;
+    }
+}

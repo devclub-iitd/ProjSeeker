@@ -1,0 +1,91 @@
+{% load static %}
+{% extends 'base.html' %}
+
+{% block title %}Project Detail {%endblock%}
+{%block style%}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'portal/css/project.css' %}">
+
+{% block content %}
+
+<body>
+    <div class="blur-bg" style="background: url('{% static 'portal/assets/main-bg.jpg' %}');"></div>
+    <div class="blur-drop"></div>
+    <section class="home">
+        <div class="root-container">
+            <header class="navbar-custom">
+                <nav>
+                    <h1 class="logo">ProjectPortal</h1>
+                    <ul class="nav-links">
+                        <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link">FAQ</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link" id="login-btn">Dashboard</a></li>
+                    </ul>
+                </nav>
+            </header>
+            <div class="project-container">
+                <div class="project-header">Apply for Project</div>
+                <div class="project-main">
+                    <div class="inline">
+                        <div class="project-basic">
+                            <ul class="detail-list">
+                                <li>Project Title : Test Project</li>
+                                <li>Professor : Prof. firstName LastName</li>
+                                <li>Department : Chemical Engineering</li>
+                            </ul>
+                        </div>
+                        <div class="project-basic project-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi odio beatae expedita iste praesentium possimus officia a ad error ex neque reprehenderit ducimus dolorem, odit iure deserunt itaque, adipisci sunt nesciunt minus ipsam. Similique dolores iusto suscipit commodi id vel amet velit in, expedita dicta repellendus perspiciatis, atque rerum, ab sequi nesciunt sit sunt odit! Consectetur excepturi saepe autem distinctio, quibusdam cupiditate aut exercitationem sed laborum at. Eos recusandae earum fuga doloremque modi provident eum nemo minus temporibus, quidem quaerat expedita exercitationem incidunt odio nostrum. Quod, recusandae? Qui officiis dolorem ex officia repellendus ipsam, dolorum deserunt dignissimos, at nulla corrupti.</div>
+                    </div>
+                    <div class="tag-container">
+                        <h5 class="tag-header">Tags</h1>
+                            <div class="tag">Tagged1</div>
+                            <div class="tag">Tagged2</div>
+                            <div class="tag">Tagged3</div>
+                            <div class="tag">Tagged4</div>
+                    </div>
+                    <div class="project-basic project-details">
+                        <nav>
+                            <div class="nav nav-tabs custom-tabs" id="nav-tab" role="tablist">
+                                <a class="nav-link cnav-link active" id="nav-basic-tab" data-toggle="tab" href="#nav-basic" role="tab" aria-controls="nav-basic" aria-selected="true">Basic</a>
+                                <a class="nav-link cnav-link" id="nav-eligibility-tab" data-toggle="tab" href="#nav-eligibility" role="tab" aria-controls="nav-eligibility" aria-selected="false">Eligibility</a>
+                                <a class="nav-link cnav-link" id="nav-more-tab" data-toggle="tab" href="#nav-more" role="tab" aria-controls="nav-more" aria-selected="false">More</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-basic" role="tabpanel" aria-labelledby="nav-basic-tab">
+                                <ul>
+                                    <li>Vacancy :</li>
+                                    <li>Duration :</li>
+                                    <li>Learning Outcome :</li>
+                                    <li>Release Date :</li>
+                                    <li>Last Date :</li>
+                                    <li>Vacancy :</li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane fade" id="nav-eligibility" role="tabpanel" aria-labelledby="nav-eligibility-tab">
+                                <ul>
+                                    <li>Minimum Year :</li>
+                                    <li>Minimum CPI :</li>
+                                    <li>Prerequisites :</li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane fade" id="nav-more" role="tabpanel" aria-labelledby="nav-more-tab">
+                                <ul>
+                                    <li>Selection Procedure :</li>
+                                    <li>Learning Outcome :</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-container">
+                        <a href="#" class="btn">Bookmark</a>
+                        <a href="#" class="btn">Contact</a>
+                        <a href="#" class="btn btn-red">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    {%endblock%}
