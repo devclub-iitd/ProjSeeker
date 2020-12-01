@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 class Departments(models.TextChoices):
     CSE = 'CSE', _('Computer Science and Engineering')
-    EE = 'EE', _('Electrical Engineering')    
+    EE = 'EE', _('Electrical Engineering')
     ME = 'ME', _('Mechanical Engineering')    
     CH = 'CH', _('Chemical Engineering')    
     CE = 'CE', _('Civil Engineering')    

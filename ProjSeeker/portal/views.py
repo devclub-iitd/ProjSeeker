@@ -19,6 +19,11 @@ class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return render(request,template_name='project-detail.html', context={'project': serializer.data})
+
     def list(self, request, *args, **kwargs):
         qset = self.get_queryset()
         serializer = self.get_serializer(qset, many=True)

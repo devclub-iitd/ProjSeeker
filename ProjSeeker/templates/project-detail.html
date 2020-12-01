@@ -1,11 +1,11 @@
-{% load static %}
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Project Detail {%endblock%}
 {%block style%}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 <link rel="stylesheet" href="{% static 'portal/css/project.css' %}">
-
+{% endblock %}
 {% block content %}
 
 <body>
@@ -19,7 +19,7 @@
                     <ul class="nav-links">
                         <li class="nav-item"><a href="#" class="nav-link">About</a></li>
                         <li class="nav-item"><a href="#" class="nav-link">FAQ</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link" id="login-btn">Dashboard</a></li>
+                        <li class="nav-item"><a href="{% url 'dashboard' %}" class="nav-link" id="login-btn">Dashboard</a></li>
                     </ul>
                 </nav>
             </header>
@@ -29,19 +29,18 @@
                     <div class="inline">
                         <div class="project-basic">
                             <ul class="detail-list">
-                                <li>Project Title : Test Project</li>
-                                <li>Professor : Prof. firstName LastName</li>
-                                <li>Department : Chemical Engineering</li>
+                                <li><b>Project Title :</b> {{ project.title }}</li>
+                                <li><b>Professor</b> :<a href="{{project.prof.webpage_link}}"> Prof. {{ project.prof.user.first_name }} {{ project.prof.user.last_name}}</a></li>
+                                <li><b>Department</b> : {{ project.prof.dept }}</li>
                             </ul>
                         </div>
-                        <div class="project-basic project-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi odio beatae expedita iste praesentium possimus officia a ad error ex neque reprehenderit ducimus dolorem, odit iure deserunt itaque, adipisci sunt nesciunt minus ipsam. Similique dolores iusto suscipit commodi id vel amet velit in, expedita dicta repellendus perspiciatis, atque rerum, ab sequi nesciunt sit sunt odit! Consectetur excepturi saepe autem distinctio, quibusdam cupiditate aut exercitationem sed laborum at. Eos recusandae earum fuga doloremque modi provident eum nemo minus temporibus, quidem quaerat expedita exercitationem incidunt odio nostrum. Quod, recusandae? Qui officiis dolorem ex officia repellendus ipsam, dolorum deserunt dignissimos, at nulla corrupti.</div>
+                        <div class="project-basic project-desc">{{ project.description }}</div>
                     </div>
                     <div class="tag-container">
                         <h5 class="tag-header">Tags</h1>
-                            <div class="tag">Tagged1</div>
-                            <div class="tag">Tagged2</div>
-                            <div class="tag">Tagged3</div>
-                            <div class="tag">Tagged4</div>
+                            {% for interest in project.prof.interests  %}
+                                <div class="tag">{{ interest.research_field }}</div>
+                            {% endfor %}    
                     </div>
                     <div class="project-basic project-details">
                         <nav>
@@ -54,32 +53,30 @@
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-basic" role="tabpanel" aria-labelledby="nav-basic-tab">
                                 <ul>
-                                    <li>Vacancy :</li>
-                                    <li>Duration :</li>
-                                    <li>Learning Outcome :</li>
-                                    <li>Release Date :</li>
-                                    <li>Last Date :</li>
-                                    <li>Vacancy :</li>
+                                    <li><b>Vacancy :</b> {{project.vacancy}}</li>
+                                    <li><b>Duration :</b> {{project.duration}}</li>
+                                    <li><b>Release Date :</b> {{project.release_date}}</li>
+                                    <li><b>Last Date :</b> {{project.last_date}}</li>
                                 </ul>
                             </div>
                             <div class="tab-pane fade" id="nav-eligibility" role="tabpanel" aria-labelledby="nav-eligibility-tab">
                                 <ul>
-                                    <li>Minimum Year :</li>
-                                    <li>Minimum CPI :</li>
-                                    <li>Prerequisites :</li>
+                                    <li><b>Minimum Year :</b> {{project.min_year}}</li>
+                                    <li><b>Minimum CPI : </b>{{project.cpi}}</li>
+                                    <li><b>Prerequisites :</b> {{project.prereq}}</li>
                                 </ul>
                             </div>
                             <div class="tab-pane fade" id="nav-more" role="tabpanel" aria-labelledby="nav-more-tab">
                                 <ul>
-                                    <li>Selection Procedure :</li>
-                                    <li>Learning Outcome :</li>
+                                    <li><b>Selection Procedure :</b> {{project.selection_procedure}}</li>
+                                    <li><b>Learning Outcome :</b> {{project.learning_outcome}}</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div class="action-container">
                         <a href="#" class="btn">Bookmark</a>
-                        <a href="#" class="btn">Contact</a>
+                        <a href="mailto:{{project.prof.user.email}}" class="btn">Contact</a>
                         <a href="#" class="btn btn-red">Apply Now</a>
                     </div>
                 </div>
