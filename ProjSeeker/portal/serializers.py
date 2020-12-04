@@ -54,8 +54,6 @@ class BookmarkSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ApplicationSerializer(serializers.ModelSerializer):
-    student = StudentSerializer(many=False, read_only=True)
-    project = ProjectSerializer(many=False, read_only=True)
     class Meta:
         model = Application
-        fields = ['id', 'student', 'project', 'preference', 'cover_letter']
+        fields = ['id', 'student', 'project', 'preference', 'cover_letter', 'experience']

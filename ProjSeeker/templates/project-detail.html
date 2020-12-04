@@ -75,7 +75,13 @@
                 </form>
                 {% endif %}
                 <a href="mailto:{{project.prof.user.email}}" class="btn">Contact</a>
-                <a href="#" class="btn btn-red">Apply Now</a>
+                {% if isApplied %}
+                    <a href="/applications/{{appId}}/" class="btn btn-red">View Application</a>
+                {% else %}
+                    <a href="/projects/{{project.id}}/apply" class="btn btn-red">Apply Now</a>
+                {% endif %}
+                
+                
         </div>
     </div>
 </div>
@@ -101,7 +107,11 @@
                 }
 
             });
-            location.reload();
+            // TODO add some loading screen in these.
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+            
             return false;
         });
     });

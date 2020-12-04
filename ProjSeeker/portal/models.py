@@ -65,6 +65,8 @@ class Project(models.Model):
     learning_outcome = models.TextField()
     prereq = models.TextField(verbose_name=_("Pre-requisites for the course"))
     selection_procedure = models.TextField()
+
+    # TODO run validation based on these data and times
     release_date = models.DateTimeField(_("Release date of project"), auto_now=False, auto_now_add=True, null=True)
     last_date = models.DateTimeField(_("Last date to apply"), auto_now=False, auto_now_add=False, null=True)
 
@@ -84,6 +86,7 @@ class Application(models.Model):
     project = models.ForeignKey("Project", verbose_name=_("Project applied to"), on_delete=models.CASCADE)
     preference = models.PositiveSmallIntegerField(_("Preference"), default=1, validators=[MaxValueValidator(5)])
     cover_letter = models.TextField(_("Cover letter for the application"))
+    experience = models.TextField(_("Relevant Experience"))
 
     def __str__(self):
         return f'{self.student} | {self.project}'
