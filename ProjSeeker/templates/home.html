@@ -1,5 +1,5 @@
 <!-- templates/home.html-->
-{% extends 'base.html' %}
+{% extends 'bg-base.html' %}
 {% load static %}
 
 {% block title %}Home{% endblock %}
@@ -8,37 +8,14 @@
 {% endblock %}
 
 {% block content %}
-<div class="blur-bg"></div>
-<div class="blur-drop"></div>
-<section class="home">
-    <div class="root-container">
-        <header class="navbar navbar-custom">
-            <nav>
-                <h1 class="logo">ProjectPortal</h1>
-                <ul class="nav-links">
-                    <li class="nav-item"><a href="#" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">FAQ</a></li>
-                    <li class="nav-item"><a href="/projects" class="nav-link" id="login-btn">Kerberos Login</a></li>
-                </ul>
-            </nav>
-        </header>
-        <div class="main-section">
-            <h1 class="tagline">Find <span>Projects</span> you'll love</h1>
-            <p class="subtext">IITD's own project collaboration portal -</p>
-            <p class="subtext">Find what you love and start building.</p>
-            <div class="divider-line"></div>
-            <div class="cta-grid">
-                <a href="#" class="cta cta1">Find Projects</a>
-                <a href="#" class="cta cta2">Register</a>
-            </div>
-        </div>
+<div class="main-section">
+    <h1 class="tagline">Find <span>Projects</span> you'll love</h1>
+    <p class="subtext">IITD's own project collaboration portal -</p>
+    <p class="subtext">Find what you love and start building.</p>
+    <div class="divider-line"></div>
+    <div class="cta-grid">
+        <a href="#" class="cta cta1">Find Projects</a>
+        <a href="#" class="cta cta2">Register</a>
     </div>
-</section>
-<!-- {% if user.is_authenticated %}
-Hi {{ user.username }}!
-<p><a href="{% url 'logout' %}">Log Out</a></p>
-{% else %}
-<p>You are not logged in</p>
-<a href="{% url 'login' %}">Log In</a>
-{% endif %} -->
+</div>
 {% endblock %}

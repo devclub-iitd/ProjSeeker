@@ -1,0 +1,43 @@
+<!-- templates/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>ProjSeeker-{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'portal/css/master.css' %}">
+    {% block style %}{% endblock %}
+</head>
+
+<body>
+    <main>
+        <div class="blur-bg"></div>
+        <div class="blur-drop"></div>
+        <section class="home">
+            <div class="root-container">
+                <header class="navbar-custom">
+                    <nav>
+                        <a href="/index">
+                            <h1 class="logo">ProjectPortal</h1>
+                        </a>
+                        <ul class="nav-links">
+                            <li class="nav-item"><a href="#" class="nav-link-custom">About</a></li>
+                            <li class="nav-item"><a href="#" class="nav-link-custom">FAQ</a></li>
+                            {% if user.is_authenticated %}
+                            <li class="nav-item"><a href="{% url 'dashboard' %}" class="nav-link-custom" id="login-btn">Dashboard</a></li>
+                            {% else %}
+                            <li class="nav-item"><a href="/accounts/login" class="nav-link-custom" id="login-btn">Kerberos Login</a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </header>
+                {% block content %}
+                {% endblock %}
+            </div>
+        </section>
+    </main>
+    {% block script %} {% endblock %}
+</body>
+
+</html>

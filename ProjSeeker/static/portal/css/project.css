@@ -1,5 +1,5 @@
 .project-container {
-    margin: 2rem 0;
+    margin: 3rem 0 2rem;
     border-radius: 10px;
     background-color: rgba(0, 132, 255, 0.37);
     color: black;
@@ -92,7 +92,7 @@
     gap: 1.5rem;
 }
 
-.action-container > a {
+.action-container > .btn {
     background-color: var(--bright-blue);
     font-size: 14px;
     font-weight: 500;
@@ -102,7 +102,7 @@
     padding: 10px 40px;
 }
 
-.action-container > a.btn-red {
+.action-container > .btn-red {
     background-color:#ff0e56;
 }
 
@@ -114,6 +114,26 @@
 
 .cnav-link {
     color : black;
+}
+
+/* Form-stylings */
+form {
+    display : flex;
+    flex-direction: column;
+    margin: 2rem 0 0;
+}
+
+form label {
+    font-size: 14px;
+}
+
+form textarea, input, select {
+    outline: none;
+    border: none;
+    background-color: #eaf3ff;
+    border-radius: 10px;
+    margin: 10px 0 20px;
+    padding: 10px 20px;
 }
 
 @media(max-width:900px) {

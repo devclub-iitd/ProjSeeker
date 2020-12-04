@@ -1,55 +1,61 @@
-{% extends 'base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Dashboard{% endblock %}
-{% block style %}
-<link rel="stylesheet" href="{% static 'portal/css/dashboard.css' %}">
-{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjSeeker - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'portal/css/master.css' %}">
+    <link rel="stylesheet" href="{% static 'portal/css/dashboard.css' %}">
+</head>
 
-{% block content %}
-<div class="sidebar-wrapper">
-    <img src="{% static 'portal/assets/dp.jpg' %}" alt="#" class="profile-picture">
-    <h1 class="name">Vishal Asthana</h1>
-    <h3 class="dashboard-heading wide-text">Dashboard</h3>
-    <ul class="dash-nav">
-        <a href="/projects">
-            <li class="dash-links">Ongoing</li>
-        </a>
-        <a href="{% url 'applied-projects' %}">
-            <li class="dash-links">Applied</li>
-        </a>
-        <a href="{% url 'bookmarked-projects' %}">
-            <li class="dash-links">Bookmarked</li>
-        </a>
-        
-        <li class="dash-links">Profile</li>
-    </ul>
-</div>
-<div class="dashboard-wrapper">
-    <div class="top-nav">
-        <input type="text" class="search-bar" placeholder="Search for projects">
-        <a href="{% url 'logout' %}" class="btn btn-red round wide-text bold" id="logout-btn">Logout</a>
+<body>
+
+    <div class="sidebar-wrapper">
+        <img src="{% static 'portal/assets/dp.jpg' %}" alt="#" class="profile-picture">
+        <h1 class="name">Vishal Asthana</h1>
+        <h3 class="dashboard-heading wide-text">Dashboard</h3>
+        <ul class="dash-nav">
+            <a href="/projects">
+                <li class="dash-links">Ongoing</li>
+            </a>
+            <a href="{% url 'applied-projects' %}">
+                <li class="dash-links">Applied</li>
+            </a>
+            <a href="{% url 'bookmarked-projects' %}">
+                <li class="dash-links">Bookmarked</li>
+            </a>
+
+            <li class="dash-links">Profile</li>
+        </ul>
     </div>
-    <div class="project-grid">
-        {% for proj in projects %}
-        <div class="project-card">
-            <h2 class="project-title">{{ proj.title|truncatewords:4 }}</h2>
-            <h3 class="prof-name">Prof. {{ proj.prof.user.first_name }} {{proj.prof.user.last_name}}</h3>
-            <p class="project-desc">{{ proj.description|truncatewords:30 }}</p>
-            <a href="{% url 'project-detail' proj.id %}" class="btn btn-xs card-btn wide-text bold">More</a>
+    <div class="dashboard-wrapper">
+        <div class="top-nav">
+            <input type="text" class="search-bar" placeholder="Search for projects">
+            <a href="{% url 'logout' %}" class="btn btn-red round wide-text bold" id="logout-btn">Logout</a>
         </div>
-        {% endfor %}
+        <div class="project-grid">
+            {% for proj in projects %}
+            <div class="project-card">
+                <h2 class="project-title">{{ proj.title|truncatewords:4 }}</h2>
+                <h3 class="prof-name">Prof. {{ proj.prof.user.first_name }} {{proj.prof.user.last_name}}</h3>
+                <p class="project-desc">{{ proj.description|truncatewords:30 }}</p>
+                <a href="{% url 'project-detail' proj.id %}" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
-<script>
-    var sideBarLinks = document.querySelector("body > main > div.sidebar-wrapper > ul").children;
-    for (let i = 0; i < sideBarLinks.length; i++) {
-        const link = sideBarLinks[i];
-        if (location.href.replaceAll('/', '') == link.href.replaceAll('/', '')) {
-            link.firstElementChild.classList.add('dash-active')
-            break;
+    <script>
+        var sideBarLinks = document.querySelector("body > main > div.sidebar-wrapper > ul").children;
+        for (let i = 0; i < sideBarLinks.length; i++) {
+            const link = sideBarLinks[i];
+            if (location.href.replaceAll('/', '') == link.href.replaceAll('/', '')) {
+                link.firstElementChild.classList.add('dash-active')
+                break;
+            }
         }
+    </script>
+</body>
 
-    }
-</script>
-{% endblock content %}
+</html>

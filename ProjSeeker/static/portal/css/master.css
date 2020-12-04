@@ -15,12 +15,20 @@
 
 a {
     text-decoration: none;
-    /* color: white; */
 }
 
 ul {
     list-style: none;
     margin-bottom: 0;
+}
+
+button {
+    outline: none;
+    border: none;
+}
+
+button:hover {
+    cursor: pointer;
 }
 
 .wide-text {
@@ -66,28 +74,41 @@ ul {
 
 .logo {
     font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0;
+    text-decoration: none;
 }
 
 .nav-links {
     list-style: none;
     display: flex;
+    align-items: center;
+    margin-bottom: 0;
 }
 
-.nav-links li a {
+.nav-link-custom {
     margin-left: 2.5rem;
     color: white;
+    padding: 0;
+    text-decoration: none;
+}
+
+.nav-link-custom:hover {
+    text-decoration: none;
+    color: inherit;
 }
 
 #login-btn {
     border: 3px solid white;
     border-radius: 1000px;
     padding: 8px 40px;
+    transition: all 200ms ease-in-out;
 }
 
 #login-btn:hover {
     background-color: #fff;
     color: black;
-    transition: all 200ms ease-in-out;
 }
 
 .blur-bg {

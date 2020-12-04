@@ -1,0 +1,37 @@
+{% extends 'bg-base.html' %}
+{% load static %}
+{% block title %}Apply{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'portal/css/project.css' %}">
+{% endblock style %}
+{% block content %}
+<div class=" project-container">
+    <div class="project-header">Apply for Project</div>
+    <div class="project-main">
+        <div class="project-basic">
+            <ul class="detail-list">
+                <li><b>Project Title</b> : <a href="#">Project Title</a></li>
+                <li><b>Professor</b> : <a href="#">Prof. firstname lastname</a></li>
+                <li><b>Department</b> : Generic Department </li>
+            </ul>
+        </div>
+        <form action="#" method="post">
+            <label for="preference">Preference</label>
+            <select name="preference" id="preference">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <label for="sop">Statement of Purpose</label>
+            <textarea name="sop" id="sop" cols="30" rows="5" required></textarea>
+            <label for="experience">Relevant Experience</label>
+            <textarea name="experience" id="experience" cols="30" rows="5"></textarea>
+            <div class="action-container">
+                <button type="submit" class="btn wide-text bold">Apply Now!</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
