@@ -1,5 +1,5 @@
 * {
-    --dash-width: 350px;
+    --dash-width: 300px;
 }
 
 body {
@@ -29,7 +29,7 @@ body {
 
 .name {
     margin: 1rem 0 3rem;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     align-self: center;
     font-weight: 400;
 }
@@ -72,6 +72,7 @@ body {
 .top-nav {
     display: grid;
     grid-template-columns: 9fr 1fr;
+    align-items: center;
     gap: 2rem;
 }
 
@@ -94,7 +95,7 @@ body {
 }
 
 .project-grid {
-    margin-top: 4rem;
+    margin: 3rem 0;
     column-count: 3;
     /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem; */
@@ -136,3 +137,88 @@ body {
     text-align: center;
     margin: 1rem 0 0;
 }
+
+/* Profile styling */
+
+.profile-container {
+    padding: 24px;
+    margin: 3rem 0;
+    -webkit-box-shadow: 0px 5px 14px 1px rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0px 5px 14px 1px rgba(0, 0, 0, 0.19);
+    box-shadow: 0px 5px 14px 1px rgba(0, 0, 0, 0.19);
+    background-color: white;
+    border-radius: 10px;
+}
+
+.inline {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr 1fr;
+}
+
+.profile-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-container form img {
+    border-radius: 10000px;
+    width: 100px;
+}
+
+.profile-container textarea, .profile-container input {
+    margin: 10px 0 15px;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    background-color: aliceblue;
+    padding: 10px 20px;
+}
+
+.tag-container {
+    margin: 0 0 1rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.tag-container .tag {
+    position: relative;
+    border-radius: 10px;
+    background-color: #0487ff;
+    padding: 8px 30px;
+    font-size: 12px;
+    color: white;
+    font-weight: 500;
+}
+
+.tag-container .tag::after {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    content: '\2715';
+   color: white;
+   border-radius: 2px;
+   transition: all 200ms ease-in-out;
+   padding: 2px 5px;
+}
+
+.tag-container .tag:hover::after {
+    cursor: pointer;
+    background-color: darkblue;
+}
+
+.tag-container .tag:nth-of-type(2n) {
+    background-color: #005EB5;
+}
+
+@media(max-width:1100px) {
+    .inline {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 0;
+    }
+}
+
+

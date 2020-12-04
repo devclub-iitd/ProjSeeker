@@ -1,4 +1,52 @@
 {% extends 'dashboard-base.html' %}
+{% load static %}
 {% block content %}
+<div class="profile-container">
+    <form action="#" method="POST">
+        {% csrf_token %}
+        <div class="inline">
+            <div style="display: flex; flex-direction: column;">
+                <label for="picture">Profile Picture</label>
+                <input type="file" name="picture" id="picture">
+            </div>
+            <div style="display: flex; flex-direction: column;">
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" value="FirstName LastName" disabled>
+            </div>
+        </div>
+        <label for="bio">Bio</label>
+        <textarea name="bio" id="bio" cols="30" rows="2"></textarea>
+        <label for="cgpa">CGPA</label>
+        <input type="text" name="cgpa" id="cgpa">
+        <label for="resume">Resume</label>
+        <input type="file" name="cv" id="cv">
+        <label for="transcript">Transcript</label>
+        <input type="file" name="transcript" id="transcript">
+        <label for="interests">Interests</label>
+        <input type="text" name="intDummy">
+        <input type="hidden" name="interests" id="interests">
+        <div class="tag-container">
+        </div>
+        <button type="submit" class="btn wide-text bold">Save</button>
+    </form>
 
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    const intDummy = document.querySelector('input[name="intDummy"]');
+    const interests = document.querySelector('input[name="interests"]');
+    const tagContainer = document.querySelector('.tag-container');
+    intDummy.onkeydown = (e) => {
+        if (e.keyCode === 188 || e.keyCode === 32) {
+            const tag = document.createElement('div');
+            tag.textContent = intDummy.value;
+            tag.classList.add('tag');
+            tagContainer.appendChild(tag);
+            interests.value = interests.value + ',' + tag.textContent;
+            intDummy.value = '';
+        }
+    }
+</script>
 {% endblock %}

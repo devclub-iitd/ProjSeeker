@@ -9,6 +9,8 @@
         <p class="project-desc">{{ proj.description|truncatewords:30 }}</p>
         <a href="{% url 'project-detail' proj.id %}" class="btn btn-xs card-btn wide-text bold">More</a>
     </div>
+    {% empty %}
+    <h2>No projects found for this section!</h2>
     {% endfor %}
 </div>
 {% endblock %}

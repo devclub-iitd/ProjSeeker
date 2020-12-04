@@ -64,8 +64,6 @@
                 {% else %}
                 <form id="bookmark-form" action="/bookmarks/" method="POST">
                     {% endif %}
-
-
                     <input name="user" hidden type="number" value="{{user.id}}">
                     <input name="project" hidden type="number" value="{{project.id}}">
                     {% csrf_token %}
@@ -74,10 +72,8 @@
                     {% else %}
                     <input value="Bookmark" type="submit" class="btn wide-text">
                     {% endif %}
-
                 </form>
                 {% endif %}
-
                 <a href="mailto:{{project.prof.user.email}}" class="btn">Contact</a>
                 <a href="#" class="btn btn-red">Apply Now</a>
         </div>
@@ -90,7 +86,6 @@
 <script>
     $(function () {
         $('#bookmark-form').click(function (event) {
-
             $.ajax({
                 method: $(this).attr('method'),
                 url: $(this).attr('action'),
