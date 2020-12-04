@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjSeeker - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'portal/css/master.css' %}">
+    <link rel="stylesheet" href="{% static 'portal/css/dashboard.css' %}">
+    {% block style %}{% endblock style %}
+</head>
+
+<body>
+
+    <div class="sidebar-wrapper">
+        <img src="{% static 'portal/assets/dp.jpg' %}" alt="#" class="profile-picture">
+        <h1 class="name">Vishal Asthana</h1>
+        <h3 class="dashboard-heading wide-text">Dashboard</h3>
+        <ul class="dash-nav">
+            <a href="/projects">
+                <li class="dash-links dash-active">Ongoing</li>
+            </a>
+            <a href="{% url 'applied-projects' %}">
+                <li class="dash-links">Applied</li>
+            </a>
+            <a href="{% url 'bookmarked-projects' %}">
+                <li class="dash-links">Bookmarked</li>
+            </a>
+
+            <li class="dash-links">Profile</li>
+        </ul>
+    </div>
+    <div class="dashboard-wrapper">
+        <div class="top-nav">
+            <input type="text" class="search-bar" placeholder="Search for projects">
+            <a href="{% url 'logout' %}" class="btn btn-red round wide-text bold" id="logout-btn">Logout</a>
+        </div>
+        {% block content %}
+        {% endblock %}
+    </div>
+    {% block script %}{% endblock %}
+    <script>
+        var sideBarLinks = document.querySelector("body > main > div.sidebar-wrapper > ul").children;
+        for (let i = 0; i < sideBarLinks.length; i++) {
+            const link = sideBarLinks[i];
+            if (location.href.replaceAll('/', '') == link.href.replaceAll('/', '')) {
+                link.firstElementChild.classList.add('dash-active')
+                break;
+            }
+        }
+    </script>
+</body>
+
+</html>

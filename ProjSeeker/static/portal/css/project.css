@@ -87,6 +87,7 @@
 .action-container {
     margin-top: 20px;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     flex-wrap: wrap;
     gap: 1.5rem;
@@ -99,6 +100,7 @@
     letter-spacing: 3px;
     color: white;
     text-align: center;
+    height: min-content;
     padding: 10px 40px;
 }
 
@@ -114,6 +116,20 @@
 
 .cnav-link {
     color : black;
+}
+
+.action-container form {
+    margin: 0;
+    padding: 0;
+}
+
+.action-container input.btn {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 600;
+    background: rgb(228, 228, 228);
+    padding: 10px 40px;
 }
 
 /* Form-stylings */

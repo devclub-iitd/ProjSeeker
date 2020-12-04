@@ -70,9 +70,9 @@
                     <input name="project" hidden type="number" value="{{project.id}}">
                     {% csrf_token %}
                     {% if bookmark.is_bmkd %}
-                    <input value="Un-bookmark" type="submit" class="btn">
+                    <input value="Un-bookmark" type="submit" class="btn wide-text">
                     {% else %}
-                    <input value="Bookmark" type="submit" class="btn">
+                    <input value="Bookmark" type="submit" class="btn wide-text">
                     {% endif %}
 
                 </form>
