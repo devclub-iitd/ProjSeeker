@@ -93,6 +93,7 @@ class StudentViewSet(ModelViewSet):
         return super().check_object_permissions(request, obj)
 
     def update(self, request, *args, **kwargs):
+        print(request.data)
         request.data._mutable = True
         if(not request.data['transcript']):
             del request.data['transcript']
@@ -131,7 +132,8 @@ class StudentViewSet(ModelViewSet):
         if(len(students) == 1):
             student = students[0]
             serializer = StudentSerializer(student, many=False)
-            return render(request, template_name='profile.html', context={'student':serializer.data})
+            interest_text = ', '.join([it['research_field'] for it in serializer.data['interests']])
+            return render(request, template_name='profile.html', context={'student':serializer.data, 'interest_text': interest_text})
         return Response(404)
     
 class ProfViewSet(ModelViewSet):
@@ -140,10 +142,26 @@ class ProfViewSet(ModelViewSet):
 class InterestViewSet(ModelViewSet):
     queryset=Interests.objects.all()
     serializer_class=InterestSerializer
+
+    @action(detail=False, methods=['GET'])
+    def find_interests(self, request):
+        try:
+            search_text = request.GET['q']
+            qset = Interests.objects.filter(research_field__startswith=search_text)
+            serializer = self.get_serializer(qset, many=True)
+            return Response(data=serializer.data)
+        except:
+            return Response(400)
+        
 class ApplicationViewSet(ModelViewSet):
     queryset=Application.objects.all()
     serializer_class=ApplicationSerializer
     permission_classes=[permissions.IsAuthenticated]
+
+    def check_object_permissions(self, request, obj):
+        if(obj.student.user.id != request.user.id):
+            raise Exception("Forbidden")
+        return super().check_object_permissions(request, obj)
 
     def create(self, request, *args, **kwargs):
         students = Student.objects.filter(user__id=request.user.id)
@@ -155,6 +173,7 @@ class ApplicationViewSet(ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
+        
         project_data = ProjectSerializer(Project.objects.get(id=instance.project.id),many=False).data
         serializer = self.get_serializer(instance, many=False)
         

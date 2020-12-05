@@ -85,7 +85,7 @@
                         console.log(r);
                         // TODO add loading screen
                         setTimeout(() => {
-                            location.href = '/projects'
+                            location.href=`/applications/${r.id}`
                         }, 1000);
                     },
                     error: (e) => {

@@ -47,8 +47,11 @@
         
         <label for="interests">Interests</label>
         <input type="text" name="intDummy">
-        <input type="hidden" name="interests" id="interests">
+        <input type="hidden" name="interests" id="interests" value="{{ interest_text }}">
         <div class="tag-container">
+            {% for interest in student.interests %}
+              <div class="tag" onclick="handleTagDelete(this)">{{interest.research_field}}</div>
+            {% endfor %}
         </div>
         <button type="submit" class="btn wide-text bold">Save</button>
     </form>
@@ -75,41 +78,77 @@
         }
     }
 
-    const deleteDoc = (doc_type) => {
-        if(doc_type != 'pic' && doc_type != 'cv' && doc_type != 'transcript')
-            return
-        
-        $.ajax({
-            url: '/delete-student-doc',
-            method: 'POST',
-            data: {
-                'type' : doc_type,
-                'csrfmiddlewaretoken' : $('body > div.dashboard-wrapper > div.profile-container > form > input[type=hidden]:nth-child(1)').val(),
-            },
-            success: (r) => {
-                console.log(r);
-                // TODO add some loading screen in these.
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
-            },
-            error: (e) => {
-                console.error(e);
-            }
-        });
-    }
     const intDummy = document.querySelector('input[name="intDummy"]');
     const interests = document.querySelector('input[name="interests"]');
     const tagContainer = document.querySelector('.tag-container');
     intDummy.onkeydown = (e) => {
-        if (e.keyCode === 188 || e.keyCode === 32) {
+        if (e.keyCode === 188) {
             const tag = document.createElement('div');
             tag.textContent = intDummy.value;
             tag.classList.add('tag');
+            tag.addEventListener('click', (e) => handleTagDelete(tag));
             tagContainer.appendChild(tag);
-            interests.value = interests.value + ',' + tag.textContent;
+            interests.value = interests.value + ', ' + tag.textContent;
             intDummy.value = '';
         }
+    }
+
+    const deleteDoc = (doc_type) => {
+            if (doc_type != 'pic' && doc_type != 'cv' && doc_type != 'transcript')
+                return
+
+            $.ajax({
+                url: '/delete-student-doc',
+                method: 'POST',
+                data: {
+                    'type': doc_type,
+                    'csrfmiddlewaretoken': $('body > div.dashboard-wrapper > div.profile-container > form > input[type=hidden]:nth-child(1)').val(),
+                },
+                success: (r) => {
+                    console.log(r);
+                    // TODO add some loading screen in these.
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                },
+                error: (e) => {
+                    console.error(e);
+                }
+            });
+    }
+    
+    const handleTagDelete = (tag) => {
+        var text = tag.textContent;
+        console.log(text);
+        tag.remove();
+        var interests = $('#interests').val();
+        interests = interests.split(', ')
+        console.log(interests);
+        interests = interests.filter((e) => {
+            return e != text;
+        });
+        console.log(interests.join(", "));
+
+        $('#interests').val(interests.join(", "));
+    }
+
+    // Provide a starting text and this will call the function callback(searchResults) where search_resulsts is the array of matched tags
+    const findTags = (startingText, callback=function(){}) => {
+        $.ajax({
+            url: `/find-interests?q=${startingText}`,
+            method: 'GET',
+            success: (respData) => {
+                var searchResults = [];
+                respData.forEach((r) => {
+                    searchResults.push(r.research_field);
+                })
+                console.log(searchResults);
+                callback(searchResults);
+            },
+            error: (e) => {
+                console.log(e);
+            }
+        });
     }
 
     $(function () {

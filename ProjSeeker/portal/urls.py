@@ -23,4 +23,5 @@ urlpatterns = [
     
     url(r'^applied-projects$', login_required(ProjectViewSet.as_view({'get': 'get_applied'}), login_url='/accounts/login'), name='applied-projects'),
     url(r'^bookmarked-projects$', login_required(ProjectViewSet.as_view({'get': 'get_bookmarked'}), login_url='/accounts/login'), name='bookmarked-projects'),
+    url(r'^find-interests$', login_required(InterestViewSet.as_view({'get': 'find_interests'}), login_url='/accounts/login'), name='find-interests'),
 ]
