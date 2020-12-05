@@ -14,12 +14,23 @@
 <body>
 
     <div class="sidebar-wrapper">
-        <img src="{% static 'portal/assets/dp.jpg' %}" alt="#" class="profile-picture">
-        <h1 class="name">Vishal Asthana</h1>
+    <script>
+        var pic_changed = false;
+        const changePic = () => {
+            if(!pic_changed){
+                var pic = document.querySelector('#profile-pic');
+                pic.src = '/static/portal/assets/dp.jpg';
+                pic_changed = true;
+            }
+                
+        };
+    </script>
+    <img src="/uploads/user_{{user.id}}/pic.jpg" onerror="changePic()" alt="Profile-Pciture" class="profile-picture" id="profile-pic">
+        <h1 class="name">{{user.first_name}} {{user.last_name}}</h1>
         <h3 class="dashboard-heading wide-text">Dashboard</h3>
         <ul class="dash-nav">
             <a href="/projects">
-                <li class="dash-links dash-active">Ongoing</li>
+                <li class="dash-links dash-links">Ongoing</li>
             </a>
             <a href="{% url 'applied-projects' %}">
                 <li class="dash-links">Applied</li>
@@ -28,7 +39,9 @@
                 <li class="dash-links">Bookmarked</li>
             </a>
 
-            <li class="dash-links">Profile</li>
+            <a href="{% url 'student-profile' %}">
+                <li class="dash-links">Profile</li>
+            </a>
         </ul>
     </div>
     <div class="dashboard-wrapper">
@@ -41,7 +54,8 @@
     </div>
     {% block script %}{% endblock %}
     <script>
-        var sideBarLinks = document.querySelector("body > main > div.sidebar-wrapper > ul").children;
+        
+        var sideBarLinks = document.querySelector("body > div.sidebar-wrapper > ul").children;
         for (let i = 0; i < sideBarLinks.length; i++) {
             const link = sideBarLinks[i];
             if (location.href.replaceAll('/', '') == link.href.replaceAll('/', '')) {

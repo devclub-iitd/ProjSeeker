@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
+from .storage import OverwriteStorage
 
 # Create your models here.
 class Departments(models.TextChoices):
@@ -20,6 +21,7 @@ def upload_handler(student, filename):
     return 'user_{0}/{1}'.format(student.user.id, filename)
 
 
+def upload_pic(s, _): return upload_handler(s, 'pic.jpg')
 def upload_cv(s, _): return upload_handler(s, 'cv.pdf')
 def upload_transcript(s, _): return upload_handler(s, 'transcript.pdf')
 
@@ -27,9 +29,9 @@ def upload_transcript(s, _): return upload_handler(s, 'transcript.pdf')
 class Student(models.Model):
     user = models.ForeignKey(User, verbose_name=_("Auth User"), on_delete=models.CASCADE)
     bio = models.TextField()
-    cv = models.FileField(_("Resume"), upload_to= upload_cv, max_length=100, null=True)
-    transcript = models.FileField(_("Transcripts"), upload_to= upload_transcript , max_length=100, null=True)
-    pic = models.FileField(_("Profile Pic"), upload_to=upload_handler, max_length=100, null=True)
+    cv = models.FileField(_("Resume"), upload_to= upload_cv,storage=OverwriteStorage(), null=True)
+    transcript = models.FileField(_("Transcripts"), upload_to= upload_transcript , storage=OverwriteStorage(), null=True)
+    pic = models.FileField(_("Profile Pic"), upload_to=upload_pic, null=True, storage=OverwriteStorage())
     cgpa = models.FloatField(_("CGPA"), validators=[MaxValueValidator(10)], null=True)
     interests = models.ManyToManyField("Interests")
 
@@ -48,7 +50,7 @@ class Professor(models.Model):
     dept = models.CharField(_("department"), max_length=50, choices=Departments.choices)
     interests = models.ManyToManyField("Interests")
     webpage_link = models.URLField(_("Webpage Link"), max_length=200, null=True)
-    pic = models.FileField(_("Profile Pic"), upload_to=upload_handler, max_length=100, null=True)
+    pic = models.FileField(_("Profile Pic"), upload_to=upload_handler, storage=OverwriteStorage(), null=True)
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name} @ {self.dept}'

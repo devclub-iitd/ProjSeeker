@@ -101,16 +101,17 @@
                 },
                 success: (r) => {
                     console.log(r);
+                    // TODO add some loading screen in these.
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
                 },
                 error: (e) => {
                     console.error(e);
                 }
 
             });
-            // TODO add some loading screen in these.
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
+            
             
             return false;
         });

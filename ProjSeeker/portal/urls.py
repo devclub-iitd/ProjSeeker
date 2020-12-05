@@ -14,8 +14,10 @@ router.register(r'interests',InterestViewSet)
 router.register(r'bookmarks',BookmarkViewSet)
 
 urlpatterns = [
+    url(r"^$", index, name="index"),
     url("",include(router.urls)),
-    url(r"^index$", index, name="index"),
+    url(r"^student-profile$",login_required(StudentViewSet.as_view({'get': 'profile'})), name="student-profile"),
+    url(r"^delete-student-doc$",login_required(StudentViewSet.as_view({'post': 'delete_file'})), name="delete-student-doc"),
     url(r'^$',TemplateView.as_view(template_name='home.html'),name='home'),
     url(r'^dashboard$',TemplateView.as_view(template_name='dashboard.html'),name='dashboard'),
     

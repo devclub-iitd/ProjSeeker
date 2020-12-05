@@ -83,16 +83,17 @@
                     },
                     success: (r) => {
                         console.log(r);
+                        // TODO add loading screen
+                        setTimeout(() => {
+                            location.href = '/projects'
+                        }, 1000);
                     },
                     error: (e) => {
                         console.error(e);
                     }
 
                 });
-                // TODO add loading screen
-                setTimeout(() => {
-                    location.href = '/projects'
-                }, 1000);
+                
 
                 return false;
             });

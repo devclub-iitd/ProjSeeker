@@ -85,6 +85,55 @@ class BookmarkViewSet(ModelViewSet):
 class StudentViewSet(ModelViewSet):
     queryset=Student.objects.all()
     serializer_class=StudentSerializer
+    permission_classes=[permissions.IsAuthenticated]
+
+    def check_object_permissions(self, request, obj):
+        if(obj.user.id != request.user.id):
+            raise Exception("Unauthorized user")
+        return super().check_object_permissions(request, obj)
+
+    def update(self, request, *args, **kwargs):
+        request.data._mutable = True
+        if(not request.data['transcript']):
+            del request.data['transcript']
+        if(not request.data['cv']):
+            del request.data['cv']
+        if(not request.data['pic']):
+            del request.data['pic']
+        return super().update(request, *args, **kwargs)
+
+    @action(detail=False, methods=['POST'])
+    def delete_file(self, request):
+        student = request.user.student_set.all()
+        if(len(student) != 1):
+            return Response(403)
+        student = student[0]
+        if(student.user.id != request.user.id):
+            return Response(403)
+
+        print(request.data)
+
+        file_type = request.data['type']
+        print(file_type)
+        if(file_type == 'pic'):
+            student.pic.delete()
+        elif(file_type == 'cv'):
+            student.cv.delete()
+        elif(file_type == 'transcript'):
+            student.transcript.delete()
+        return Response(200)
+
+    @action(detail=False,methods=['GET'])
+    def profile(self, request):
+        user = request.user
+        students = user.student_set.all()
+
+        if(len(students) == 1):
+            student = students[0]
+            serializer = StudentSerializer(student, many=False)
+            return render(request, template_name='profile.html', context={'student':serializer.data})
+        return Response(404)
+    
 class ProfViewSet(ModelViewSet):
     queryset=Professor.objects.all()
     serializer_class=ProfSerializer
