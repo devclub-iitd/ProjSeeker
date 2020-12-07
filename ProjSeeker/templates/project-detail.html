@@ -58,6 +58,7 @@
             </div>
         </div>
         <div class="action-container">
+            <img src="{% static 'portal/assets/loader.svg' %}" alt="loader" id="loader">
             {% if user.is_authenticated %}
             {% if bookmark.is_bmkd %}
             <form id="bookmark-form" action="/bookmarks/{{bookmark.bmk.id}}/" method="DELETE">
@@ -76,12 +77,12 @@
                 {% endif %}
                 <a href="mailto:{{project.prof.user.email}}" class="btn">Contact</a>
                 {% if isApplied %}
-                    <a href="/applications/{{appId}}/" class="btn btn-red">View Application</a>
+                <a href="/applications/{{appId}}/" class="btn btn-red">View Application</a>
                 {% else %}
-                    <a href="/projects/{{project.id}}/apply" class="btn btn-red">Apply Now</a>
+                <a href="/projects/{{project.id}}/apply" class="btn btn-red">Apply Now</a>
                 {% endif %}
-                
-                
+
+
         </div>
     </div>
 </div>
@@ -92,6 +93,7 @@
 <script>
     $(function () {
         $('#bookmark-form').click(function (event) {
+            $('#loader').css('display', 'block');
             $.ajax({
                 method: $(this).attr('method'),
                 url: $(this).attr('action'),
@@ -111,8 +113,8 @@
                 }
 
             });
-            
-            
+
+
             return false;
         });
     });

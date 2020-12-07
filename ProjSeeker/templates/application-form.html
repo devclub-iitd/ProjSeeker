@@ -16,119 +16,79 @@
             </ul>
         </div>
         {% if isApplied %}
-            <form id="applForm" action="/applications/{{application.id}}/" method="PUT"> 
-                {% csrf_token %}
-                <label for="preference">Preference</label>
-                <select name="preference" id="preference" value="{{application.preference}}">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-                <label for="sop">Statement of Purpose</label>
-                <textarea name="cover_letter" id="sop" cols="30" rows="5" >{{application.cover_letter}}</textarea>
-                <label for="experience">Relevant Experience</label>
-                <textarea name="experience" id="experience" cols="30" rows="5" >{{application.experience}}</textarea>
-                <div class="action-container">
-                    <button type="submit" class="btn wide-text bold">Update Application</button>
-                </div>
-            </form>
-        {% else %}
-            <form id="applForm" action="/applications/" method="post">
-                {% csrf_token %}
-                <input hidden name="project" value="{{project.id}}" type="number">
-                <label for="preference">Preference</label>
-                <select name="preference" id="preference">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-                <label for="sop">Statement of Purpose</label>
-                <textarea name="cover_letter" id="sop" cols="30" rows="5" required></textarea>
-                <label for="experience">Relevant Experience</label>
-                <textarea name="experience" id="experience" cols="30" rows="5"></textarea>
-                <div class="action-container">
-                    <button type="submit" class="btn wide-text bold">Apply Now!</button>
-                </div>
-                </form>
-        {% endif %}
-        
-            
+        <form id="applForm" action="/applications/{{application.id}}/">
+            {% csrf_token %}
+            <label for="preference">Preference</label>
+            <select name="preference" id="preference" value="{{application.preference}}">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <label for="sop">Statement of Purpose</label>
+            <textarea name="cover_letter" id="sop" cols="30" rows="5">{{application.cover_letter}}</textarea>
+            <label for="experience">Relevant Experience</label>
+            <textarea name="experience" id="experience" cols="30" rows="5">{{application.experience}}</textarea>
+            <div class="action-container">
+                <button type="submit" class="btn btn-red bold wide-text" formmethod="DELETE">Delete Application</button>
+                <button type="submit" class="btn wide-text bold" formmethod="PUT">Update Application</button>
+            </div>
         </form>
-        {% if isApplied %}
-            <form id="deleteAppl" method="DELETE" action="/applications/{{application.id}}/">
-                {% csrf_token %}
-                <input type="submit" class="btn bold btn-red" value="Delete Application">
-            </form>
+        {% else %}
+        <form id="applForm" action="/applications/">
+            {% csrf_token %}
+            <input hidden name="project" value="{{project.id}}" type="number">
+            <label for="preference">Preference</label>
+            <select name="preference" id="preference">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <label for="sop">Statement of Purpose</label>
+            <textarea name="cover_letter" id="sop" cols="30" rows="5" required></textarea>
+            <label for="experience">Relevant Experience</label>
+            <textarea name="experience" id="experience" cols="30" rows="5"></textarea>
+            <div class="action-container">
+                <button type="submit" class="btn wide-text bold" formmethod="POST">Apply Now!</button>
+            </div>
+        </form>
         {% endif %}
-        
+        </form>
     </div>
 </div>
 <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
     $(function () {
-            var pref = $('#preference').attr('value');
-            document.querySelector('#preference').selectedIndex = pref - 1;
-            $('#applForm').submit(function (event) {
+        var pref = $('#preference').attr('value');
+        document.querySelector('#preference').selectedIndex = pref - 1;
+        $('#applForm').submit(function (event) {
+            const type = $("button[type=submit]:focus").attr('formmethod');
+            $.ajax({
+                method: type,
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                headers: {
+                    'X-CSRFTOKEN': $('#applForm > input[type=hidden]').val(),
+                },
+                success: (r) => {
+                    console.log(r);
+                    // TODO add loading screen
+                    setTimeout(() => {
+                        if (type == 'DELETE')
+                            location.href = `{% url 'applied-projects' %}`
+                        location.href = `/applications/${r.id}`
+                    }, 1000);
+                },
+                error: (e) => {
+                    console.error(e);
+                }
 
-                $.ajax({
-                    method: $(this).attr('method'),
-                    url: $(this).attr('action'),
-                    data: $(this).serialize(),
-                    headers: {
-                        'X-CSRFTOKEN': $('#applForm > input[type=hidden]').val(),
-                    },
-                    success: (r) => {
-                        console.log(r);
-                        // TODO add loading screen
-                        setTimeout(() => {
-                            location.href=`/applications/${r.id}`
-                        }, 1000);
-                    },
-                    error: (e) => {
-                        console.error(e);
-                    }
-
-                });
-                
-
-                return false;
             });
+            return false;
         });
+    });
 </script>
-{% if isApplied %}
-  <script>
-    $(function () {
-            $('#deleteAppl').submit(function (event) {
-
-                $.ajax({
-                    method: $(this).attr('method'),
-                    url: $(this).attr('action'),
-                    data: $(this).serialize(),
-                    headers: {
-                        'X-CSRFTOKEN': $('#deleteAppl > input[type=hidden]:nth-child(1)').val(),
-                    },
-                    success: (r) => {
-                        console.log(r);
-                        setTimeout(() => {
-                            location.href = '/projects'
-                        }, 1000);
-                    },
-                    error: (e) => {
-                        console.error(e);
-                    }
-
-                });
-                
-
-                return false;
-            });
-
-        });
-</script>
-{% endif %}
-
 {% endblock content %}

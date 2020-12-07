@@ -147,6 +147,8 @@ class InterestViewSet(ModelViewSet):
     def find_interests(self, request):
         try:
             search_text = request.GET['q']
+            if(search_text ==''):
+                return Response(data=[])
             qset = Interests.objects.filter(research_field__startswith=search_text)
             serializer = self.get_serializer(qset, many=True)
             return Response(data=serializer.data)

@@ -6,10 +6,10 @@
         {% csrf_token %}
         <div class="inline">
             {% if student.pic is not None %}
-                <a href="{{student.pic}}" class="btn">View Picture</a>
-                <a href="#" class="btn btn-red" onclick="deleteDoc('pic')"> Delete Picture</a>
+            <a href="{{student.pic}}" class="btn">View Picture</a>
+            <a href="#" class="btn btn-red" onclick="deleteDoc('pic')"> Delete Picture</a>
             {% endif %}
-            
+
             <div style="display: flex; flex-direction: column;">
                 <label for="picture">Profile Picture</label>
                 <input type="file" name="pic" id="picture" onchange="checkJpeg(this)">
@@ -32,7 +32,7 @@
             <a href="#" class="btn btn-red" onclick="deleteDoc('cv')"> Delete Resume</a>
             {% endif %}
         </div>
-        
+
         <input type="file" name="cv" id="cv" onchange="checkPdf(this)">
 
         <label for="transcript">Transcript</label>
@@ -42,15 +42,20 @@
             <a href="#" class="btn btn-red" onclick="deleteDoc('transcript')"> Delete Transcript</a>
             {% endif %}
         </div>
-        
+
         <input type="file" name="transcript" id="transcript">
-        
+
         <label for="interests">Interests</label>
-        <input type="text" name="intDummy">
+        <div class="int-searchbar">
+            <input type="text" name="intDummy" autocomplete="off">
+            <ul class="search-suggestions">
+                <li class="suggestions">No results found</li>
+            </ul>
+        </div>
         <input type="hidden" name="interests" id="interests" value="{{ interest_text }}">
         <div class="tag-container">
             {% for interest in student.interests %}
-              <div class="tag" onclick="handleTagDelete(this)">{{interest.research_field}}</div>
+            <div class="tag" onclick="handleTagDelete(this)">{{interest.research_field}}</div>
             {% endfor %}
         </div>
         <button type="submit" class="btn wide-text bold">Save</button>
@@ -61,128 +66,5 @@
 
 {% block script %}
 <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script>
-    const checkJpeg = (input) => {
-        var file = input.files[0];
-        if (file.type != 'image/jpeg') {
-            alert("Only jpg files are allowed");
-            input.value = "";
-        }
-    }
-
-    const checkPdf = (input) => {
-        var file = input.files[0];
-        if(file.type != 'application/pdf'){
-            alert('Only PDF files are allowed');
-            input.value = "";
-        }
-    }
-
-    const intDummy = document.querySelector('input[name="intDummy"]');
-    const interests = document.querySelector('input[name="interests"]');
-    const tagContainer = document.querySelector('.tag-container');
-    intDummy.onkeydown = (e) => {
-        if (e.keyCode === 188) {
-            const tag = document.createElement('div');
-            tag.textContent = intDummy.value;
-            tag.classList.add('tag');
-            tag.addEventListener('click', (e) => handleTagDelete(tag));
-            tagContainer.appendChild(tag);
-            interests.value = interests.value + ', ' + tag.textContent;
-            intDummy.value = '';
-        }
-    }
-
-    const deleteDoc = (doc_type) => {
-            if (doc_type != 'pic' && doc_type != 'cv' && doc_type != 'transcript')
-                return
-
-            $.ajax({
-                url: '/delete-student-doc',
-                method: 'POST',
-                data: {
-                    'type': doc_type,
-                    'csrfmiddlewaretoken': $('body > div.dashboard-wrapper > div.profile-container > form > input[type=hidden]:nth-child(1)').val(),
-                },
-                success: (r) => {
-                    console.log(r);
-                    // TODO add some loading screen in these.
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-                },
-                error: (e) => {
-                    console.error(e);
-                }
-            });
-    }
-    
-    const handleTagDelete = (tag) => {
-        var text = tag.textContent;
-        console.log(text);
-        tag.remove();
-        var interests = $('#interests').val();
-        interests = interests.split(', ')
-        console.log(interests);
-        interests = interests.filter((e) => {
-            return e != text;
-        });
-        console.log(interests.join(", "));
-
-        $('#interests').val(interests.join(", "));
-    }
-
-    // Provide a starting text and this will call the function callback(searchResults) where search_resulsts is the array of matched tags
-    const findTags = (startingText, callback=function(){}) => {
-        $.ajax({
-            url: `/find-interests?q=${startingText}`,
-            method: 'GET',
-            success: (respData) => {
-                var searchResults = [];
-                respData.forEach((r) => {
-                    searchResults.push(r.research_field);
-                })
-                console.log(searchResults);
-                callback(searchResults);
-            },
-            error: (e) => {
-                console.log(e);
-            }
-        });
-    }
-
-    $(function () {
-            $('#profile-form').submit(function (event) {
-                // var data = $(this).serialize();
-                // console.log(data);
-                $.ajax({
-                    method: $(this).attr('method'),
-                    url: $(this).attr('action'),
-                    data: new FormData($('form')[0]),
-                    
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-
-                    headers: {
-                        'X-CSRFTOKEN': $('body > div.dashboard-wrapper > div.profile-container > form > input[type=hidden]:nth-child(1)').val(),
-                    },
-                    success: (r) => {
-                        console.log(r);
-                        // TODO add some loading screen in these.
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
-                    },
-                    error: (e) => {
-                        console.error(e);
-                    }
-
-                });
-                
-
-                return false;
-            });
-        });
-</script>
+<script src="{% static 'portal/js/profile.js' %}"></script>
 {% endblock %}

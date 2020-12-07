@@ -14,18 +14,18 @@
 <body>
 
     <div class="sidebar-wrapper">
-    <script>
-        var pic_changed = false;
-        const changePic = () => {
-            if(!pic_changed){
-                var pic = document.querySelector('#profile-pic');
-                pic.src = '/static/portal/assets/dp.jpg';
-                pic_changed = true;
-            }
-                
-        };
-    </script>
-    <img src="/uploads/user_{{user.id}}/pic.jpg" onerror="changePic()" alt="Profile-Pciture" class="profile-picture" id="profile-pic">
+        <script>
+            var pic_changed = false;
+            const changePic = () => {
+                if (!pic_changed) {
+                    var pic = document.querySelector('#profile-pic');
+                    pic.src = '/static/portal/assets/dp.jpg';
+                    pic_changed = true;
+                }
+
+            };
+        </script>
+        <img src="/uploads/user_{{user.id}}/pic.jpg" onerror="changePic()" alt="Profile-Pciture" class="profile-picture" id="profile-pic">
         <h1 class="name">{{user.first_name}} {{user.last_name}}</h1>
         <h3 class="dashboard-heading wide-text">Dashboard</h3>
         <ul class="dash-nav">
@@ -47,14 +47,14 @@
     <div class="dashboard-wrapper">
         <div class="top-nav">
             <input type="text" class="search-bar" placeholder="Search for projects">
-            <a href="{% url 'logout' %}" class="btn btn-red round wide-text bold" id="logout-btn">Logout</a>
+            <a href="{% url 'logout' %}" class="btn btn-red wide-text bold" id="logout-btn">Logout</a>
         </div>
         {% block content %}
         {% endblock %}
     </div>
     {% block script %}{% endblock %}
     <script>
-        
+
         var sideBarLinks = document.querySelector("body > div.sidebar-wrapper > ul").children;
         for (let i = 0; i < sideBarLinks.length; i++) {
             const link = sideBarLinks[i];

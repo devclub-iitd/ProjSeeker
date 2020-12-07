@@ -132,6 +132,11 @@
     padding: 10px 40px;
 }
 
+.action-container #loader {
+    display: none;
+    width: 30px;
+}
+
 /* Form-stylings */
 form {
     display : flex;
