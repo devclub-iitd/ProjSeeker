@@ -27,8 +27,12 @@ const intList = $('.search-suggestions');
 let suggestions = document.querySelectorAll('.suggestion');
 
 const intDummy = $('input[name="intDummy"]');
-intDummy.focusout(() => {
-    intList.css('display', 'none');
+
+// focus out function for suggestion list
+// TODO Optimize this
+$(document).click((e) => {
+    if (!$(e.target).hasClass('suggestion'))
+        intList.css('display', 'none');
 })
 
 let index = -1;
@@ -61,13 +65,21 @@ intDummy.keyup((e) => {
         if (res.length > 0) {
             intList.html('');
             res.forEach((sug) => {
-                intList.append(`<option class="suggestion">${sug}</option>`)
+                intList.append(`<li class="suggestion">${sug}</li>`)
             })
         } else {
-            intList.html(`<option class="suggestion">No results found</option>`)
+            intList.html(`<li class="suggestion">No results found</li>`)
         }
         suggestions = document.querySelectorAll('.suggestion');
     })
+
+    index = -1;
+});
+
+// suggestions click handler
+$('.search-suggestions').on('click', '.suggestion', (e) => {
+    createTag(e.target.textContent);
+    intList.css('display', 'none');
 });
 
 const createTag = (tagVal) => {
