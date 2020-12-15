@@ -22,6 +22,8 @@ urlpatterns = [
     url(r'^dashboard$',TemplateView.as_view(template_name='dashboard.html'),name='dashboard'),
     
     url(r'^applied-projects$', login_required(ProjectViewSet.as_view({'get': 'get_applied'}), login_url='/accounts/login'), name='applied-projects'),
+    url(r'^floated-projects$', login_required(ProjectViewSet.as_view({'get': 'get_floated'}), login_url='/accounts/login'), name='floated-projects'),
     url(r'^bookmarked-projects$', login_required(ProjectViewSet.as_view({'get': 'get_bookmarked'}), login_url='/accounts/login'), name='bookmarked-projects'),
+    url(r'^received-applications$', login_required(ApplicationViewSet.as_view({'get': 'list_received_applications'}), login_url='/accounts/login'), name='received-applications'),
     url(r'^find-interests$', login_required(InterestViewSet.as_view({'get': 'find_interests'}), login_url='/accounts/login'), name='find-interests'),
 ]

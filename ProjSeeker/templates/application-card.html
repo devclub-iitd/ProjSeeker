@@ -1,0 +1,16 @@
+{% extends 'dashboard-base.html' %}
+{% load static %}
+{% block content %}
+<div class="project-grid">
+    {% for appl in applications %}
+    <div class="project-card">
+        <h2 class="project-title">{{ appl.project_title|truncatewords:4 }}</h2>
+        <h3 class="prof-name">{{appl.student_name}}</h3>
+        <p class="project-desc">{{ appl.cover_letter|truncatewords:30 }}</p>
+        <a href="{% url 'application-detail' appl.id %}" class="btn btn-xs card-btn wide-text bold">More</a>
+    </div>
+    {% empty %}
+    <h2>No projects found for this section!</h2>
+    {% endfor %}
+</div>
+{% endblock %}

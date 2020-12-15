@@ -32,22 +32,40 @@
             <a href="/projects">
                 <li class="dash-links dash-links">Ongoing</li>
             </a>
-            <a href="{% url 'applied-projects' %}">
-                <li class="dash-links">Applied</li>
-            </a>
-            <a href="{% url 'bookmarked-projects' %}">
-                <li class="dash-links">Bookmarked</li>
-            </a>
-
-            <a href="{% url 'student-profile' %}">
-                <li class="dash-links">Profile</li>
-            </a>
+            {% if is_student %}
+                <a href="{% url 'applied-projects' %}">
+                    <li class="dash-links">Applied</li>
+                </a>
+                <a href="{% url 'bookmarked-projects' %}">
+                    <li class="dash-links">Bookmarked</li>
+                </a>
+                
+                <a href="{% url 'student-profile' %}">
+                    <li class="dash-links">Profile</li>
+                </a>
+            {% elif is_prof %}
+                <a href="{% url 'floated-projects' %}">
+                    <li class="dash-links">My projects</li>
+                </a>
+                <a href="{% url 'received-applications' %}">
+                    <li class="dash-links">Applications</li>
+                </a>
+                
+                <a href="#">
+                    <li class="dash-links">Profile</li>
+                </a>
+            {% endif %}
+            
         </ul>
     </div>
     <div class="dashboard-wrapper">
         <div class="top-nav">
             <input type="text" class="search-bar" placeholder="Search for projects">
-            <a href="{% url 'logout' %}" class="btn btn-red wide-text bold" id="logout-btn">Logout</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="btn btn-red wide-text bold" id="logout-btn">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-red wide-text bold" id="logout-btn">Login</a>
+            {% endif %}
         </div>
         {% block content %}
         {% endblock %}

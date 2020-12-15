@@ -20,6 +20,16 @@ def index(request):
 def dashboard(request):
     return render(request, 'dashboard.html')
 
+def isStudent(user):
+    if( not user.is_authenticated):
+        return False
+    return len(user.student_set.all()) == 1
+
+def isProf(user):
+    if( not user.is_authenticated):
+        return False
+    return len(user.professor_set.all()) == 1
+
 class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
@@ -42,7 +52,8 @@ class ProjectViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         qset = self.get_queryset()
         serializer = self.get_serializer(qset, many=True)
-        return render(request, template_name="dashboard.html", context={'projects': serializer.data})
+
+        return render(request, template_name="dashboard.html", context={'projects': serializer.data, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
 
     @action(detail=False)
     def get_applied(self, request):
@@ -50,7 +61,14 @@ class ProjectViewSet(ModelViewSet):
         applied = Application.objects.filter(student__user=user)
         projects = [appl.project for appl in applied]
         serializer = self.get_serializer(projects, many=True)
-        return render(request, template_name="dashboard.html", context={'projects': serializer.data})
+        return render(request, template_name="dashboard.html", context={'projects': serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+    
+    @action(detail=False)
+    def get_floated(self, request):
+        user = request.user
+        projects = Project.objects.filter(prof__user=user)
+        serializer = self.get_serializer(projects, many=True)
+        return render(request, template_name="dashboard.html", context={'projects': serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
     
     @action(detail=False)
     def get_bookmarked(self, request):
@@ -58,7 +76,7 @@ class ProjectViewSet(ModelViewSet):
         bookmarked = Bookmark.objects.filter(user=user)
         projects = [bmk.project for bmk in bookmarked]
         serializer = self.get_serializer(projects, many=True)
-        return render(request, template_name="dashboard.html", context={'projects': serializer.data})
+        return render(request, template_name="dashboard.html", context={'projects': serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
 
     @method_decorator(login_required)
     @action(detail=True, methods=['GET'],url_name='apply-project',url_path='apply')
@@ -133,7 +151,7 @@ class StudentViewSet(ModelViewSet):
             student = students[0]
             serializer = StudentSerializer(student, many=False)
             interest_text = ', '.join([it['research_field'] for it in serializer.data['interests']])
-            return render(request, template_name='profile.html', context={'student':serializer.data, 'interest_text': interest_text})
+            return render(request, template_name='profile.html', context={'student':serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
         return Response(404)
     
 class ProfViewSet(ModelViewSet):
@@ -161,9 +179,23 @@ class ApplicationViewSet(ModelViewSet):
     permission_classes=[permissions.IsAuthenticated]
 
     def check_object_permissions(self, request, obj):
-        if(obj.student.user.id != request.user.id):
+        if(obj.student.user.id != request.user.id and obj.project.prof.user.id != request.user.id):
             raise Exception("Forbidden")
         return super().check_object_permissions(request, obj)
+
+    @action(detail=False)
+    def list_received_applications(self, request):
+        user = request.user
+        if(not isProf(user)):
+            return Response(403)
+        applications = Application.objects.filter(project__prof__user=user)
+        serializer = self.get_serializer(applications, many=True)
+        data = serializer.data
+        for appl in data:
+            appl['project_title'] = Project.objects.get(id=appl['project']).title
+            stud_user = Student.objects.get(id=appl['student']).user
+            appl['student_name'] = stud_user.first_name + " " + stud_user.last_name
+        return render(request, template_name="application-card.html", context={'applications': data, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
 
     def create(self, request, *args, **kwargs):
         students = Student.objects.filter(user__id=request.user.id)
