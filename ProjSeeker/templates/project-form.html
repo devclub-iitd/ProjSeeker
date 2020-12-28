@@ -1,0 +1,63 @@
+{% extends 'bg-base.html' %}
+{% load static %}
+{% block title %}Apply{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'portal/css/project.css' %}">
+{% endblock style %}
+{% block content %}
+<div class=" project-container">
+    <div class="project-header">Create new Project</div>
+    <div class="project-main">
+        <form id="projectForm" action="#">
+            {% csrf_token %}
+            <div class="form-section" id="basic-section">
+                <legend class="section-heading">Basic Details</legend>
+                <label for="title">Project Title</label>
+                <input type="text" name="title" id="title">
+                <label for="description">Describe the Project</label>
+                <textarea name="description" id="description" cols="30" rows="4"></textarea>
+                <label for="duration">Duration of Project</label>
+                <input type="text" name="duration" id="duration">
+                <label for="vacancy">Vacancy (Number of People)</label>
+                <input type="number" name="vacancy" id="vacancy">
+                <div class="action-container">
+                    <button class="btn wide-text" data-target="elig-section" type="button">NEXT</button>
+                </div>
+            </div>
+            <div class="form-section" id="elig-section" style="display: none;">
+                <legend class="section-heading">Eligibility Requirements</legend>
+                <label for="cpi">Minimum CPI Required</label>
+                <input type="text" name="cpi" id="cpi">
+                <label for="min_year">Minimum Year</label>
+                <input type="text" name="min_year" id="min_year">
+                <label for="prereq">Project Prerequisites</label>
+                <textarea name="prereq" id="prereq" cols="30" rows="4"></textarea>
+                <div class="action-container">
+                    <button class="btn btn-red wide-text" data-target="basic-section" type="button">Go Back</button>
+                    <button class="btn wide-text" data-target="more-section" type="button">NEXT</button>
+                </div>
+            </div>
+            <div class="form-section" id="more-section" style="display: none;">
+                <legend class="section-heading">More Details</legend>
+                <label for="learning_outcome">Learning Outcome and Objectives</label>
+                <textarea name="learning_outcome" id="learning_outcome" cols="30" rows="4"></textarea>
+                <label for="selection_procedure">Selection Procedure</label>
+                <textarea name="selection_procedure" id="selection_procedure" cols="30" rows="4"></textarea>
+                <div class="action-container">
+                    <button class="btn wide-text" data-target="elig-section" type="button">Go Back</button>
+                    <button type="submit" class="btn btn-red bold wide-text">Create Project</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $('button[type="button"]').click(function (e) {
+        $('.form-section').fadeOut(500);
+        $(`#${this.dataset.target}`).delay(500).fadeIn(200);
+    })
+</script>
+{% endblock %}

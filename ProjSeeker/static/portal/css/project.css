@@ -144,6 +144,15 @@ form {
     margin: 2rem 0 0;
 }
 
+#projectForm {
+    margin: 0;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+}
+
 form label {
     font-size: 14px;
 }
@@ -155,6 +164,14 @@ form textarea, input, select {
     border-radius: 10px;
     margin: 10px 0 20px;
     padding: 10px 20px;
+}
+
+.section-heading {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 5px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.425);
 }
 
 @media(max-width:900px) {

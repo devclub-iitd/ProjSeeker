@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
-    return render(request, 'home.html');
+    return render(request, 'project-form.html');
 
 
 def dashboard(request):
@@ -68,7 +68,7 @@ class ProjectViewSet(ModelViewSet):
         user = request.user
         projects = Project.objects.filter(prof__user=user)
         serializer = self.get_serializer(projects, many=True)
-        return render(request, template_name="dashboard.html", context={'projects': serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+        return render(request, template_name="dashboard.html", context={'projects': serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user), 'is_floated': True})
     
     @action(detail=False)
     def get_bookmarked(self, request):

@@ -1,6 +1,9 @@
 {% extends 'dashboard-base.html' %}
 {% load static %}
 {% block content %}
+{% if is_prof and is_floated %}
+<a href="#" class="btn wide-text">Add Project</a>
+{% endif %}
 <div class="project-grid">
     {% for proj in projects %}
     <div class="project-card">
