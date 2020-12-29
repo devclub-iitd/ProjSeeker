@@ -1,9 +1,77 @@
 {% extends 'bg-base.html' %}
 {% load static %}
+{% block title %}Project Search{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'portal/css/search.css' %}">
+<link rel="stylesheet" href="{% static 'portal/css/dashboard.css' %}">
 {% endblock %}
-
 {% block content %}
-
+<div class="search-grid">
+    <div class="col1">
+        <h2 class="page-heading wide-text bold">Filters</h2>
+        <div class="filter-container">
+            <h4 class="filter-header">By Deparment</h4>
+            <div class="filter-main">
+                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
+                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
+                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
+                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
+                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
+            </div>
+        </div>
+        <div class="filter-container">
+            <h4 class="filter-header">By Nature</h4>
+            <div class="filter-main">
+                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
+                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
+                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
+            </div>
+        </div>
+        <div class="filter-container">
+            <h4 class="filter-header">By Type</h4>
+            <div class="filter-main">
+                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
+                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
+            </div>
+        </div>
+    </div>
+    <div class="col2">
+        <div class="row">
+            <input type="text" name="search" id="projSearch" placeholder="SEARCH FOR PROJECTS">
+            <button class="bold" id="filterBtn" type="button">Sort By</button>
+        </div>
+        <div class="project-grid">
+            <div class="project-card">
+                <h2 class="project-title">DLSS 2.1 Released</h2>
+                <h3 class="prof-name">Prof. Someone Noone</h3>
+                <p class="project-desc">nVidia just announched the newest iteration of Deep Learning Super Sampling. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam est inventore amet aut praesentium mollitia facere corporis consequuntur assumenda placeat.</p>
+                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div>
+            <div class="project-card">
+                <h2 class="project-title">DLSS 2.1 Released</h2>
+                <h3 class="prof-name">Prof. Someone Noone</h3>
+                <p class="project-desc">nVidia just announched the newest iteration of Deep Learning Super Sampling. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam est inventore amet aut praesentium mollitia facere corporis consequuntur assumenda placeat.</p>
+                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div>
+            <div class="project-card">
+                <h2 class="project-title">DLSS 2.1 Released</h2>
+                <h3 class="prof-name">Prof. Someone Noone</h3>
+                <p class="project-desc">nVidia just announched the newest iteration of Deep Learning Super Sampling. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam est inventore amet aut praesentium mollitia facere corporis consequuntur assumenda placeat.</p>
+                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div>
+            <div class="project-card">
+                <h2 class="project-title">DLSS 2.1 Released</h2>
+                <h3 class="prof-name">Prof. Someone Noone</h3>
+                <p class="project-desc">nVidia just announched the newest iteration of Deep Learning Super Sampling. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam est inventore amet aut praesentium mollitia facere corporis consequuntur assumenda placeat.</p>
+                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div>
+            <div class="project-card">
+                <h2 class="project-title">DLSS 2.1 Released</h2>
+                <h3 class="prof-name">Prof. Someone Noone</h3>
+                <p class="project-desc">nVidia just announched the newest iteration of Deep Learning Super Sampling. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam est inventore amet aut praesentium mollitia facere corporis consequuntur assumenda placeat.</p>
+                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
