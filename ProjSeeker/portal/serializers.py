@@ -55,9 +55,27 @@ class ProfSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
     interests = InterestSerializer(many=True, read_only=True)
     dept = ChoiceField(choices=Departments.choices)
+
+    def is_valid(self, raise_exception):
+        interests_text = self.initial_data['interests']
+        del self.initial_data['interests']
+        ret_val = super().is_valid(raise_exception=raise_exception)
+        
+        self.instance.interests.clear()
+        new_interests = interests_text.split(', ')
+
+        for text in new_interests:
+            existing_interest = Interests.objects.get(research_field=text)
+            if(not existing_interest):
+                new_intr = Interests.objects.create(research_field=text)
+                self.instance.interests.add(new_intr)
+            else:
+                self.instance.interests.add(existing_interest)
+
+        return ret_val
     class Meta:
         model = Professor
-        fields = ['id', 'user', 'dept', 'interests', 'webpage_link']
+        fields = ['id', 'user', 'dept', 'interests', 'webpage_link', 'bio', 'pic']
 class ProjectSerializer(serializers.ModelSerializer):
     prof = ProfSerializer(many=False, read_only=True)
     release_date = DateTimeField(format="%c", required=False)

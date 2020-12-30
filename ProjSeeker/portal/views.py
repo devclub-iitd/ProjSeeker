@@ -130,7 +130,8 @@ class BookmarkViewSet(ModelViewSet):
         if(len(Bookmark.objects.filter(user__id=request.user.id).filter(project__id=request.data['project'][0])) > 0):
             return Response(status=400)
         return super().create(request, *args, **kwargs)
-    
+
+# TODO Refactor Student and Professor view sets and serializer code
 class StudentViewSet(ModelViewSet):
     queryset=Student.objects.all()
     serializer_class=StudentSerializer
@@ -180,14 +181,65 @@ class StudentViewSet(ModelViewSet):
 
         if(len(students) == 1):
             student = students[0]
-            serializer = StudentSerializer(student, many=False)
+            serializer = self.get_serializer(student, many=False)
             interest_text = ', '.join([it['research_field'] for it in serializer.data['interests']])
-            return render(request, template_name='profile.html', context={'student':serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+            return render(request, template_name='profile.html', context={'user_data':serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
         return Response(404)
     
 class ProfViewSet(ModelViewSet):
     queryset=Professor.objects.all()
     serializer_class=ProfSerializer
+    permission_classes=[permissions.IsAuthenticated]
+
+    def check_object_permissions(self, request, obj):
+        if(obj.user.id != request.user.id):
+            raise Exception("Unauthorized user")
+        return super().check_object_permissions(request, obj)
+
+    def update(self, request, *args, **kwargs):
+        
+        request.data._mutable = True
+        if(not request.data['pic']):
+            del request.data['pic']
+
+        instance = self.get_object()
+        for dept in Departments.choices:
+            if(instance.dept == dept[0]):
+                request.data['dept'] = dept[1]
+
+        print(request.data)
+        
+        return super().update(request, *args, **kwargs)
+
+    @action(detail=False, methods=['POST'])
+    def delete_file(self, request):
+        prof = request.user.professor_set.all()
+        if(len(prof) != 1):
+            return Response(403)
+        prof = prof[0]
+        if(prof.user.id != request.user.id):
+            return Response(403)
+
+        print(request.data)
+
+        file_type = request.data['type']
+        print(file_type)
+        if(file_type == 'pic'):
+            prof.pic.delete()
+        return Response(200)
+
+    @action(detail=False,methods=['GET'])
+    def profile(self, request):
+        user = request.user
+        professors = user.professor_set.all()
+
+        if(len(professors) == 1):
+            prof = professors[0]
+            serializer = self.get_serializer(prof, many=False)
+            interest_text = ', '.join([it['research_field'] for it in serializer.data['interests']])
+            return render(request, template_name='profile.html', context={'user_data':serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+        return Response(404)
+    
 class InterestViewSet(ModelViewSet):
     queryset=Interests.objects.all()
     serializer_class=InterestSerializer

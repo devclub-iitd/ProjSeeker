@@ -19,6 +19,8 @@ urlpatterns = [
     url("",include(router.urls)),
     url(r"^student-profile$",login_required(StudentViewSet.as_view({'get': 'profile'})), name="student-profile"),
     url(r"^delete-student-doc$",login_required(StudentViewSet.as_view({'post': 'delete_file'})), name="delete-student-doc"),
+    url(r"^prof-profile$",login_required(ProfViewSet.as_view({'get': 'profile'})), name="prof-profile"),
+    url(r"^delete-prof-doc$",login_required(ProfViewSet.as_view({'post': 'delete_file'})), name="delete-prof-doc"),
     url(r'^dashboard$',TemplateView.as_view(template_name='dashboard.html'),name='dashboard'),
     
     url(r'^applied-projects$', login_required(ProjectViewSet.as_view({'get': 'get_applied'}), login_url='/accounts/login'), name='applied-projects'),

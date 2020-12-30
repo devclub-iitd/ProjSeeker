@@ -23,6 +23,7 @@ class Status(models.TextChoices):
     rejected = 'RE', _('Rejected')
 
 def upload_handler(student, filename):
+    print('user_{0}/{1}'.format(student.user.id, filename))
     return 'user_{0}/{1}'.format(student.user.id, filename)
 
 
@@ -55,7 +56,8 @@ class Professor(models.Model):
     dept = models.CharField(_("department"), max_length=50, choices=Departments.choices)
     interests = models.ManyToManyField("Interests")
     webpage_link = models.URLField(_("Webpage Link"), max_length=200, null=True)
-    pic = models.FileField(_("Profile Pic"), upload_to=upload_handler, storage=OverwriteStorage(), null=True)
+    pic = models.FileField(_("Profile Pic"), upload_to=upload_pic, storage=OverwriteStorage(), null=True)
+    bio = models.TextField(_("Biography"), null=True)
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name} @ {self.dept}'

@@ -93,16 +93,16 @@ const createTag = (tagVal) => {
     intDummy.val('');
 }
 
-const deleteDoc = (doc_type) => {
+const deleteDoc = (doc_type, is_prof=false) => {
     if (doc_type != 'pic' && doc_type != 'cv' && doc_type != 'transcript')
         return
-
+    const url = (is_prof) ? '/delete-prof-doc' :  '/delete-student-doc';
     $.ajax({
-        url: '/delete-student-doc',
+        url: url,
         method: 'POST',
         data: {
             'type': doc_type,
-            'csrfmiddlewaretoken': $('body > div.dashboard-wrapper > div.profile-container > form > input[type=hidden]:nth-child(1)').val(),
+            'csrfmiddlewaretoken': document.getElementsByName('csrfmiddlewaretoken')[0].value,
         },
         success: (r) => {
             console.log(r);
@@ -112,6 +112,7 @@ const deleteDoc = (doc_type) => {
             }, 1000);
         },
         error: (e) => {
+            // TODO error handling
             console.error(e);
         }
     });
@@ -163,7 +164,7 @@ $(function () {
             processData: false,
 
             headers: {
-                'X-CSRFTOKEN': $('body > div.dashboard-wrapper > div.profile-container > form > input[type=hidden]:nth-child(1)').val(),
+                'X-CSRFTOKEN': document.getElementsByName('csrfmiddlewaretoken')[0].value,
             },
             success: (r) => {
                 console.log(r);

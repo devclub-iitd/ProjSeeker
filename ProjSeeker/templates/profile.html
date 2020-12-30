@@ -2,12 +2,20 @@
 {% load static %}
 {% block content %}
 <div class="profile-container">
-    <form id="profile-form" method="PUT" action="/students/{{student.id}}/">
+    {% if is_student %}
+    <form id="profile-form" method="PUT" action="/students/{{user_data.id}}/">
+    {% elif is_prof %}
+    <form id="profile-form" method="PUT" action="/profs/{{user_data.id}}/">
+    {% endif %}
         {% csrf_token %}
         <div class="inline">
-            {% if student.pic is not None %}
-            <a href="{{student.pic}}" class="btn">View Picture</a>
-            <a href="#" class="btn btn-red" onclick="deleteDoc('pic')"> Delete Picture</a>
+            {% if user_data.pic is not None %}
+            <a href="{{user_data.pic}}" class="btn">View Picture</a>
+            {% if is_prof %}
+            <a href="#" class="btn btn-red" onclick="deleteDoc('pic', true)"> Delete Picture</a>
+            {% else %}
+            <a href="#" class="btn btn-red" onclick="deleteDoc('pic', false)"> Delete Picture</a>
+            {% endif %}
             {% endif %}
 
             <div style="display: flex; flex-direction: column;">
@@ -16,35 +24,49 @@
             </div>
             <div style="display: flex; flex-direction: column;">
                 <label for="name">Name</label>
-                <input type="text" name="name" id="name" value="{{student.user.first_name}} {{student.user.last_name}}" disabled>
+                <input type="text" name="name" id="name" value="{{user_data.user.first_name}} {{user_data.user.last_name}}" disabled>
             </div>
+            {% if is_prof %}
+                <div style="display: flex; flex-direction: column;">
+                    <label for="dept">Department</label>
+                    <input type="text" name="dept" id="dept" value="{{user_data.dept}}" disabled>
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <label for="dept">Webpage link</label>
+                    <input type="text" name="webpage_link" id="webpage_link" value="{{user_data.webpage_link}}">
+                </div>
+            {% endif %}
+            
         </div>
         <label for="bio">Bio</label>
-        <textarea name="bio" id="bio" cols="30" rows="2">{{student.bio}}</textarea>
+        <textarea name="bio" id="bio" cols="30" rows="2">{{user_data.bio}}</textarea>
+        
+        {% if not is_prof %}
+            <label for="cgpa">CGPA</label>
+            <input type="text" name="cgpa" id="cgpa" value="{{user_data.cgpa}}">
 
-        <label for="cgpa">CGPA</label>
-        <input type="text" name="cgpa" id="cgpa" value="{{student.cgpa}}">
+            <label for="resume">Resume</label>
+            <div class="inline">
+                {% if user_data.cv is not None %}
+                <a href="{{user_data.cv}}" class="btn">View Resume</a>
+                <a href="#" class="btn btn-red" onclick="deleteDoc('cv')"> Delete Resume</a>
+                {% endif %}
+            </div>
 
-        <label for="resume">Resume</label>
-        <div class="inline">
-            {% if student.cv is not None %}
-            <a href="{{student.cv}}" class="btn">View Resume</a>
-            <a href="#" class="btn btn-red" onclick="deleteDoc('cv')"> Delete Resume</a>
-            {% endif %}
-        </div>
+            <input type="file" name="cv" id="cv" onchange="checkPdf(this)">
 
-        <input type="file" name="cv" id="cv" onchange="checkPdf(this)">
+            <label for="transcript">Transcript</label>
+            <div class="inline">
+                {% if user_data.transcript is not None %}
+                <a class="btn" href="{{user_data.transcript}}">View Transcript</a>
+                <a href="#" class="btn btn-red" onclick="deleteDoc('transcript')"> Delete Transcript</a>
+                {% endif %}
+            </div>
 
-        <label for="transcript">Transcript</label>
-        <div class="inline">
-            {% if student.transcript is not None %}
-            <a class="btn" href="{{student.transcript}}">View Transcript</a>
-            <a href="#" class="btn btn-red" onclick="deleteDoc('transcript')"> Delete Transcript</a>
-            {% endif %}
-        </div>
+            <input type="file" name="transcript" id="transcript">
 
-        <input type="file" name="transcript" id="transcript">
-
+        {% endif %}
+        
         <label for="interests">Interests</label>
         <div class="int-searchbar">
             <input type="text" name="intDummy" autocomplete="off">
@@ -54,7 +76,7 @@
         </div>
         <input type="hidden" name="interests" id="interests" value="{{ interest_text }}">
         <div class="tag-container">
-            {% for interest in student.interests %}
+            {% for interest in user_data.interests %}
             <div class="tag" onclick="handleTagDelete(this)">{{interest.research_field}}</div>
             {% endfor %}
         </div>
