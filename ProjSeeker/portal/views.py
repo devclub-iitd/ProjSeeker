@@ -30,9 +30,24 @@ def isProf(user):
         return False
     return len(user.professor_set.all()) == 1
 
+# TODO handle security of all endpoints!!
 class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
+    def create(self, request, *args, **kwargs):
+        if(not isProf(request.user)):
+            return Response(403)
+        print(request.data)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        kwargs['prof'] = Professor.objects.get(user=request.user)
+        serializer.save(*args, **kwargs)
+        
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
+
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -45,9 +60,9 @@ class ProjectViewSet(ModelViewSet):
 
         applications = instance.application_set.all().filter(student__user=request.user)
         isApplied = False
-        if(len(applications) == 1):
+        if(len(applications) >= 1):
             isApplied = True
-        return render(request,template_name='project-detail.html', context={'project': serializer.data, 'bookmark' : bookmark, 'isApplied': isApplied, 'appId' : applications[0].id if(isApplied) else None})
+        return render(request,template_name='project-detail.html', context={'project': serializer.data, 'bookmark' : bookmark, 'isApplied': isApplied, 'appId' : applications[0].id if(isApplied) else None, 'isProf': isProf(request.user)})
 
     def list(self, request, *args, **kwargs):
         qset = self.get_queryset()
@@ -78,6 +93,13 @@ class ProjectViewSet(ModelViewSet):
         serializer = self.get_serializer(projects, many=True)
         return render(request, template_name="dashboard.html", context={'projects': serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
 
+
+    @action(detail=False, methods=['GET'])
+    def create_new_project(self, request):
+        if(not isProf(request.user)):
+            return Response(status=403)
+        return render(request, template_name="project-form.html")
+
     @method_decorator(login_required)
     @action(detail=True, methods=['GET'],url_name='apply-project',url_path='apply')
     def apply_for_project(self, request, pk=None):
@@ -86,7 +108,16 @@ class ProjectViewSet(ModelViewSet):
         
         return render(request, template_name='application-form.html',context={'project' : serializer.data, 'isApplied': False})
 
+    @method_decorator(login_required)
+    @action(detail=True, methods=['GET'],url_name='edit-project', url_path='edit')
+    def edit(self, request, pk=None):
+        project = self.get_object()
+        if(project.prof.user != request.user):
+            return Response(403)
+        serializer = self.get_serializer(project, many=False)
 
+        return render(request, template_name='project-form.html',context={'project' : serializer.data})
+        
 class BookmarkViewSet(ModelViewSet):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkSerializer
@@ -211,7 +242,7 @@ class ApplicationViewSet(ModelViewSet):
         project_data = ProjectSerializer(Project.objects.get(id=instance.project.id),many=False).data
         serializer = self.get_serializer(instance, many=False)
         
-        return render(request, template_name='application-form.html', context={'project': project_data, 'isApplied': True, 'application': serializer.data})
+        return render(request, template_name='application-form.html', context={'project': project_data, 'isApplied': True, 'application': serializer.data, 'isProf': isProf(request.user), 'status_choices' : Status})
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

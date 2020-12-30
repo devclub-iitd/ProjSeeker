@@ -16,6 +16,11 @@ class Departments(models.TextChoices):
     PH = 'PH', _('Engineering Physics')    
     MT = 'MT', _('Mathematics')    
 
+class Status(models.TextChoices):
+    in_review = 'IR', _('In Review')
+    on_hold = 'OH', _('On Hold')
+    accepted = 'AC', _('Accepted')
+    rejected = 'RE', _('Rejected')
 
 def upload_handler(student, filename):
     return 'user_{0}/{1}'.format(student.user.id, filename)
@@ -57,7 +62,7 @@ class Professor(models.Model):
     
 
 class Project(models.Model):
-    prof = models.ForeignKey("Professor",  on_delete=models.CASCADE)
+    prof = models.ForeignKey("Professor",  on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
     cpi = models.CharField(max_length=10, verbose_name=_("Minimum CPI required"))
@@ -89,6 +94,7 @@ class Application(models.Model):
     preference = models.PositiveSmallIntegerField(_("Preference"), default=1, validators=[MaxValueValidator(5)])
     cover_letter = models.TextField(_("Cover letter for the application"))
     experience = models.TextField(_("Relevant Experience"))
+    status = models.CharField(_("Accepted status"), max_length=50, choices=Status.choices, default=Status.in_review)
 
     def __str__(self):
         return f'{self.student} | {self.project}'

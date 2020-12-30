@@ -6,20 +6,29 @@
 {% endblock style %}
 {% block content %}
 <div class=" project-container">
+    {% if project.id is None %}
     <div class="project-header">Create new Project</div>
+    {% else %}
+    <div class="project-header">Edit Project</div>
+    {% endif %}
+    
     <div class="project-main">
-        <form id="projectForm" action="#">
+        {% if project.id is None %}
+        <form id="projectForm" action="{% url 'project-list' %}" method="POST">
+        {% else %}
+        <form id="projectForm" action="{% url 'project-detail' project.id %}" method="PATCH">
+        {% endif %}
             {% csrf_token %}
             <div class="form-section" id="basic-section">
                 <legend class="section-heading">Basic Details</legend>
-                <label for="title">Project Title</label>
-                <input type="text" name="title" id="title">
+                <label for="title">Project Title </label>
+                <input type="text" name="title" id="title" value="{{project.title}}"">
                 <label for="description">Describe the Project</label>
-                <textarea name="description" id="description" cols="30" rows="4"></textarea>
+                <textarea name="description" id="description" cols="30" rows="4">{{project.description}}</textarea>
                 <label for="duration">Duration of Project</label>
-                <input type="text" name="duration" id="duration">
+                <input type="text" name="duration" id="duration" value="{{project.duration}}">
                 <label for="vacancy">Vacancy (Number of People)</label>
-                <input type="number" name="vacancy" id="vacancy">
+                <input type="number" name="vacancy" id="vacancy" value="{{project.vacancy}}">
                 <div class="action-container">
                     <button class="btn wide-text" data-target="elig-section" type="button">NEXT</button>
                 </div>
@@ -27,11 +36,11 @@
             <div class="form-section" id="elig-section" style="display: none;">
                 <legend class="section-heading">Eligibility Requirements</legend>
                 <label for="cpi">Minimum CPI Required</label>
-                <input type="text" name="cpi" id="cpi">
+                <input type="text" name="cpi" id="cpi" value="{{project.cpi}}">
                 <label for="min_year">Minimum Year</label>
-                <input type="text" name="min_year" id="min_year">
+                <input type="text" name="min_year" id="min_year" value="{{project.min_year}}">
                 <label for="prereq">Project Prerequisites</label>
-                <textarea name="prereq" id="prereq" cols="30" rows="4"></textarea>
+                <textarea name="prereq" id="prereq" cols="30" rows="4">{{project.prereq}}</textarea>
                 <div class="action-container">
                     <button class="btn btn-red wide-text" data-target="basic-section" type="button">Go Back</button>
                     <button class="btn wide-text" data-target="more-section" type="button">NEXT</button>
@@ -40,12 +49,18 @@
             <div class="form-section" id="more-section" style="display: none;">
                 <legend class="section-heading">More Details</legend>
                 <label for="learning_outcome">Learning Outcome and Objectives</label>
-                <textarea name="learning_outcome" id="learning_outcome" cols="30" rows="4"></textarea>
+                <textarea name="learning_outcome" id="learning_outcome" cols="30" rows="4">{{project.learning_outcome}}</textarea>
                 <label for="selection_procedure">Selection Procedure</label>
-                <textarea name="selection_procedure" id="selection_procedure" cols="30" rows="4"></textarea>
+                <textarea name="selection_procedure" id="selection_procedure" cols="30" rows="4">{{project.selection_procedure}}</textarea>
+                <label for="last_date">Last date of applying</label>
+                <input type="datetime-local" name="last_date" id="last_date" value="{{project.last_date}}">
                 <div class="action-container">
                     <button class="btn wide-text" data-target="elig-section" type="button">Go Back</button>
+                    {% if project.id is None %}
                     <button type="submit" class="btn btn-red bold wide-text">Create Project</button>
+                    {% else %}  
+                    <button type="submit" class="btn btn-red bold wide-text">Update Project</button>
+                    {% endif %}
                 </div>
             </div>
         </form>
@@ -58,6 +73,41 @@
     $('button[type="button"]').click(function (e) {
         $('.form-section').fadeOut(500);
         $(`#${this.dataset.target}`).delay(500).fadeIn(200);
-    })
+    });
+    $(function () {
+        try {
+            var last_date = $('#last_date');
+            var d = new Date(last_date.attr('value'));
+            var date_value =  new Date(d.getTime() - d.getTimezoneOffset()*1000*60).toISOString().substring(0,16)
+            last_date.val(date_value);
+        } catch (error) {
+            
+        }
+        
+
+        $('#projectForm').submit(function (event) {
+            $.ajax({
+                method: $(this).attr('method'),
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                headers: {
+                    'X-CSRFTOKEN': $('#projectForm > input[type=hidden]').val(),
+                },
+                success: (r) => {
+                    console.log(r);
+                    // TODO add loading screen
+                    setTimeout(() => {
+                        location.href = `/projects/${r.id}/edit`
+                    }, 1000);
+                },
+                error: (e) => {
+                    // TODO: proper error handling if some required fields are missing
+                    console.error(e);
+                }
+
+            });
+            return false;
+        });
+    });
 </script>
 {% endblock %}

@@ -9,7 +9,7 @@ class ProfessorAdmin(admin.ModelAdmin):
     list_display = ['user', 'dept']
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
-    list_display = ['student', 'project', 'preference']
+    list_display = ['student', 'project', 'preference', 'status']
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ['prof', 'title']

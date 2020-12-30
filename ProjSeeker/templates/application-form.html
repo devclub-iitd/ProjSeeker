@@ -30,10 +30,34 @@
             <textarea name="cover_letter" id="sop" cols="30" rows="5">{{application.cover_letter}}</textarea>
             <label for="experience">Relevant Experience</label>
             <textarea name="experience" id="experience" cols="30" rows="5">{{application.experience}}</textarea>
+            {% if not isProf %}
+            <!-- TODO: find a better way to display status on both the prof and student side-->
+                {% if application.status == status_choices.in_review %}
+                <div class="action-container">
+                    <button type="submit" class="btn btn-red bold wide-text" formmethod="DELETE">Delete Application</button>
+                    <button type="submit" class="btn wide-text bold" formmethod="PUT">Update Application</button>
+                </div>
+                {% elif application.status == status_choices.rejected%}
+                <div class="action-container">
+                    <button class="btn btn-red bold wide-text">{{status_choices.rejected.label}}</button>
+                </div>
+                {% elif application.status == status_choices.accepted%}
+                <div class="action-container">
+                    <button class="btn wide-text bold">{{status_choices.accepted.label}}</button>
+                </div>
+                {% elif application.status == status_choices.on_hold%}
+                <div class="action-container">
+                    <button class="btn wide-text bold">{{status_choices.on_hold.label}}</button>
+                </div>
+                {% endif %}
+            {% else %}
             <div class="action-container">
-                <button type="submit" class="btn btn-red bold wide-text" formmethod="DELETE">Delete Application</button>
-                <button type="submit" class="btn wide-text bold" formmethod="PUT">Update Application</button>
+                <button type="submit" class="btn btn-red bold wide-text" formmethod="PATCH" value="{{status_choices.rejected}}">Reject Application</button>
+                <button type="submit" class="btn wide-text bold" formmethod="PATCH" value="{{status_choices.accepted}}">Accept Application</button>
+                <button type="submit" class="btn wide-text bold" formmethod="PATCH" value="{{status_choices.on_hold}}">Put on hold</button>
             </div>
+            {% endif %}
+            
         </form>
         {% else %}
         <form id="applForm" action="/applications/">
@@ -60,6 +84,29 @@
     </div>
 </div>
 <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+{% if not isProf %}
+<script>
+    var getData = () => {
+        return $('applForm').serialize()
+    };
+</script>
+{% endif %}
+{% if isProf or application.status != status_choices.in_review %}
+<script>
+    var getData = () => {
+        return {
+        status: $("button[type=submit]:focus").attr('value'),
+        };
+    }
+    $(function () {
+        document.querySelectorAll("textarea").forEach(t => t.disabled = true);
+        document.querySelectorAll("select").forEach(t => t.disabled = true);
+        document.querySelectorAll("input").forEach(t => t.disabled = true);
+    });
+    
+</script>
+{% endif %}
+
 <script>
     $(function () {
         var pref = $('#preference').attr('value');
@@ -69,7 +116,7 @@
             $.ajax({
                 method: type,
                 url: $(this).attr('action'),
-                data: $(this).serialize(),
+                data: getData(),
                 headers: {
                     'X-CSRFTOKEN': $('#applForm > input[type=hidden]').val(),
                 },
@@ -83,6 +130,7 @@
                     }, 1000);
                 },
                 error: (e) => {
+                    // TODO: Proper error handling!
                     console.error(e);
                 }
 

@@ -60,11 +60,18 @@ class ProfSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'dept', 'interests', 'webpage_link']
 class ProjectSerializer(serializers.ModelSerializer):
     prof = ProfSerializer(many=False, read_only=True)
-    release_date = DateTimeField(format="%c")
-    last_date = DateTimeField(format="%c")
+    release_date = DateTimeField(format="%c", required=False)
+    last_date = DateTimeField(format="%c", required=False)
     class Meta:
         model = Project
         fields = ['id','prof','title','description','cpi','vacancy','min_year','duration','learning_outcome','prereq','selection_procedure','release_date','last_date']
+
+    def save(self, **kwargs):
+        instance = super().save(**kwargs)
+        if('prof' in kwargs.keys()):
+            instance.prof = kwargs['prof']
+            instance.save()
+        return instance
 
 class BookmarkSerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,6 +79,7 @@ class BookmarkSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ApplicationSerializer(serializers.ModelSerializer):
+    status = serializers.ChoiceField(choices=Status.choices)
     class Meta:
         model = Application
-        fields = ['id', 'student', 'project', 'preference', 'cover_letter', 'experience']
+        fields = ['id', 'student', 'project', 'preference', 'cover_letter', 'experience', 'status']
