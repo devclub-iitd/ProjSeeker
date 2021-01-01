@@ -18,16 +18,16 @@
             <div class="root-container">
                 <header class="navbar-custom">
                     <nav>
-                        <a href="{% url 'index' %}">
+                        <a href="{% url 'home' %}">
                             <h1 class="logo">ProjectPortal</h1>
                         </a>
                         <ul class="nav-links">
                             <li class="nav-item"><a href="#" class="nav-link-custom">About</a></li>
                             <li class="nav-item"><a href="#" class="nav-link-custom">FAQ</a></li>
                             {% if user.is_authenticated %}
-                            <li class="nav-item"><a href="{% url 'applied-projects' %}" class="nav-link-custom" id="login-btn">Dashboard</a></li>
+                            <li class="nav-item"><a href="{% url 'dashboard' %}" class="nav-link-custom" id="login-btn">Dashboard</a></li>
                             {% else %}
-                            <li class="nav-item"><a href="/accounts/login" class="nav-link-custom" id="login-btn">Kerberos Login</a></li>
+                            <li class="nav-item"><a href="/accounts/login?next={% url 'dashboard' %}" class="nav-link-custom" id="login-btn">Kerberos Login</a></li>
                             {% endif %}
                         </ul>
                     </nav>

@@ -18,7 +18,7 @@ def index(request):
 
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    return render(request, 'dashboard.html', context={'is_prof': isProf(request.user), 'is_student': isStudent(request.user)})
 
 def isStudent(user):
     if( not user.is_authenticated):
@@ -68,7 +68,7 @@ class ProjectViewSet(ModelViewSet):
         qset = self.get_queryset()
         serializer = self.get_serializer(qset, many=True)
 
-        return render(request, template_name="dashboard.html", context={'projects': serializer.data, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+        return render(request, template_name="search-projects.html", context={'projects': serializer.data, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
 
     @action(detail=False)
     def get_applied(self, request):
@@ -294,7 +294,7 @@ class ApplicationViewSet(ModelViewSet):
         project_data = ProjectSerializer(Project.objects.get(id=instance.project.id),many=False).data
         serializer = self.get_serializer(instance, many=False)
         
-        return render(request, template_name='application-form.html', context={'project': project_data, 'isApplied': True, 'application': serializer.data, 'isProf': isProf(request.user), 'status_choices' : Status})
+        return render(request, template_name='application-form.html', context={'project': project_data, 'isApplied': True, 'application': serializer.data, 'is_prof': isProf(request.user), 'status_choices' : Status})
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
