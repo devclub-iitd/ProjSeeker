@@ -88,16 +88,28 @@ button:hover {
 }
 
 .nav-link-custom {
+    position: relative;
     margin-left: 2.5rem;
     color: white;
     padding: 0;
     text-decoration: none;
 }
 
-.nav-link-custom:hover {
-    text-decoration: none;
-    color: inherit;
+/* .nav-link-custom:not(#login-btn)::after {
+    content: '';
+    position: absolute;
+    background-color: white;
+    width: 50px;
+    height: 2px;
+    bottom: 0;
+    transform-origin: center;
+    transform: scaleX(0);
+    transition: transform 200ms ease-in-out;
 }
+
+.nav-link-custom:not(#login-btn):hover::after {
+    transform: scaleX(1);
+} */
 
 #login-btn {
     border: 3px solid white;

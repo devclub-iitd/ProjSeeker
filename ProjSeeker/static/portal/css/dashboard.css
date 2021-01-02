@@ -82,22 +82,8 @@ body {
     gap: 2rem;
 }
 
-.search-bar {
-    border-radius: 5px;
-    padding: 10px 20px;
-    outline: none;
-    border: none;
-    width: 80%;
-    min-width: 300px;
-    -webkit-box-shadow: 0px 5px 14px 1px rgba(0, 0, 0, 0.19);
-    -moz-box-shadow: 0px 5px 14px 1px rgba(0, 0, 0, 0.19);
-    box-shadow: 0px 5px 14px 1px rgba(0, 0, 0, 0.19);
-}
-
-.search-bar::placeholder {
-    color: grey;
-    text-transform: uppercase;
-    letter-spacing: 3px;
+#searchBtn {
+    margin-left: auto;
 }
 
 .project-grid {

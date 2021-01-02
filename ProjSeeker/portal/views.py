@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
-    return render(request, 'search-projects.html');
+    return render(request, 'home.html');
 
 
 def dashboard(request):

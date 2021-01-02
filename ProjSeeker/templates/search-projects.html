@@ -47,44 +47,14 @@
                 <h3 class="prof-name">Prof. {{ proj.prof.user.first_name }} {{proj.prof.user.last_name}}</h3>
                 <p class="project-desc">{{ proj.description|truncatewords:30 }}</p>
                 {% if is_prof %}
-                    <a href="/projects/{{proj.id}}/edit" class="btn btn-xs card-btn wide-text bold">More</a>
+                <a href="/projects/{{proj.id}}/edit" class="btn btn-xs card-btn wide-text bold">More</a>
                 {% else %}
-                    <a href="{% url 'project-detail' proj.id %}" class="btn btn-xs card-btn wide-text bold">More</a>
+                <a href="{% url 'project-detail' proj.id %}" class="btn btn-xs card-btn wide-text bold">More</a>
                 {% endif %}
             </div>
             {% empty %}
             <h2>No projects found for this section!</h2>
             {% endfor %}
-            <!-- <div class="project-card">
-                <h2 class="project-title">DLSS 2.1 Released</h2>
-                <h3 class="prof-name">Prof. Someone Noone</h3>
-                <p class="project-desc">nVidia just announched the newest iteration of Deep Learning Super Sampling. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam est inventore amet aut praesentium mollitia facere corporis consequuntur assumenda placeat.</p>
-                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
-            </div>
-            <div class="project-card">
-                <h2 class="project-title">DLSS 2.1 Released</h2>
-                <h3 class="prof-name">Prof. Someone Noone</h3>
-                <p class="project-desc">nVidia just announched the newest iteration of Deep Learning Super Sampling. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam est inventore amet aut praesentium mollitia facere corporis consequuntur assumenda placeat.</p>
-                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
-            </div>
-            <div class="project-card">
-                <h2 class="project-title">DLSS 2.1 Released</h2>
-                <h3 class="prof-name">Prof. Someone Noone</h3>
-                <p class="project-desc">nVidia just announched the newest iteration of Deep Learning Super Sampling. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam est inventore amet aut praesentium mollitia facere corporis consequuntur assumenda placeat.</p>
-                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
-            </div>
-            <div class="project-card">
-                <h2 class="project-title">DLSS 2.1 Released</h2>
-                <h3 class="prof-name">Prof. Someone Noone</h3>
-                <p class="project-desc">nVidia just announched the newest iteration of Deep Learning Super Sampling. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam est inventore amet aut praesentium mollitia facere corporis consequuntur assumenda placeat.</p>
-                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
-            </div>
-            <div class="project-card">
-                <h2 class="project-title">DLSS 2.1 Released</h2>
-                <h3 class="prof-name">Prof. Someone Noone</h3>
-                <p class="project-desc">nVidia just announched the newest iteration of Deep Learning Super Sampling. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam est inventore amet aut praesentium mollitia facere corporis consequuntur assumenda placeat.</p>
-                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
-            </div> -->
         </div>
     </div>
 </div>
