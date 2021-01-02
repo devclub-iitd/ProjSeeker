@@ -35,7 +35,7 @@
                 {% if application.status == status_choices.in_review %}
                 <div class="action-container">
                     <button type="submit" class="btn btn-red bold wide-text" formmethod="DELETE">Delete Application</button>
-                    <button type="submit" class="btn wide-text bold" formmethod="PUT">Update Application</button>
+                    <button type="submit" class="btn wide-text bold" formmethod="PATCH">Update Application</button>
                 </div>
                 {% elif application.status == status_choices.rejected%}
                 <div class="action-container">
@@ -87,7 +87,7 @@
 {% if not is_prof %}
 <script>
     var getData = () => {
-        return $('applForm').serialize()
+        return $('#applForm').serialize()
     };
 </script>
 {% endif %}
@@ -125,7 +125,7 @@
                     // TODO add loading screen
                     setTimeout(() => {
                         if (type == 'DELETE')
-                            location.href = `{% url 'applied-projects' %}`
+                            location.href = `{% url 'dashboard' %}`
                         location.href = `/applications/${r.id}`
                     }, 1000);
                 },

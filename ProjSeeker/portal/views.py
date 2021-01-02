@@ -286,6 +286,7 @@ class ApplicationViewSet(ModelViewSet):
             return Response(status=403)
         request.data._mutable = True
         request.data['student'] = students[0].id
+        request.data['status'] = Status.in_review
         return super().create(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
