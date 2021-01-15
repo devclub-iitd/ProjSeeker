@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Raleway:wght@400;500;600;700&display=swap');
 
 * {
-    --primary-blue: #008ecb;
-    --primary-red: #ff4b4b;
+    --primary-blue: linear-gradient(106deg, rgba(0,93,203,1) 0%, rgba(0,142,203,1) 100%);
+    --primary-red: linear-gradient(106deg, rgba(255,18,59,1) 0%, rgba(255,53,91,1) 100%);
     --bg-grey: #f2f2f2;
     --sec-blue: #0071da;
     --crimson-red: #da0041;
@@ -43,7 +43,7 @@ button:hover {
     padding: 10px 40px;
     border-radius: 5px;
     text-transform: uppercase;
-    background-color: var(--primary-blue);
+    background: var(--primary-blue);
     color: white;
     transition: all 200ms ease-in-out;
 }
@@ -62,7 +62,20 @@ button:hover {
 }
 
 .btn-red {
-    background-color: var(--primary-red);
+    background: var(--primary-red);
+}
+
+.icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 260px;
+}
+
+.btn-icon {
+    width: 20px;
+    filter: invert(1);
+    margin-right: 20px;
 }
 
 .navbar-custom nav {

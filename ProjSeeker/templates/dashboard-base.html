@@ -29,9 +29,6 @@
         <h1 class="name">{{user.first_name}} {{user.last_name}}</h1>
         <h3 class="dashboard-heading wide-text">Dashboard</h3>
         <ul class="dash-nav">
-            <!-- <a href="/projects">
-                <li class="dash-links dash-links">Ongoing</li>
-            </a> -->
             {% if is_student %}
             <a href="{% url 'applied-projects' %}">
                 <li class="dash-links">
@@ -43,7 +40,6 @@
                     <img class="dash-icon" src="{% static 'portal/assets/icons/bookmark.svg' %}"> Bookmarked
                 </li>
             </a>
-
             <a href="{% url 'student-profile' %}">
                 <li class="dash-links">
                     <img class="dash-icon" src="{% static 'portal/assets/icons/profile.svg' %}">Profile
@@ -60,14 +56,12 @@
                     <img class="dash-icon" src="{% static 'portal/assets/icons/applications.svg' %}">Applications
                 </li>
             </a>
-
             <a href="{% url 'prof-profile' %}">
                 <li class="dash-links">
                     <img class="dash-icon" src="{% static 'portal/assets/icons/profile.svg' %}">Profile
                 </li>
             </a>
             {% endif %}
-
         </ul>
     </div>
     <div class="dashboard-wrapper">

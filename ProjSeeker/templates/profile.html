@@ -48,8 +48,8 @@
             <label for="resume">Resume</label>
             <div class="inline-flex">
                 {% if user_data.cv is not None %}
-                <a href="{{user_data.cv}}" class="btn">View Resume</a>
-                <a href="#" class="btn btn-red" onclick="deleteDoc('cv')"> Delete Resume</a>
+                <a href="{{user_data.cv}}" class="btn wide-text">View Resume</a>
+                <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('cv')"> Delete Resume</a>
                 {% endif %}
             </div>
 
@@ -58,8 +58,8 @@
             <label for="transcript">Transcript</label>
             <div class="inline-flex">
                 {% if user_data.transcript is not None %}
-                <a class="btn" href="{{user_data.transcript}}">View Transcript</a>
-                <a href="#" class="btn btn-red" onclick="deleteDoc('transcript')"> Delete Transcript</a>
+                <a class="btn wide-text" href="{{user_data.transcript}}">View Transcript</a>
+                <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('transcript')"> Delete Transcript</a>
                 {% endif %}
             </div>
 

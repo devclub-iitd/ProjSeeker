@@ -1,0 +1,63 @@
+{% extends 'dashboard-base.html' %}
+{% load static %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'portal/css/applications.css' %}">
+{% endblock %}
+{% block content %}
+<div class="tabs">
+    <span class="tab-btn tab-active" data-target="#in-review">In Review</span>
+    <span class="tab-btn" data-target="#accepted">Accepted</span>
+    <span class="tab-btn" data-target="#rejected">Rejected</span>
+</div>
+
+<div class="tab-content">
+    <div class="tab-pane" id="in-review">
+        <div class="project-grid">
+            <div class="project-card">
+                <h2 class="project-title">Test123</h2>
+                <h3 class="prof-name">testprof tesh3of</h3>
+                <p class="project-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat accusamus, facere consequatur error laudantium ut quisquam suscipit saepe cum corrupti.</p>
+                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div>
+            <div class="project-card">
+                <h2 class="project-title">Test123</h2>
+                <h3 class="prof-name">testprof tesh3of</h3>
+                <p class="project-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat accusamus, facere consequatur error laudantium ut quisquam suscipit saepe cum corrupti.</p>
+                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="accepted" style="display: none;">
+        <div class="project-grid">
+            <div class="project-card">
+                <h2 class="project-title">accepted Test</h2>
+                <h3 class="prof-name">testprof tesh3of</h3>
+                <p class="project-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat accusamus, facere consequatur error laudantium ut quisquam suscipit saepe cum corrupti.</p>
+                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="rejected" style="display: none;">
+        <div class="project-grid">
+            <div class="project-card">
+                <h2 class="project-title">rejected Test</h2>
+                <h3 class="prof-name">testprof tesh3of</h3>
+                <p class="project-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat accusamus, facere consequatur error laudantium ut quisquam suscipit saepe cum corrupti.</p>
+                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $('.tab-btn').click(function () {
+        $('.tab-pane').fadeOut(200);
+        $('.tab-btn').removeClass('tab-active');
+        $(this).addClass('tab-active')
+        $(`${$(this).attr('data-target')}`).delay(200).fadeIn(200);
+    })    
+</script>
+{% endblock %}

@@ -75,7 +75,7 @@ body {
 }
 
 .dash-active {
-    background: linear-gradient(106deg, rgba(0,93,203,1) 0%, rgba(0,142,203,1) 100%);
+    background: var(--primary-blue);
     color: white;
 }
 
