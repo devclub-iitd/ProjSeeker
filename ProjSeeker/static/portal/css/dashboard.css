@@ -53,9 +53,19 @@ body {
     margin-bottom: 0.5rem;
     padding: 10px 15px;
     border-radius: 5px;
+    display: flex;
     font-weight: 400;
     font-size: 1rem;
     transition: background-color 50ms ease-in;
+}
+
+.dash-icon {
+    width: 20px;
+    margin-right : 10px
+}
+
+.dash-active .dash-icon, .dash-links:hover .dash-icon {
+    filter: invert(1);
 }
 
 .dash-links:hover {
@@ -65,7 +75,7 @@ body {
 }
 
 .dash-active {
-    background-color: var(--sec-blue);
+    background: var(--primary-blue);
     color: white;
 }
 
@@ -143,6 +153,15 @@ body {
     display: grid;
     gap: 2rem;
     grid-template-columns: 1fr 1fr;
+}
+
+.inline-flex {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
+    width: 60%;
+    margin: 15px 0;
+    gap: 2rem;
 }
 
 .profile-container form {

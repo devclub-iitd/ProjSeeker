@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 {% if is_prof and is_floated %}
-<a href="{% url 'new-project' %}" class="btn wide-text">Add Project</a>
+<a href="{% url 'new-project' %}" class="btn icon-btn wide-text"><img class="btn-icon" src="{% static 'portal/assets/icons/add.svg' %}">Add Project</a>
 {% endif %}
 <div class="project-grid">
     {% for proj in projects %}
@@ -11,9 +11,9 @@
         <h3 class="prof-name">Prof. {{ proj.prof.user.first_name }} {{proj.prof.user.last_name}}</h3>
         <p class="project-desc">{{ proj.description|truncatewords:30 }}</p>
         {% if is_prof %}
-            <a href="/projects/{{proj.id}}/edit" class="btn btn-xs card-btn wide-text bold">More</a>
+        <a href="/projects/{{proj.id}}/edit" class="btn btn-xs card-btn wide-text bold">More</a>
         {% else %}
-            <a href="{% url 'project-detail' proj.id %}" class="btn btn-xs card-btn wide-text bold">More</a>
+        <a href="{% url 'project-detail' proj.id %}" class="btn btn-xs card-btn wide-text bold">More</a>
         {% endif %}
     </div>
     {% empty %}
