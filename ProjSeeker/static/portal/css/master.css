@@ -95,6 +95,10 @@ button:hover {
     text-decoration: none;
 }
 
+.nav-link-custom:hover {
+    color: white;
+}
+
 /* .nav-link-custom:not(#login-btn)::after {
     content: '';
     position: absolute;
@@ -116,6 +120,7 @@ button:hover {
     border-radius: 1000px;
     padding: 8px 40px;
     transition: all 200ms ease-in-out;
+    text-decoration: none;
 }
 
 #login-btn:hover {

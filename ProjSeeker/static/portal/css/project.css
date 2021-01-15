@@ -114,6 +114,10 @@
     font-weight: 500;
 }
 
+.tab-pane {
+    margin: 10px 0 0;
+}
+
 .cnav-link {
     color : black;
 }

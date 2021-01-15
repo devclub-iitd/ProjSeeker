@@ -34,25 +34,37 @@
             </a> -->
             {% if is_student %}
             <a href="{% url 'applied-projects' %}">
-                <li class="dash-links">Applied</li>
+                <li class="dash-links">
+                    <img class="dash-icon" src="{% static 'portal/assets/icons/applications.svg' %}">Applied
+                </li>
             </a>
             <a href="{% url 'bookmarked-projects' %}">
-                <li class="dash-links">Bookmarked</li>
+                <li class="dash-links">
+                    <img class="dash-icon" src="{% static 'portal/assets/icons/bookmark.svg' %}"> Bookmarked
+                </li>
             </a>
 
             <a href="{% url 'student-profile' %}">
-                <li class="dash-links">Profile</li>
+                <li class="dash-links">
+                    <img class="dash-icon" src="{% static 'portal/assets/icons/profile.svg' %}">Profile
+                </li>
             </a>
             {% elif is_prof %}
             <a href="{% url 'floated-projects' %}">
-                <li class="dash-links">My projects</li>
+                <li class="dash-links">
+                    <img class="dash-icon" src="{% static 'portal/assets/icons/projects.svg' %}">My projects
+                </li>
             </a>
             <a href="{% url 'received-applications' %}">
-                <li class="dash-links">Applications</li>
+                <li class="dash-links">
+                    <img class="dash-icon" src="{% static 'portal/assets/icons/applications.svg' %}">Applications
+                </li>
             </a>
 
             <a href="{% url 'prof-profile' %}">
-                <li class="dash-links">Profile</li>
+                <li class="dash-links">
+                    <img class="dash-icon" src="{% static 'portal/assets/icons/profile.svg' %}">Profile
+                </li>
             </a>
             {% endif %}
 
