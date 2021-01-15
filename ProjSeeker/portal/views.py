@@ -10,6 +10,8 @@ from .serializers import *
 from rest_framework.decorators import action
 from rest_framework import permissions
 from django.contrib.auth.decorators import login_required
+from django_filters import rest_framework as filters
+
 
 
 # Create your views here.
@@ -30,10 +32,22 @@ def isProf(user):
         return False
     return len(user.professor_set.all()) == 1
 
+class ProjectFilter(filters.FilterSet):
+
+    title__icontains = filters.filters.CharFilter(field_name='title', lookup_expr='icontains')
+    # prof__dept = filters.filters.CharFilter(field_name='prof', lookup_expr='dept')
+    prof__dept = filters.filters.MultipleChoiceFilter(choices=Departments.choices)
+    class Meta:
+        model = Project
+        fields = ['title', 'prof']
+
+
 # TODO handle security of all endpoints!!
 class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = ProjectFilter
 
     def create(self, request, *args, **kwargs):
         if(not isProf(request.user)):
@@ -62,13 +76,20 @@ class ProjectViewSet(ModelViewSet):
         isApplied = False
         if(len(applications) >= 1):
             isApplied = True
-        return render(request,template_name='project-detail.html', context={'project': serializer.data, 'bookmark' : bookmark, 'isApplied': isApplied, 'appId' : applications[0].id if(isApplied) else None, 'isProf': isProf(request.user)})
+        return render(request,template_name='project-detail.html', context={'project': serializer.data, 'bookmark' : bookmark, 'isApplied': isApplied, 'appId' : applications[0].id if(isApplied) else None})
 
     def list(self, request, *args, **kwargs):
-        qset = self.get_queryset()
+        qset = self.filter_queryset(queryset=self.get_queryset())
         serializer = self.get_serializer(qset, many=True)
 
-        return render(request, template_name="search-projects.html", context={'projects': serializer.data, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+        return Response(data={
+            'projects' : serializer.data,
+            'is_prof' : isProf(request.user),
+        })
+
+    @action(detail=False)
+    def find_projects(self,request):
+        return render(request, template_name="search-projects.html", context={'depts': Departments.choices})
 
     @action(detail=False)
     def get_applied(self, request):
@@ -117,7 +138,6 @@ class ProjectViewSet(ModelViewSet):
         serializer = self.get_serializer(project, many=False)
 
         return render(request, template_name='project-form.html',context={'project' : serializer.data})
-        
 class BookmarkViewSet(ModelViewSet):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkSerializer

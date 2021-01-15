@@ -12,13 +12,9 @@
         <div class="filter-container">
             <h4 class="filter-header">By Deparment</h4>
             <div class="filter-main">
-                <label for="cse"><input type="checkbox" name="cse" id="cse">Computer Science</label>
-                <label for="ee"><input type="checkbox" name="ee" id="e">Electrical Engineering</label>
-                <label for="ch"><input type="checkbox" name="ch" id="ch">Chemical Engineering</label>
-                <label for="mt"><input type="checkbox" name="mt" id="mt">Mathematics</label>
-                <label for="me"><input type="checkbox" name="me" id="me">Mechanical Engineering</label>
-                <label for="me"><input type="checkbox" name="me" id="me">Aerospace Engineering</label>
-                <label for="me"><input type="checkbox" name="me" id="me">Applied Mechanics</label>
+                {% for dept in depts  %}
+                <label for="{{dept.0}}"><input type="checkbox" name="{{dept.0}}" id="{{dept.0}}" onchange="filterByDept()" >{{dept.1}}</label>
+                {% endfor %}
             </div>
         </div>
         <div class="filter-container">
@@ -39,25 +35,125 @@
     </div>
     <div class="col2">
         <div class="row">
-            <input type="text" name="search" id="projSearch" placeholder="SEARCH FOR PROJECTS">
+            <input type="text" name="search" id="projSearch" onkeyup="searchProjects()" placeholder="SEARCH FOR PROJECTS">
             <button class="bold" id="filterBtn" type="button">Sort By</button>
         </div>
         <div class="project-grid">
-            {% for proj in projects %}
-            <div class="project-card">
-                <h2 class="project-title">{{ proj.title|truncatewords:4 }}</h2>
-                <h3 class="prof-name">Prof. {{ proj.prof.user.first_name }} {{proj.prof.user.last_name}}</h3>
-                <p class="project-desc">{{ proj.description|truncatewords:30 }}</p>
-                {% if is_prof %}
-                <a href="/projects/{{proj.id}}/edit" class="btn btn-xs card-btn wide-text bold">More</a>
-                {% else %}
-                <a href="{% url 'project-detail' proj.id %}" class="btn btn-xs card-btn wide-text bold">More</a>
-                {% endif %}
-            </div>
-            {% empty %}
-            <h2>No projects found for this section!</h2>
-            {% endfor %}
+
+            <div id="cardTemplate" style="display: none;" class="project-card">
+                <h2 class="project-title"></h2>
+                <h3 class="prof-name"></h3>
+                <p class="project-desc"></p>
+                <a href="" class="btn btn-xs card-btn wide-text bold">More</a>
+            </div> 
+            
         </div>
     </div>
 </div>
+{% endblock %}
+{% block script %}
+<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    var depts = [];
+    var searchTerm = "";
+    var visibleData = {};
+
+    var projGrid = $('.project-grid');        
+    const cardTemplate = $('#cardTemplate');
+    
+   $(function () {
+        searchProjects();
+    }); 
+
+    const filterByDept = () => {
+        const dept = this.event.target.id;
+        if(this.event.target.checked){
+            if(!depts.includes(dept)){
+                depts.push(dept);
+            }
+        } else {
+            depts = depts.filter((d) => d != dept);
+        }
+        
+        sendRequest();
+        return false;
+
+    }
+    const searchProjects = () => {
+        try {
+            searchTerm = this.event.target.value;
+        } catch (error) {
+            searchTerm = ''
+        }
+        sendRequest();
+        return false;
+    };
+
+    const queryBuilder = () => {
+        let query = `title__icontains=${searchTerm}`;
+        if(depts.length == 0){
+            return query;
+        } 
+        query += '&prof__dept=';
+        query += depts.join('&prof__dept=');
+        return query;
+    }
+
+    const sendRequest = () => {
+        $.ajax({
+            method: 'GET',
+            url: `/projects?${queryBuilder()}`,
+            
+            success: (r) => {
+                updateData(r);
+            },
+            error: (e) => {
+                console.error(e);
+            }
+
+        });
+    }
+
+    
+
+    const truncate = (str, no_words) => {
+        return str.split(" ").splice(0,no_words).join(" ") + " ...";
+    }
+
+    const updateData = (data) => {
+        visibleData = data;
+        console.log(visibleData);
+    
+        displayData();
+    }
+    const displayData = () => {
+
+        var projGridChildren = projGrid.children();
+        for (let i = 0; i < projGridChildren.length; i++) {
+            const c = projGridChildren[i];
+            if(c.style.display != 'none'){
+                c.remove();
+            }
+        }
+
+        if(visibleData.projects.length == 0){
+            projGrid.append("<h2>No projects found for this section!</h2>");
+            return;
+        }
+        visibleData.projects.forEach((proj) => {
+            var newNode = cardTemplate.clone();
+            newNode[0].style.display = "block";
+            var children = newNode.children();
+            children[0].innerText = truncate(proj.title,4);
+            children[1].innerText = `Prof. ${proj.prof.user.first_name} ${proj.prof.user.last_name}`;
+            children[2].innerText = truncate(proj.description, 30);
+            children[3].href = (visibleData.is_prof) ? `/projects/${proj.id}/edit` : `/projects/${proj.id}/`;
+            projGrid[0].appendChild(newNode[0]);
+        })
+        
+
+    };
+
+
+</script>
 {% endblock %}
