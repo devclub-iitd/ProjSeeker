@@ -121,7 +121,7 @@ class ProjectViewSet(ModelViewSet):
             bookmark['is_bmkd'] = len(bmk) != 0
             bookmark['bmk'] = bmk[0] if (bookmark['is_bmkd']) else None
 
-        applications = instance.application_set.all().filter(student__user=request.user)
+        applications = instance.application_set.all().filter(student__user=request.user) if (isStudent(request.user))  else []
         isApplied = False
         if(len(applications) >= 1):
             isApplied = True
@@ -144,9 +144,20 @@ class ProjectViewSet(ModelViewSet):
     def my_projects(self, request):
         qset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(qset, many=True)
-
-        return render(request=request, template_name="dashboard.html", context={'projects' : serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+        
+        if 'applied' in request.GET.keys() and request.GET['applied'] == 'true':
+            return Response(data={
+                'projects' : serializer.data,
+                'is_student': isStudent(request.user),
+                'is_prof': isProf(request.user),
+            })
+        else:
+            return render(request=request, template_name="dashboard.html", context={'projects' : serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
     
+    @action(detail=False)
+    def applied_projects(self, request):
+        return render(request=request, template_name="applied-projects.html", context={'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+        
 
     @action(detail=False, methods=['GET'])
     def create_new_project(self, request):

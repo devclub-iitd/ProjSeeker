@@ -30,7 +30,7 @@
         <h3 class="dashboard-heading wide-text">Dashboard</h3>
         <ul class="dash-nav">
             {% if is_student %}
-            <a href="{% url 'my-projects' %}?applied=true">
+            <a href="{% url 'applied-projects' %}">
                 <li class="dash-links">
                     <img class="dash-icon" src="{% static 'portal/assets/icons/applications.svg' %}">Applied
                 </li>

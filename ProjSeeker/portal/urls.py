@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^dashboard$',dashboard,name='dashboard'),
     url(r'^find-projects', ProjectViewSet.as_view({'get':'find_projects'}), name="find-projects"),
     url(r'^my-projects$', login_required(ProjectViewSet.as_view({'get': 'my_projects'}), login_url='/accounts/login'), name='my-projects'),
+    url(r'^applied-projects$', login_required(ProjectViewSet.as_view({'get': 'applied_projects'}), login_url='/accounts/login'), name='applied-projects'),
     url(r'^new-project$', login_required(ProjectViewSet.as_view({'get': 'create_new_project'}), login_url='/accounts/login'), name='new-project'),
     url(r'^received-applications$', login_required(ApplicationViewSet.as_view({'get': 'list_received_applications'}), login_url='/accounts/login'), name='received-applications'),
     url(r'^find-interests$', login_required(InterestViewSet.as_view({'get': 'find_interests'}), login_url='/accounts/login'), name='find-interests'),
