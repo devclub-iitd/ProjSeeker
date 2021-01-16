@@ -8,7 +8,7 @@ from rest_framework.viewsets import *
 from .models import *
 from .serializers import *
 from rest_framework.decorators import action
-from rest_framework import permissions
+from rest_framework import permissions, request
 from django.contrib.auth.decorators import login_required
 from django_filters import rest_framework as filters
 
@@ -35,8 +35,57 @@ def isProf(user):
 class ProjectFilter(filters.FilterSet):
 
     title__icontains = filters.filters.CharFilter(field_name='title', lookup_expr='icontains')
-    # prof__dept = filters.filters.CharFilter(field_name='prof', lookup_expr='dept')
     prof__dept = filters.filters.MultipleChoiceFilter(choices=Departments.choices)
+    applied = filters.filters.BooleanFilter(method='filter_applied')
+    bookmarked = filters.filters.BooleanFilter(method='filter_bookmarked')
+    floated = filters.filters.BooleanFilter(method='filter_floated')
+    status = filters.filters.ChoiceFilter(choices=Status.choices, method='filter_appl_status')
+
+    def filter_applied(self, queryset, name, value):
+        try:
+            user = self.request.user
+            assert isStudent(user)
+
+            applied = Application.objects.select_related('project').filter(student__user=user)
+            pids = [appl.project.id for appl in applied]
+
+            return Project.objects.filter(id__in=pids)
+        except:
+            return Project.objects.none()
+
+    def filter_bookmarked(self, queryset, name, value):
+        try:
+            user = self.request.user
+            # assert isStudent(user)
+
+            bookmarked = Bookmark.objects.filter(user=user)
+            pids = [bmk.project.id for bmk in bookmarked]
+
+            return Project.objects.filter(id__in=pids)
+        except:
+            return Project.objects.none()
+    
+    def filter_floated(self, queryset, name, value):
+        try:
+            user = self.request.user
+            assert isProf(user)
+
+            return Project.objects.filter(prof__user=user)
+        except:
+            return Project.objects.none()
+    
+    def filter_appl_status(self, queryset, name, value):
+        print(value)
+        try:
+            user = self.request.user
+
+            appls = Application.objects.filter(student__user=user,status=value)
+            pids = [appl.project.id for appl in appls]
+
+            return Project.objects.filter(id__in=pids)
+        except:
+            return Project.objects.none()
+
     class Meta:
         model = Project
         fields = ['title', 'prof']
@@ -47,7 +96,7 @@ class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     filter_backends = [filters.DjangoFilterBackend]
-    filterset_class = ProjectFilter
+    filterset_class = ProjectFilter    
 
     def create(self, request, *args, **kwargs):
         if(not isProf(request.user)):
@@ -92,28 +141,12 @@ class ProjectViewSet(ModelViewSet):
         return render(request, template_name="search-projects.html", context={'depts': Departments.choices})
 
     @action(detail=False)
-    def get_applied(self, request):
-        user = request.user
-        applied = Application.objects.filter(student__user=user)
-        projects = [appl.project for appl in applied]
-        serializer = self.get_serializer(projects, many=True)
-        return render(request, template_name="dashboard.html", context={'projects': serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
-    
-    @action(detail=False)
-    def get_floated(self, request):
-        user = request.user
-        projects = Project.objects.filter(prof__user=user)
-        serializer = self.get_serializer(projects, many=True)
-        return render(request, template_name="dashboard.html", context={'projects': serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user), 'is_floated': True})
-    
-    @action(detail=False)
-    def get_bookmarked(self, request):
-        user = request.user
-        bookmarked = Bookmark.objects.filter(user=user)
-        projects = [bmk.project for bmk in bookmarked]
-        serializer = self.get_serializer(projects, many=True)
-        return render(request, template_name="dashboard.html", context={'projects': serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+    def my_projects(self, request):
+        qset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(qset, many=True)
 
+        return render(request=request, template_name="dashboard.html", context={'projects' : serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+    
 
     @action(detail=False, methods=['GET'])
     def create_new_project(self, request):
@@ -280,6 +313,8 @@ class ApplicationViewSet(ModelViewSet):
     queryset=Application.objects.all()
     serializer_class=ApplicationSerializer
     permission_classes=[permissions.IsAuthenticated]
+    filter_backends = [filters.DjangoFilterBackend]
+    filter_fields = ['status']
 
     def check_object_permissions(self, request, obj):
         if(obj.student.user.id != request.user.id and obj.project.prof.user.id != request.user.id):
@@ -292,6 +327,9 @@ class ApplicationViewSet(ModelViewSet):
         if(not isProf(user)):
             return Response(403)
         applications = Application.objects.filter(project__prof__user=user)
+
+        applications = self.filter_queryset(applications)
+
         serializer = self.get_serializer(applications, many=True)
         data = serializer.data
         for appl in data:

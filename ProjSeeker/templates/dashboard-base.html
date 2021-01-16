@@ -30,12 +30,12 @@
         <h3 class="dashboard-heading wide-text">Dashboard</h3>
         <ul class="dash-nav">
             {% if is_student %}
-            <a href="{% url 'applied-projects' %}">
+            <a href="{% url 'my-projects' %}?applied=true">
                 <li class="dash-links">
                     <img class="dash-icon" src="{% static 'portal/assets/icons/applications.svg' %}">Applied
                 </li>
             </a>
-            <a href="{% url 'bookmarked-projects' %}">
+            <a href="{% url 'my-projects' %}?bookmarked=true">
                 <li class="dash-links">
                     <img class="dash-icon" src="{% static 'portal/assets/icons/bookmark.svg' %}"> Bookmarked
                 </li>
@@ -46,7 +46,7 @@
                 </li>
             </a>
             {% elif is_prof %}
-            <a href="{% url 'floated-projects' %}">
+            <a href="{% url 'my-projects' %}?floated=true">
                 <li class="dash-links">
                     <img class="dash-icon" src="{% static 'portal/assets/icons/projects.svg' %}">My projects
                 </li>

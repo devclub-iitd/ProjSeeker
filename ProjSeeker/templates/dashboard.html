@@ -1,7 +1,7 @@
 {% extends 'dashboard-base.html' %}
 {% load static %}
 {% block content %}
-{% if is_prof and is_floated %}
+{% if is_prof %}
 <a href="{% url 'new-project' %}" class="btn icon-btn wide-text"><img class="btn-icon" src="{% static 'portal/assets/icons/add.svg' %}">Add Project</a>
 {% endif %}
 <div class="project-grid">
