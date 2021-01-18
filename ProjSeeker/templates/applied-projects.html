@@ -13,38 +13,20 @@
 <div class="tab-content">
     <div class="tab-pane" id="in-review">
         <div class="project-grid">
-            <div class="project-card">
-                <h2 class="project-title">Test123</h2>
-                <h3 class="prof-name">testprof tesh3of</h3>
-                <p class="project-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat accusamus, facere consequatur error laudantium ut quisquam suscipit saepe cum corrupti.</p>
-                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
-            </div>
-            <div class="project-card">
-                <h2 class="project-title">Test123</h2>
-                <h3 class="prof-name">testprof tesh3of</h3>
-                <p class="project-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat accusamus, facere consequatur error laudantium ut quisquam suscipit saepe cum corrupti.</p>
-                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
+            <div id="cardTemplate" style="display: none;" class="project-card">
+                <h2 class="project-title"></h2>
+                <h3 class="prof-name"></h3>
+                <p class="project-desc"></p>
+                <a href="" class="btn btn-xs card-btn wide-text bold">More</a>
             </div>
         </div>
     </div>
     <div class="tab-pane" id="accepted" style="display: none;">
         <div class="project-grid">
-            <div class="project-card">
-                <h2 class="project-title">accepted Test</h2>
-                <h3 class="prof-name">testprof tesh3of</h3>
-                <p class="project-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat accusamus, facere consequatur error laudantium ut quisquam suscipit saepe cum corrupti.</p>
-                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
-            </div>
         </div>
     </div>
     <div class="tab-pane" id="rejected" style="display: none;">
         <div class="project-grid">
-            <div class="project-card">
-                <h2 class="project-title">rejected Test</h2>
-                <h3 class="prof-name">testprof tesh3of</h3>
-                <p class="project-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat accusamus, facere consequatur error laudantium ut quisquam suscipit saepe cum corrupti.</p>
-                <a href="#" class="btn btn-xs card-btn wide-text bold">More</a>
-            </div>
         </div>
     </div>
 </div>
@@ -53,11 +35,69 @@
 {% block script %}
 <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
+    $(document).ready(() => {
+        const acceptedTab = $('#accepted > .project-grid');
+        const inReviewTab = $('#in-review > .project-grid');
+        const rejectedTab = $('#rejected > .project-grid');
+        $.ajax({
+            url: '/my-projects?applied=true&status=IR',
+            success: (r) => {
+                displayData(r, inReviewTab);
+            },
+            error: (e) => {
+                console.error(e);
+            }
+        });
+
+        $.ajax({
+            url: '/my-projects?applied=true&status=AC',
+            success: (r) => {
+                displayData(r, acceptedTab);
+            },
+            error: (e) => {
+                console.error(e);
+            }
+        });
+
+        $.ajax({
+            url: '/my-projects?applied=true&status=RE',
+            success: (r) => {
+                displayData(r, rejectedTab);
+            },
+            error: (e) => {
+                console.error(e);
+            }
+        });
+    });
+
     $('.tab-btn').click(function () {
         $('.tab-pane').fadeOut(200);
         $('.tab-btn').removeClass('tab-active');
         $(this).addClass('tab-active')
         $(`${$(this).attr('data-target')}`).delay(200).fadeIn(200);
-    })    
+    });
+
+    const cardTemplate = $('#cardTemplate');
+
+    const truncate = (str, no_words) => {
+        return str.split(" ").splice(0, no_words).join(" ") + " ...";
+    }
+
+    const displayData = ((visibleData, projGrid) => {
+        if (visibleData.projects.length == 0) {
+            projGrid.append("<h2>No projects found for this section!</h2>");
+            return;
+        }
+        visibleData.projects.forEach((proj) => {
+            var newNode = cardTemplate.clone();
+            newNode[0].style.display = "flex";
+            var children = newNode.children();
+            children[0].innerText = truncate(proj.title, 4);
+            children[1].innerText = `Prof. ${proj.prof.user.first_name} ${proj.prof.user.last_name}`;
+            children[2].innerText = truncate(proj.description, 30);
+            children[3].href = (visibleData.is_prof) ? `/projects/${proj.id}/edit` : `/projects/${proj.id}/`;
+            projGrid[0].appendChild(newNode[0]);
+        })
+    });
 </script>
 {% endblock %}

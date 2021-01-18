@@ -9,22 +9,8 @@
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    transition: all 200ms ease-in-out;
+    transition: all 150ms ease-in-out;
 }
-
-/* .tab-btn::after {
-    position: absolute;
-    content: '';
-    bottom: -5px;
-    height: 4px;
-    left: 10%;
-    background: var(--primary-blue);
-    border-radius: 1px;
-    width: 80%;
-    transform-origin: center;
-    transform: scaleX(0);
-    transition: transform 200ms ease-in-out;
-} */
 
 .tab-active {
     background: var(--primary-blue);
@@ -35,14 +21,9 @@
 }
 
 .tab-btn:not(.tab-active):hover {
-    background-color: rgb(0, 125, 228);
-    color: white;
+    /* background-color: rgb(0, 125, 228); */
+    background-color: white;
     -webkit-box-shadow: 0px 10px 18px -8px rgba(0,0,0,0.45);
     -moz-box-shadow: 0px 10px 18px -8px rgba(0,0,0,0.45);
     box-shadow: 0px 10px 18px -8px rgba(0,0,0,0.45);
-}
-
-/* .tab-btn:not(.tab-active):hover::after {
-    background: var(--sec-blue);
-    transform: scaleX(1); */
 }
