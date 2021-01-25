@@ -306,19 +306,10 @@ class ProfViewSet(ModelViewSet):
 class InterestViewSet(ModelViewSet):
     queryset=Interests.objects.all()
     serializer_class=InterestSerializer
-
-    @action(detail=False, methods=['GET'])
-    def find_interests(self, request):
-        try:
-            search_text = request.GET['q']
-            if(search_text ==''):
-                return Response(data=[])
-            qset = Interests.objects.filter(research_field__startswith=search_text)
-            serializer = self.get_serializer(qset, many=True)
-            return Response(data=serializer.data)
-        except:
-            return Response(400)
-        
+    filter_backends = [filters.DjangoFilterBackend]
+    filter_fields = {
+        'research_field': ['startswith']
+    }
 class ApplicationViewSet(ModelViewSet):
     queryset=Application.objects.all()
     serializer_class=ApplicationSerializer
@@ -346,8 +337,13 @@ class ApplicationViewSet(ModelViewSet):
             appl['project_title'] = Project.objects.get(id=appl['project']).title
             stud_user = Student.objects.get(id=appl['student']).user
             appl['student_name'] = stud_user.first_name + " " + stud_user.last_name
-        return render(request, template_name="application-card.html", context={'applications': data, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+        
+        return Response({'applications': data, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
 
+    @action(detail=False)
+    def view_received_applications(self, request):
+        return render(request=request, template_name='application-card.html', context={'is_prof': isProf(request.user), 'is_student': isStudent(request.user)})
+    
     def create(self, request, *args, **kwargs):
         students = Student.objects.filter(user__id=request.user.id)
         if(len(students) != 1):

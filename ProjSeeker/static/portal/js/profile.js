@@ -135,8 +135,9 @@ const handleTagDelete = (tag) => {
 
 // Provide a starting text and this will call the function callback(searchResults) where search_resulsts is the array of matched tags
 const findTags = (startingText, callback = function () { }) => {
+    const queryTag = 'research_field__startswith';
     $.ajax({
-        url: `/find-interests?q=${startingText}`,
+        url: `/interests?${queryTag}=${startingText}`,
         method: 'GET',
         success: (respData) => {
             var searchResults = [];
