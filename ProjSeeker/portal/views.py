@@ -75,7 +75,6 @@ class ProjectFilter(filters.FilterSet):
             return Project.objects.none()
     
     def filter_appl_status(self, queryset, name, value):
-        print(value)
         try:
             user = self.request.user
 

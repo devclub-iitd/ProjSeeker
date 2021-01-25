@@ -147,11 +147,39 @@
             children[0].innerText = truncate(proj.title, 4);
             children[1].innerText = `Prof. ${proj.prof.user.first_name} ${proj.prof.user.last_name}`;
             children[2].innerText = truncate(proj.description, 30);
-            children[3].href = (visibleData.is_prof) ? `/projects/${proj.id}/edit` : `/projects/${proj.id}/`;
+            children[3].href = `/projects/${proj.id}/`;
             projGrid[0].appendChild(newNode[0]);
         })
 
 
+    };
+
+    const sortBy = (key, reverse) => {
+        if(!key)
+            key = 'id'
+        if(!reverse)
+            reverse = false;
+
+        if(visibleData.projects.length == 0)
+            return;
+        
+        const isDate = key.search('date') !== -1;
+        console.assert(Object.keys(visibleData.projects[0]).includes(key))
+
+        visibleData.projects.sort((a, b) => {
+            const aKey = (isDate) ? new Date(a[key]) : a[key]; 
+            const bKey = (isDate) ? new Date(b[key]) : b[key]; 
+
+            if(aKey < bKey){
+                return (reverse) ? 1:-1;
+            }
+            if(aKey > bKey){
+                return (reverse) ? -1:1;
+            }
+            return 0;
+        });
+
+        displayData();
     };
 
 
