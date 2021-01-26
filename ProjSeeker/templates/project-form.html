@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="{% static 'portal/css/project.css' %}">
 {% endblock style %}
 {% block content %}
+<div class="message-container" style="display: none;">
+</div>
 <div class=" project-container">
     {% if project.id is None %}
     <div class="project-header">Create new Project</div>
@@ -71,6 +73,8 @@
 {% block script %}
 <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
+    const messageTemplate = $('.message-container');
+
     $('button[type="button"]').click(function (e) {
         $('.form-section').fadeOut(500);
         $(`#${this.dataset.target}`).delay(500).fadeIn(200);
@@ -96,15 +100,31 @@
                 },
                 success: (r) => {
                     $('#loader').fadeOut(50);
+                    const message = messageTemplate.clone();
+                    message.html('<p>Project Created Successfully!</p>')
+
+                    $('#more-section').prepend(message);
+                    message.fadeIn(250);
                     // TODO add loading screen
                     setTimeout(() => {
                         location.href = `/projects/${r.id}/edit`
-                    }, 1000);
+                    }, 2000);
                 },
                 error: (e) => {
                     $('#loader').fadeOut(50);
                     // TODO: proper error handling if some required fields are missing
-                    console.error(e);
+                    const errorContainer = messageTemplate.clone();
+                    errorContainer.addClass('error');
+                    errorContainer.html('<p>Please re-check the form for errors and correct them</p>');
+                    $('#more-section').prepend(errorContainer);
+                    errorContainer.fadeIn(250);
+
+                    const errors = JSON.parse(e.responseText);
+
+                    Object.keys(errors).forEach((key) => {
+                        $(`#${key}`).css({ 'border': '2px solid rgba(255, 57, 57, 0.523)', 'background-color': ' rgba(255, 128, 128, 0.349)' });
+                        $(`#${key}`).after(`<span class="error-text">${errors[key]}</span>`)
+                    })
                 }
             });
             return false;

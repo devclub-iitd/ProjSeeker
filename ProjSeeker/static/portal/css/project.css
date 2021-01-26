@@ -167,6 +167,11 @@ form {
 
 form label {
     font-size: 14px;
+    margin: 15px 0 10px;
+}
+
+form label:first-of-type {
+    margin: 0 0 10px;
 }
 
 form textarea, input, select {
@@ -174,7 +179,7 @@ form textarea, input, select {
     border: none;
     background-color: #eaf3ff;
     border-radius: 10px;
-    margin: 10px 0 20px;
+    /* margin: 10px 0 20px; */
     padding: 10px 20px;
 }
 
@@ -184,6 +189,27 @@ form textarea, input, select {
     margin-bottom: 1rem;
     padding-bottom: 5px;
     border-bottom: 2px solid rgba(0, 0, 0, 0.425);
+}
+
+.message-container {
+    background-color: rgba(117, 255, 62, 0.425);
+    border: 2px solid rgb(0, 161, 0);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 0 0 20px;
+}
+
+.message-container.error {
+    background-color: rgba(255, 44, 44, 0.425);
+    border: 2px solid rgb(177, 0, 0);
+}
+
+.error-text {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    align-self: flex-end;
+    color: rgb(207, 0, 0);
 }
 
 @media(max-width:900px) {
