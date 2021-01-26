@@ -18,6 +18,14 @@
     gap: 2rem;
 }
 
+.inline-flex {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 10px 0 20px;
+}
+
 .project-main {
     border-radius: 10px;
     padding: 30px 30px 20px 30px;
