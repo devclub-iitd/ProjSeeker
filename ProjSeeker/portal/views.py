@@ -32,11 +32,15 @@ def isProf(user):
 class ProjectFilter(filters.FilterSet):
 
     title__icontains = filters.filters.CharFilter(field_name='title', lookup_expr='icontains')
-    prof__dept = filters.filters.MultipleChoiceFilter(choices=Departments.choices)
     applied = filters.filters.BooleanFilter(method='filter_applied')
     bookmarked = filters.filters.BooleanFilter(method='filter_bookmarked')
     floated = filters.filters.BooleanFilter(method='filter_floated')
     status = filters.filters.ChoiceFilter(choices=Status.choices, method='filter_appl_status')
+    
+    prof__dept = filters.filters.MultipleChoiceFilter(choices=Departments.choices)
+    degree__icontains = filters.filters.MultipleChoiceFilter(choices=Degree.choices)
+    project_type__icontains = filters.filters.MultipleChoiceFilter(choices=ProjectType.choices)
+    tags__research_field = filters.filters.MultipleChoiceFilter(choices=Interests.to_choices())
 
     def filter_applied(self, queryset, name, value):
         try:
@@ -138,7 +142,7 @@ class ProjectViewSet(ModelViewSet):
 
     @action(detail=False)
     def find_projects(self,request):
-        return render(request, template_name="search-projects.html", context={'depts': Departments.choices})
+        return render(request, template_name="search-projects.html", context={'depts': Departments.choices, 'degrees': Degree.choices, 'types': ProjectType.choices, 'tags': Interests.to_choices()})
 
     @method_decorator(login_required)
     @action(detail=False)

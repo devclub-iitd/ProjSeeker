@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
 from .storage import OverwriteStorage
+from multiselectfield import MultiSelectField
+
 
 # Create your models here.
 class Departments(models.TextChoices):
@@ -21,6 +23,19 @@ class Status(models.TextChoices):
     on_hold = 'OH', _('On Hold')
     accepted = 'AC', _('Accepted')
     rejected = 'RE', _('Rejected')
+
+class Degree(models.TextChoices):
+    btech = 'BTech', _('BTech')
+    mtech = 'MTech', _('MTech')
+    dual = 'Dual', _('Dual')
+    phd = 'PhD', _('PhD')
+
+class ProjectType(models.TextChoices):
+    disa = 'DISA', _('DISA')
+    sura = 'SURA', _('SURA')
+    major = 'Major Project', _('Major Project')
+    minor = 'Minor Project', _('Minor Project')
+    design = 'Design Project', _('Design Project')
 
 def upload_handler(student, filename):
     print('user_{0}/{1}'.format(student.user.id, filename))
@@ -49,6 +64,11 @@ class Interests(models.Model):
 
     def __str__(self):
         return self.research_field
+
+    @staticmethod
+    def to_choices():
+        interests = Interests.objects.all()
+        return [(intr.research_field, intr.research_field) for intr in interests]
     
 
 class Professor(models.Model):
@@ -74,6 +94,9 @@ class Project(models.Model):
     learning_outcome = models.TextField()
     prereq = models.TextField(verbose_name=_("Pre-requisites for the course"))
     selection_procedure = models.TextField()
+    tags = models.ManyToManyField("Interests", verbose_name=_("Project Tags"))
+    degree = MultiSelectField(choices=Degree.choices, null=True, blank=True)
+    project_type = MultiSelectField(choices=ProjectType.choices, null=True, blank=True)
 
     # TODO run validation based on these data and times
     release_date = models.DateTimeField(_("Release date of project"), auto_now=False, auto_now_add=True, null=True)

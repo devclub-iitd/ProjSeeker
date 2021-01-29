@@ -12,7 +12,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     list_display = ['student', 'project', 'preference', 'status']
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['prof', 'title']
+    list_display = ['prof', 'title', 'project_type', 'degree']
 @admin.register(Interests)
 class InterestAdmin(admin.ModelAdmin):
     list_display = ['research_field']
