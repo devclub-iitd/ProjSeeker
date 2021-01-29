@@ -43,6 +43,8 @@ class StudentSerializer(serializers.ModelSerializer):
         new_interests = interests_text.split(', ')
 
         for text in new_interests:
+            if text == '':
+                continue
             existing_interest = Interests.objects.get(research_field=text)
             if(not existing_interest):
                 new_intr = Interests.objects.create(research_field=text)
@@ -65,6 +67,8 @@ class ProfSerializer(serializers.ModelSerializer):
         new_interests = interests_text.split(', ')
 
         for text in new_interests:
+            if text == '':
+                continue
             existing_interest = Interests.objects.get(research_field=text)
             if(not existing_interest):
                 new_intr = Interests.objects.create(research_field=text)

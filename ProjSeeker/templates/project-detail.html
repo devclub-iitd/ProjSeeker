@@ -60,27 +60,24 @@
         <div class="action-container">
             <img src="{% static 'portal/assets/loader.svg' %}" alt="loader" id="loader">
             {% if user.is_authenticated %}
-            {% if bookmark.is_bmkd %}
-            <form id="bookmark-form" action="/bookmarks/{{bookmark.bmk.id}}/" method="DELETE">
+                {% if bookmark_id %}
+                    <form id="bookmark-form" action="/bookmarks/{{bookmark_id}}/" method="DELETE">
+                        {% csrf_token %}
+                        <input value="Un-bookmark" type="submit" class="btn wide-text">
                 {% else %}
-                <form id="bookmark-form" action="/bookmarks/" method="POST">
-                    {% endif %}
-                    <input name="user" hidden type="number" value="{{user.id}}">
-                    <input name="project" hidden type="number" value="{{project.id}}">
-                    {% csrf_token %}
-                    {% if bookmark.is_bmkd %}
-                    <input value="Un-bookmark" type="submit" class="btn wide-text">
-                    {% else %}
-                    <input value="Bookmark" type="submit" class="btn wide-text">
-                    {% endif %}
-                </form>
+                    <form id="bookmark-form" action="/bookmarks/" method="POST">
+                        {% csrf_token %}
+                        <input value="Bookmark" type="submit" class="btn wide-text">
                 {% endif %}
-                <a href="mailto:{{project.prof.user.email}}" class="btn">Contact</a>
-                {% if isApplied %}
-                <a href="/applications/{{appId}}/" class="btn btn-red">View Application</a>
-                {% else %}
+                        <input name="project" hidden type="number" value="{{project.id}}">    
+                    </form>
+            {% endif %}
+            <a href="mailto:{{project.prof.user.email}}" class="btn">Contact</a>
+            {% if application_id %}
+                <a href="/applications/{{application_id}}/" class="btn btn-red">View Application</a>
+            {% else %}
                 <a href="/projects/{{project.id}}/apply" class="btn btn-red">Apply Now</a>
-                {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>
@@ -97,7 +94,7 @@
                 url: $(this).attr('action'),
                 data: $(this).serialize(),
                 headers: {
-                    'X-CSRFTOKEN': $('#bookmark-form > input[type=hidden]:nth-child(3)').val(),
+                    'X-CSRFTOKEN': $('#bookmark-form > input[type=hidden]:nth-child(1)').val(),
                 },
                 success: (r) => {
                     console.log(r);

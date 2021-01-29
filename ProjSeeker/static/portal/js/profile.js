@@ -182,7 +182,6 @@ $(function () {
 
         });
 
-        $('#loader').fadeOut(200);
         return false;
     });
 });
