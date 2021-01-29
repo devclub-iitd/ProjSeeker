@@ -38,8 +38,8 @@
             <input type="text" name="search" id="projSearch" onkeyup="searchProjects()" placeholder="SEARCH FOR PROJECTS">
             <button class="bold" id="filterBtn" type="button">Sort By</button>
         </div>
-        <div class="project-grid">
-
+        <img id="loader" src="{% static 'portal/assets/loader2.svg' %}" alt="loader">
+        <div class="project-grid" style="display: none;">
             <div id="cardTemplate" style="display: none;" class="project-card">
                 <h2 class="project-title"></h2>
                 <h3 class="prof-name"></h3>
@@ -63,6 +63,8 @@
 
     $(function () {
         searchProjects();
+        $('#loader').fadeOut(200);
+        $('.project-grid').delay(200).fadeIn(200);
     });
 
     const filterByDept = () => {
@@ -137,7 +139,7 @@
         }
 
         if (visibleData.projects.length == 0) {
-            projGrid.append("<h2>No projects found for this section!</h2>");
+            projGrid.append('<h2 style="color:white;">No projects found for this section!</h2>');
             return;
         }
         visibleData.projects.forEach((proj) => {
@@ -155,26 +157,26 @@
     };
 
     const sortBy = (key, reverse) => {
-        if(!key)
+        if (!key)
             key = 'id'
-        if(!reverse)
+        if (!reverse)
             reverse = false;
 
-        if(visibleData.projects.length == 0)
+        if (visibleData.projects.length == 0)
             return;
-        
+
         const isDate = key.search('date') !== -1;
         console.assert(Object.keys(visibleData.projects[0]).includes(key))
 
         visibleData.projects.sort((a, b) => {
-            const aKey = (isDate) ? new Date(a[key]) : a[key]; 
-            const bKey = (isDate) ? new Date(b[key]) : b[key]; 
+            const aKey = (isDate) ? new Date(a[key]) : a[key];
+            const bKey = (isDate) ? new Date(b[key]) : b[key];
 
-            if(aKey < bKey){
-                return (reverse) ? 1:-1;
+            if (aKey < bKey) {
+                return (reverse) ? 1 : -1;
             }
-            if(aKey > bKey){
-                return (reverse) ? -1:1;
+            if (aKey > bKey) {
+                return (reverse) ? -1 : 1;
             }
             return 0;
         });

@@ -10,7 +10,7 @@
     <span class="tab-btn" data-target="#rejected">Rejected</span>
     <span class="tab-btn" data-target="#on-hold">On Hold</span>
 </div>
-
+<img id="loader" src="{% static 'portal/assets/loader2.svg' %}" alt="loader">
 <div class="tab-content">
     <div class="tab-pane" id="in-review">
         <div class="project-grid">
@@ -85,6 +85,9 @@
                 console.error(e);
             }
         });
+
+        $('#loader').fadeOut(200);
+        $('.tab-content').delay(200).fadeIn(200);
     });
 
     $('.tab-btn').click(function () {

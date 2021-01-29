@@ -12,14 +12,14 @@
                 {% if user_data.pic is not None %}
                 <a href="{{user_data.pic}}" class="btn">View Picture</a>
                 {% if is_prof %}
-                <a href="#" class="btn btn-red" onclick="deleteDoc('pic', true)"> Delete Picture</a>
+                <a href="#" class="btn btn-red" onclick="deleteDoc('pic', true)">Delete Picture</a>
                 {% else %}
-                <a href="#" class="btn btn-red" onclick="deleteDoc('pic', false)"> Delete Picture</a>
+                <a href="#" class="btn btn-red" onclick="deleteDoc('pic', false)">Delete Picture</a>
                 {% endif %}
                 {% endif %}
 
                 <div style="display: flex; flex-direction: column;">
-                    <label for="picture">Profile Picture</label>
+                    <label for="picture">Edit Profile Picture</label>
                     <input type="file" name="pic" id="picture" onchange="checkJpeg(this)">
                 </div>
                 <div style="display: flex; flex-direction: column;">
@@ -49,7 +49,7 @@
             <div class="inline-flex">
                 {% if user_data.cv is not None %}
                 <a href="{{user_data.cv}}" class="btn wide-text">View Resume</a>
-                <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('cv')"> Delete Resume</a>
+                <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('cv')">Delete Resume</a>
                 {% endif %}
             </div>
 
@@ -59,7 +59,7 @@
             <div class="inline-flex">
                 {% if user_data.transcript is not None %}
                 <a class="btn wide-text" href="{{user_data.transcript}}">View Transcript</a>
-                <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('transcript')"> Delete Transcript</a>
+                <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('transcript')">Delete Transcript</a>
                 {% endif %}
             </div>
 
@@ -81,8 +81,8 @@
                 {% endfor %}
             </div>
             <button type="submit" class="btn wide-text bold">Save</button>
+            <img id="loader" src="{% static 'portal/assets/loader2.svg' %}" alt="loader">
         </form>
-
 </div>
 {% endblock %}
 

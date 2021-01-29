@@ -56,7 +56,6 @@ intDummy.keyup((e) => {
             createTag(suggestions[index].innerText);
             index = -1;
             intList.css('display', 'none');
-            e.preventDefault();
         }
         return;
     }
@@ -89,14 +88,16 @@ const createTag = (tagVal) => {
     tag.classList.add('tag');
     tag.addEventListener('click', (e) => handleTagDelete(tag));
     tagContainer.appendChild(tag);
-    interests.value = interests.value + ', ' + tagVal;
+    if (interests.value != '')
+        interests.value = interests.value + ', ' + tagVal;
+    else interests.value = tagVal;
     intDummy.val('');
 }
 
-const deleteDoc = (doc_type, is_prof=false) => {
+const deleteDoc = (doc_type, is_prof = false) => {
     if (doc_type != 'pic' && doc_type != 'cv' && doc_type != 'transcript')
         return
-    const url = (is_prof) ? '/delete-prof-doc' :  '/delete-student-doc';
+    const url = (is_prof) ? '/delete-prof-doc' : '/delete-student-doc';
     $.ajax({
         url: url,
         method: 'POST',
@@ -155,6 +156,7 @@ const findTags = (startingText, callback = function () { }) => {
 
 $(function () {
     $('#profile-form').submit(function (event) {
+        $('#loader').fadeIn(100);
         $.ajax({
             method: $(this).attr('method'),
             url: $(this).attr('action'),
@@ -180,7 +182,7 @@ $(function () {
 
         });
 
-
+        $('#loader').fadeOut(200);
         return false;
     });
 });
