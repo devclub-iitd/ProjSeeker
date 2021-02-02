@@ -18,10 +18,10 @@
 
     <div class="project-main">
         {% if project.id is None %}
-            <form id="projectForm" action="{% url 'project-list' %}">
-        {% else %}
+        <form id="projectForm" action="{% url 'project-list' %}">
+            {% else %}
             <form id="projectForm" action="{% url 'project-detail' project.id %}">
-        {% endif %}
+                {% endif %}
                 {% csrf_token %}
                 <div class="form-section" id="basic-section">
                     <legend class="section-heading">Basic Details</legend>
@@ -62,20 +62,20 @@
                         <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader" style="display: hidden;">
                         <button class="btn wide-text" data-target="elig-section" type="button">Go Back</button>
                         {% if project.id is None %}
-                        <button type="submit" class="btn btn-red bold wide-text" formmethod="POST">Create Project</button>
+                        <button type="submit" class="btn btn-green bold wide-text" formmethod="POST">Create Project</button>
                         {% else %}
-                        <button type="submit" class="btn btn-red bold wide-text" formmethod="PATCH">Update Project</button>       
-                            <a href="#delete-modal" rel="modal:open" class="btn btn-red bold wide-text">Delete project</a>
-                            
-                            <div id="delete-modal" class="modal">
-                                <div class="modal-title">
-                                    <p>Are you sure you want to delete this project?</p>
-                                </div>
-                                <div class="modal-actions">
-                                    <button type="submit" class="btn btn-red bold wide-text" formmethod="DELETE">Delete</button>
-                                    <a class="btn wide-text bold" rel="modal:close">Close</a>
-                                </div>
+                        <button type="submit" class="btn btn-green bold wide-text" formmethod="PATCH">Update Project</button>
+                        <a href="#delete-modal" rel="modal:open" class="btn btn-red bold wide-text">Delete project</a>
+
+                        <div id="delete-modal" class="modal">
+                            <div class="modal-title">
+                                <p>Are you sure you want to delete this project?</p>
                             </div>
+                            <div class="modal-actions">
+                                <button type="submit" class="btn btn-red bold wide-text" formmethod="DELETE">Delete</button>
+                                <a class="btn wide-text bold" rel="modal:close">Close</a>
+                            </div>
+                        </div>
                         {% endif %}
                     </div>
                 </div>
@@ -106,7 +106,7 @@
             $('#projectForm').submit();
         });
         $('#projectForm').submit(function (event) {
-            
+
             $('#loader').fadeIn(50);
             const type = $("button[type=submit]:focus").attr('formmethod');
             $.ajax({
@@ -126,11 +126,11 @@
                     // TODO add loading screen
                     setTimeout(() => {
                         try {
-                            location.href = `/projects/${r.id}/edit` 
+                            location.href = `/projects/${r.id}/edit`
                         } catch (error) {
                             location.href = '/dashboard'
                         }
-                        
+
                     }, 2000);
                 },
                 error: (e) => {

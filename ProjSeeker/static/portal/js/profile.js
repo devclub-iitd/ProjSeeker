@@ -60,18 +60,16 @@ intDummy.keyup((e) => {
         return;
     }
     // if the key pressed is a character, get suggested tags
-    findTags(e.target.value, (res) => {
-        if (res.length > 0) {
+    if(e.target.value.length > 0) {
+        findTags(e.target.value, (res) => {
             intList.html('');
+            res.unshift(e.target.value);
             res.forEach((sug) => {
-                intList.append(`<li class="suggestion">${sug}</li>`)
-            })
-        } else {
-            intList.html(`<li class="suggestion">No results found</li>`)
-        }
-        suggestions = document.querySelectorAll('.suggestion');
-    })
-
+                intList.append(`<li class="suggestion">${sug}</li>`);
+            });
+            suggestions = document.querySelectorAll('.suggestion');
+        })
+    }
     index = -1;
 });
 

@@ -20,6 +20,16 @@
         {% if isApplied %}
         <form id="applForm" action="/applications/{{application.id}}/">
             {% csrf_token %}
+            <label for="applStatus">Current Applications Status</label>
+            {% if application.status == status_choices.rejected%}
+            <button style="margin-right: auto;" class="btn btn-red bold wide-text">{{status_choices.rejected.label}}</button>
+            {% elif application.status == status_choices.accepted%}
+            <button style="margin-right: auto;" class="btn btn-green wide-text bold">{{status_choices.accepted.label}}</button>
+            {% elif application.status == status_choices.on_hold%}
+            <button style="margin-right: auto;" class="btn wide-text bold">{{status_choices.on_hold.label}}</button>
+            {% elif application.status == status_choices.in_review %}
+            <button style="margin-right: auto;" class="btn wide-text bold">{{status_choices.in_review.label}}</button>
+            {% endif %}
             {% if is_prof %}
             <label for="documents">View Documents</label>
             <div class="inline-flex">
@@ -43,6 +53,7 @@
             <!-- TODO: find a better way to display status on both the prof and student side-->
             {% if application.status == status_choices.in_review %}
             <div class="action-container">
+                <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader">
                 <a href="#delete-modal" rel="modal:open" class="btn btn-red bold wide-text">Delete Application</a>
                 <button type="submit" class="btn wide-text bold" formmethod="PATCH">Update Application</button>
                 <div id="delete-modal" class="modal">
@@ -55,23 +66,12 @@
                     </div>
                 </div>
             </div>
-            {% elif application.status == status_choices.rejected%}
-            <div class="action-container">
-                <button class="btn btn-red bold wide-text">{{status_choices.rejected.label}}</button>
-            </div>
-            {% elif application.status == status_choices.accepted%}
-            <div class="action-container">
-                <button class="btn wide-text bold">{{status_choices.accepted.label}}</button>
-            </div>
-            {% elif application.status == status_choices.on_hold%}
-            <div class="action-container">
-                <button class="btn wide-text bold">{{status_choices.on_hold.label}}</button>
-            </div>
             {% endif %}
             {% else %}
             <div class="action-container">
+                <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader">
                 <button type="submit" class="btn btn-red bold wide-text" formmethod="PATCH" value="{{status_choices.rejected}}">Reject Application</button>
-                <button type="submit" class="btn wide-text bold" formmethod="PATCH" value="{{status_choices.accepted}}">Accept Application</button>
+                <button type="submit" class="btn btn-green wide-text bold" formmethod="PATCH" value="{{status_choices.accepted}}">Accept Application</button>
                 <button type="submit" class="btn wide-text bold" formmethod="PATCH" value="{{status_choices.on_hold}}">Put on hold</button>
             </div>
             {% endif %}
@@ -94,6 +94,7 @@
             <label for="experience">Relevant Experience</label>
             <textarea name="experience" id="experience" cols="30" rows="5"></textarea>
             <div class="action-container">
+                <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader">
                 <button type="submit" class="btn wide-text bold" formmethod="POST">Apply Now!</button>
             </div>
         </form>
@@ -135,7 +136,7 @@
             $('#applForm').submit();
         });
         $('#applForm').submit(function (event) {
-            console.log("Submitted");
+            $('#loader').fadeIn(100);
             const type = $("button[type=submit]:focus").attr('formmethod');
             $.ajax({
                 method: type,

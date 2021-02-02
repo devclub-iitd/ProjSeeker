@@ -64,21 +64,21 @@
 <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
     var multiChoiceFilters = {
-        'dept' : {
-            queryTerm : 'prof__dept',
-            selections : [],
+        'dept': {
+            queryTerm: 'prof__dept',
+            selections: [],
         },
-        'degree' : {
-            queryTerm : 'degree__icontains',
-            selections : [],
+        'degree': {
+            queryTerm: 'degree__icontains',
+            selections: [],
         },
-        'type' : {
-            queryTerm : 'project_type__icontains',
-            selections : [],
+        'type': {
+            queryTerm: 'project_type__icontains',
+            selections: [],
         },
-        'tag' : {
-            queryTerm : 'tags__research_field',
-            selections : [],
+        'tag': {
+            queryTerm: 'tags__research_field',
+            selections: [],
         },
 
     };
@@ -95,9 +95,9 @@
     });
 
     const applyFilter = (filter) => {
-        if(!Object.keys(multiChoiceFilters).includes(filter))
+        if (!Object.keys(multiChoiceFilters).includes(filter))
             return
-        
+
         const value = this.event.target.id;
         var selections = multiChoiceFilters[filter].selections;
         if (this.event.target.checked) {
@@ -130,11 +130,11 @@
             const qTerm = `&${filter.queryTerm}=`;
             const selections = filter.selections;
 
-            if(selections.length !== 0){
+            if (selections.length !== 0) {
                 query += qTerm;
                 query += selections.join(qTerm);
             }
-            
+
         })
         return query;
     }
@@ -154,8 +154,6 @@
         });
     }
 
-
-
     const truncate = (str, no_words) => {
         return str.split(" ").splice(0, no_words).join(" ") + " ...";
     }
@@ -166,6 +164,7 @@
 
         displayData();
     }
+
     const displayData = () => {
 
         var projGridChildren = projGrid.children();
@@ -177,7 +176,7 @@
         }
 
         if (visibleData.projects.length == 0) {
-            projGrid.append('<h2 style="color:white;">No projects found for this section!</h2>');
+            projGrid.append('<h2 style="color:white;">No projects found for this search term!</h2>');
             return;
         }
         visibleData.projects.forEach((proj) => {
@@ -190,8 +189,6 @@
             children[3].href = `/projects/${proj.id}/`;
             projGrid[0].appendChild(newNode[0]);
         })
-
-
     };
 
     const sortBy = (key, reverse) => {
