@@ -132,9 +132,7 @@
     $(function () {
         var pref = $('#preference').attr('value');
         document.querySelector('#preference').selectedIndex = pref - 1;
-        $("button[type=submit]").click(() => {
-            $('#applForm').submit();
-        });
+        
         $('#applForm').submit(function (event) {
             $('#loader').fadeIn(100);
             const type = $("button[type=submit]:focus").attr('formmethod');

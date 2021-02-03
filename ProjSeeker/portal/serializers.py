@@ -45,12 +45,12 @@ class StudentSerializer(serializers.ModelSerializer):
         for text in new_interests:
             if text == '':
                 continue
-            existing_interest = Interests.objects.get(research_field=text)
-            if(not existing_interest):
+            try:
+                existing_interest = Interests.objects.get(research_field=text)
+                self.instance.interests.add(existing_interest)
+            except:
                 new_intr = Interests.objects.create(research_field=text)
                 self.instance.interests.add(new_intr)
-            else:
-                self.instance.interests.add(existing_interest)
 
         return ret_val
 class ProfSerializer(serializers.ModelSerializer):
@@ -69,12 +69,13 @@ class ProfSerializer(serializers.ModelSerializer):
         for text in new_interests:
             if text == '':
                 continue
-            existing_interest = Interests.objects.get(research_field=text)
-            if(not existing_interest):
+            try:
+                existing_interest = Interests.objects.get(research_field=text)
+                self.instance.interests.add(existing_interest)
+            except:
                 new_intr = Interests.objects.create(research_field=text)
                 self.instance.interests.add(new_intr)
-            else:
-                self.instance.interests.add(existing_interest)
+                
 
         return ret_val
     class Meta:
@@ -84,9 +85,12 @@ class ProjectSerializer(serializers.ModelSerializer):
     prof = ProfSerializer(many=False, read_only=True)
     release_date = DateTimeField(format="%c", required=False)
     last_date = DateTimeField(format="%c", required=False)
+    tags = InterestSerializer(many=True, read_only=True)
+    degree = serializers.MultipleChoiceField(choices=Degree.choices)
+    project_type = serializers.MultipleChoiceField(choices=ProjectType.choices)
     class Meta:
         model = Project
-        fields = ['id','prof','title','description','cpi','vacancy','min_year','duration','learning_outcome','prereq','selection_procedure','release_date','last_date']
+        fields = ['id','prof','title','description','cpi','vacancy','min_year','duration','learning_outcome','prereq','selection_procedure','release_date','last_date', 'tags', 'degree', 'project_type']
 
     def save(self, **kwargs):
         instance = super().save(**kwargs)

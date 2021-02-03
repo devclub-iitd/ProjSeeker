@@ -102,9 +102,7 @@
         } catch (error) {
 
         }
-        $("button[type=submit]").click(() => {
-            $('#projectForm').submit();
-        });
+        
         $('#projectForm').submit(function (event) {
 
             $('#loader').fadeIn(50);
@@ -119,7 +117,7 @@
                 success: (r) => {
                     $('#loader').fadeOut(50);
                     const message = messageTemplate.clone();
-                    message.html('<p>Project Created Successfully!</p>')
+                    message.html('<p>Success!</p>')
 
                     $('#more-section').prepend(message);
                     message.fadeIn(250);
