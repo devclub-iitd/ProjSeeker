@@ -38,12 +38,14 @@
                     <ul>
                         <li><b>Vacancy :</b> {{project.vacancy}}</li>
                         <li><b>Duration :</b> {{project.duration}}</li>
+                        <li><b>Project Type :</b> | {% for type in project.project_type %}{{type}} | {% endfor %}</li>
                         <li><b>Release Date :</b> {{project.release_date}}</li>
                         <li><b>Last Date :</b> {{project.last_date}}</li>
                     </ul>
                 </div>
                 <div class="tab-pane fade" id="nav-eligibility" role="tabpanel" aria-labelledby="nav-eligibility-tab">
                     <ul>
+                        <li><b>Eligible Degrees :</b> | {% for degree in project.degree %}{{degree}} | {% endfor %}</li>
                         <li><b>Minimum Year :</b> {{project.min_year}}</li>
                         <li><b>Minimum CPI : </b>{{project.cpi}}</li>
                         <li><b>Prerequisites :</b> {{project.prereq}}</li>
@@ -57,28 +59,30 @@
                 </div>
             </div>
         </div>
+        {% if is_student %}
         <div class="action-container">
             <img src="{% static 'portal/assets/loader.svg' %}" alt="loader" id="loader">
             {% if user.is_authenticated %}
-                {% if bookmark_id %}
-                    <form id="bookmark-form" action="/bookmarks/{{bookmark_id}}/" method="DELETE">
-                        {% csrf_token %}
-                        <input value="Un-bookmark" type="submit" class="btn wide-text">
+            {% if bookmark_id %}
+            <form id="bookmark-form" action="/bookmarks/{{bookmark_id}}/" method="DELETE">
+                {% csrf_token %}
+                <input value="Un-bookmark" type="submit" class="btn wide-text">
                 {% else %}
-                    <form id="bookmark-form" action="/bookmarks/" method="POST">
-                        {% csrf_token %}
-                        <input value="Bookmark" type="submit" class="btn wide-text">
+                <form id="bookmark-form" action="/bookmarks/" method="POST">
+                    {% csrf_token %}
+                    <input value="Bookmark" type="submit" class="btn wide-text">
+                    {% endif %}
+                    <input name="project" hidden type="number" value="{{project.id}}">
+                </form>
                 {% endif %}
-                        <input name="project" hidden type="number" value="{{project.id}}">    
-                    </form>
-            {% endif %}
-            <a href="mailto:{{project.prof.user.email}}" class="btn">Contact</a>
-            {% if application_id %}
+                <a href="mailto:{{project.prof.user.email}}" class="btn">Contact</a>
+                {% if application_id %}
                 <a href="/applications/{{application_id}}/" class="btn btn-red">View Application</a>
-            {% else %}
+                {% else %}
                 <a href="/projects/{{project.id}}/apply" class="btn btn-red">Apply Now</a>
-            {% endif %}
+                {% endif %}
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock content %}

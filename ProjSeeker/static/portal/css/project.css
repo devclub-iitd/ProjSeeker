@@ -41,7 +41,7 @@
 }
 
 .project-basic {
-    background-color: #E8E8E8;
+    background-color: #e8e8e8;
     padding: 15px 20px;
     border-radius: 10px;
     height: auto;
@@ -59,7 +59,7 @@
 }
 
 .project-details li {
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
 }
 
 .project-details li:last-child {
@@ -89,7 +89,7 @@
 }
 
 .tag-container .tag:nth-of-type(2n) {
-    background-color: #005EB5;
+    background-color: #005eb5;
 }
 
 .action-container {
@@ -113,7 +113,7 @@
 }
 
 .action-container > .btn-red {
-    background-color:#ff0e56;
+    background-color: #ff0e56;
 }
 
 .custom-tabs {
@@ -127,7 +127,7 @@
 }
 
 .cnav-link {
-    color : black;
+    color: black;
 }
 
 .action-container form {
@@ -151,7 +151,7 @@
 
 /* Form-stylings */
 form {
-    display : flex;
+    display: flex;
     flex-direction: column;
     margin: 2rem 0 0;
 }
@@ -174,13 +174,23 @@ form label:first-of-type {
     margin: 0 0 10px;
 }
 
-form textarea, input, select {
+form textarea,
+input,
+select {
     outline: none;
     border: none;
     background-color: #eaf3ff;
     border-radius: 10px;
     /* margin: 10px 0 20px; */
     padding: 10px 20px;
+}
+
+.check-label {
+    margin-left: 10px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .section-heading {
@@ -212,13 +222,64 @@ form textarea, input, select {
     color: rgb(207, 0, 0);
 }
 
-@media(max-width:900px) {
+/* Tag stylings */
+
+.tag-container .tag::after {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    content: '\2715';
+    color: white;
+    font-size: 8px;
+    border-radius: 2px;
+    transition: all 200ms ease-in-out;
+    padding: 2px 5px;
+}
+
+.tag-container .tag:hover::after {
+    cursor: pointer;
+    background-color: darkblue;
+}
+
+.int-searchbar {
+    position: relative;
+}
+
+.search-suggestions {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
+    border-radius: 0 0 5px 5px;
+    border: 0.5px solid rgba(158, 158, 158, 0.404);
+    z-index: 1;
+    background-color: rgb(239, 246, 255);
+}
+
+.search-suggestions .suggestion {
+    z-index: inherit;
+    padding: 5px 20px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.search-suggestions .suggestion:hover {
+    cursor: pointer;
+    background-color: rgb(215, 221, 255);
+}
+
+.suggestion.active {
+    background-color: rgb(215, 221, 255);
+}
+
+@media (max-width: 900px) {
     .project-basic {
         font-size: 12px;
     }
 }
 
-@media(max-width:620px) {
+@media (max-width: 620px) {
     .inline {
         grid-template-columns: 1fr;
     }
@@ -226,7 +287,7 @@ form textarea, input, select {
     .action-container {
         display: grid;
         gap: 1rem;
-        grid-template-columns: repeat(auto-fit,minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 
     .action-container > a:last-child {
@@ -234,12 +295,12 @@ form textarea, input, select {
         grid-column: 1/-1;
     }
 
-    .tag-container .tag-header{
+    .tag-container .tag-header {
         font-size: 14px;
     }
 
     .tag-container {
-        gap:5px;
+        gap: 5px;
     }
 
     .tag-container .tag {
