@@ -30,26 +30,18 @@
                     <label for="description">Describe the Project</label>
                     <textarea name="description" id="description" cols="30" rows="4" required>{{project.description}}</textarea>
                     <label for="project_type">Type of Project</label>
+                    
+                    {% for ptype in project_types %}
                     <span class="check-label">
-                        <input type="checkbox" name="project_type[]" id="project_type1" value="DISA">
-                        DISA
+                        {% if ptype.1 in project.project_type %}
+                        <input type="checkbox" name="project_type" id="{{ptype.1}}" value="{{ptype.1}}" checked="true">
+                        {% else %}
+                        <input type="checkbox" name="project_type" id="{{ptype.1}}" value="{{ptype.1}}">
+                        {% endif %}
+                        {{ptype.1}}
                     </span>
-                    <span class="check-label">
-                        <input type="checkbox" name="project_type[]" id="project_type2" value="SURA">
-                        SURA
-                    </span>
-                    <span class="check-label">
-                        <input type="checkbox" name="project_type[]" id="project_type3" value="Major Project">
-                        Major Project
-                    </span>
-                    <span class="check-label">
-                        <input type="checkbox" name="project_type[]" id="project_type4" value="Minor Project">
-                        Minor Project
-                    </span>
-                    <span class="check-label">
-                        <input type="checkbox" name="project_type[]" id="project_type5" value="Design Project">
-                        Design Project
-                    </span>
+                    {% endfor %}
+                   
                     <label for="duration">Duration of Project</label>
                     <input type="text" name="duration" id="duration" value="{{project.duration}}" required>
                     <label for="vacancy">Vacancy (Number of People)</label>
@@ -63,22 +55,18 @@
                     <label for="cpi">Minimum CPI Required</label>
                     <input type="text" name="cpi" id="cpi" value="{{project.cpi}}" required>
                     <label for="degree">Eligible Degrees</label>
+                    
+                    {% for degree in degrees %}
                     <span class="check-label">
-                        <input type="checkbox" name="degree[]" id="degree1" value="BTech">
-                        B.Tech
+                        {% if degree.1 in project.degree %}
+                        <input type="checkbox" name="degree" id="{{degree.1}}" value="{{degree.1}}" checked="true">
+                        {% else %}
+                        <input type="checkbox" name="degree" id="{{degree.1}}" value="{{degree.1}}">
+                        {% endif %}
+                        {{degree.1}}
                     </span>
-                    <span class="check-label">
-                        <input type="checkbox" name="degree[]" id="degree2" value="MTech">
-                        M.Tech
-                    </span>
-                    <span class="check-label">
-                        <input type="checkbox" name="degree[]" id="degree3" value="Dual">
-                        Dual Degree
-                    </span>
-                    <span class="check-label">
-                        <input type="checkbox" name="degree[]" id="degree4" value="PhD">
-                        PhD
-                    </span>
+                    {% endfor %}    
+                    
                     <label for="min_year">Minimum Year</label>
                     <input type="text" name="min_year" id="min_year" value="{{project.min_year}}" required>
                     <label for="prereq">Project Prerequisites</label>
@@ -121,7 +109,7 @@
                                 <p>Are you sure you want to delete this project?</p>
                             </div>
                             <div class="modal-actions">
-                                <button type="submit" class="btn btn-red bold wide-text" formmethod="DELETE">Delete</button>
+                                <button id="delete-button" type="submit" class="btn btn-red bold wide-text" formmethod="DELETE">Delete</button>
                                 <a class="btn wide-text bold" rel="modal:close">Close</a>
                             </div>
                         </div>
@@ -146,7 +134,7 @@
         });
     });
 
-    $('button[type="submit"]').click(() => {
+    $('#delete-button').click(() => {
         $('#projectForm').submit();
     })
 

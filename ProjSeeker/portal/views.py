@@ -98,6 +98,10 @@ class ProjectViewSet(ModelViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = ProjectFilter    
 
+    def update(self, request, *args, **kwargs):
+        print(request.data)
+        return super().update(request, *args, **kwargs)
+
     # NOTE: Prof Only
     @method_decorator(login_required)
     def create(self, request, *args, **kwargs):
@@ -129,7 +133,7 @@ class ProjectViewSet(ModelViewSet):
             if appl.exists():
                 application_id = appl[0].id
 
-        return render(request,template_name='project-detail.html', context={'project': serializer.data, 'bookmark_id' : bookmark_id, 'application_id' : application_id})
+        return render(request,template_name='project-detail.html', context={'project': serializer.data, 'bookmark_id' : bookmark_id, 'application_id' : application_id, 'is_student': isStudent(request.user)})
 
     def list(self, request, *args, **kwargs):
         qset = self.filter_queryset(queryset=self.get_queryset())
@@ -170,7 +174,7 @@ class ProjectViewSet(ModelViewSet):
     def create_new_project(self, request):
         if(not isProf(request.user)):
             return Response(status=403)
-        return render(request, template_name="project-form.html")
+        return render(request, template_name="project-form.html", context={'project_types' : ProjectType.choices, 'degrees': Degree.choices})
 
     # NOTE: student only
     @method_decorator(login_required)
@@ -189,8 +193,10 @@ class ProjectViewSet(ModelViewSet):
         if(project.prof.user != request.user):
             return Response(403)
         serializer = self.get_serializer(project, many=False)
+        
+        interest_text = ', '.join([it['research_field'] for it in serializer.data['tags']])
 
-        return render(request, template_name='project-form.html',context={'project' : serializer.data})
+        return render(request, template_name='project-form.html',context={'project' : serializer.data, 'project_types' : ProjectType.choices, 'degrees': Degree.choices, 'interest_text': interest_text})
 class BookmarkViewSet(ModelViewSet):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkSerializer

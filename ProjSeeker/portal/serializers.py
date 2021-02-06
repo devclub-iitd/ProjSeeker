@@ -2,6 +2,21 @@ from rest_framework import serializers
 from rest_framework.fields import ChoiceField, DateTimeField
 from .models import *
 
+
+def process_interests(interests_text, obj):
+    obj.clear()
+    new_interests = interests_text.split(', ')
+
+    for text in new_interests:
+        if text == '':
+            continue
+        try:
+            existing_interest = Interests.objects.get(research_field=text)
+            obj.add(existing_interest)
+        except:
+            new_intr = Interests.objects.create(research_field=text)
+            obj.add(new_intr)
+
 class ChoiceField(serializers.ChoiceField):
 
     def to_representation(self, obj):
@@ -35,22 +50,12 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = ['id','user','bio','cgpa', 'interests','cv','transcript','pic']
     
     def is_valid(self, raise_exception):
+
         interests_text = self.initial_data['interests']
         del self.initial_data['interests']
         ret_val = super().is_valid(raise_exception=raise_exception)
         
-        self.instance.interests.clear()
-        new_interests = interests_text.split(', ')
-
-        for text in new_interests:
-            if text == '':
-                continue
-            try:
-                existing_interest = Interests.objects.get(research_field=text)
-                self.instance.interests.add(existing_interest)
-            except:
-                new_intr = Interests.objects.create(research_field=text)
-                self.instance.interests.add(new_intr)
+        process_interests(interests_text=interests_text, obj=self.instance.interests)
 
         return ret_val
 class ProfSerializer(serializers.ModelSerializer):
@@ -63,19 +68,7 @@ class ProfSerializer(serializers.ModelSerializer):
         del self.initial_data['interests']
         ret_val = super().is_valid(raise_exception=raise_exception)
         
-        self.instance.interests.clear()
-        new_interests = interests_text.split(', ')
-
-        for text in new_interests:
-            if text == '':
-                continue
-            try:
-                existing_interest = Interests.objects.get(research_field=text)
-                self.instance.interests.add(existing_interest)
-            except:
-                new_intr = Interests.objects.create(research_field=text)
-                self.instance.interests.add(new_intr)
-                
+        process_interests(interests_text=interests_text, obj=self.instance.interests)
 
         return ret_val
     class Meta:
@@ -91,6 +84,17 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['id','prof','title','description','cpi','vacancy','min_year','duration','learning_outcome','prereq','selection_procedure','release_date','last_date', 'tags', 'degree', 'project_type']
+    
+    def is_valid(self, raise_exception):
+        tags = self.initial_data['tags']
+        self.initial_data._mutable = True
+        del self.initial_data['tags']
+        
+        ret_val = super().is_valid(raise_exception=raise_exception)
+
+        process_interests(interests_text=tags, obj=self.instance.tags)
+
+        return ret_val
 
     def save(self, **kwargs):
         instance = super().save(**kwargs)
