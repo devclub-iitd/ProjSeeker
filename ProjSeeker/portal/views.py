@@ -37,10 +37,12 @@ class ProjectFilter(filters.FilterSet):
     bookmarked = filters.filters.BooleanFilter(method='filter_bookmarked')
     floated = filters.filters.BooleanFilter(method='filter_floated')
     status = filters.filters.ChoiceFilter(choices=Status.choices, method='filter_appl_status')
+    is_paid = filters.filters.BooleanFilter(field_name='is_paid')
     
     prof__dept = filters.filters.MultipleChoiceFilter(choices=Departments.choices)
     degree__icontains = filters.filters.MultipleChoiceFilter(choices=Degree.choices)
-    project_type__icontains = filters.filters.MultipleChoiceFilter(choices=ProjectType.choices)
+    project_type__icontains = filters.filters.MultipleChoiceFilter(choices=Project.Category.choices)
+    duration__icontains = filters.filters.MultipleChoiceFilter(choices=Project.Duration.choices)
     tags__research_field = filters.filters.MultipleChoiceFilter(choices=Interests.to_choices())
 
     def search_project(self, queryset, name, value):
@@ -157,7 +159,7 @@ class ProjectViewSet(ModelViewSet):
 
     @action(detail=False)
     def find_projects(self,request):
-        return render(request, template_name="search-projects.html", context={'depts': Departments.choices, 'degrees': Degree.choices, 'types': ProjectType.choices, 'tags': Interests.to_choices()})
+        return render(request, template_name="search-projects.html", context={'depts': Departments.choices, 'degrees': Degree.choices, 'types': Project.Category.choices, 'tags': Interests.to_choices(), 'durations': Project.Duration.choices })
 
     @method_decorator(login_required)
     @action(detail=False)
@@ -185,7 +187,7 @@ class ProjectViewSet(ModelViewSet):
     def create_new_project(self, request):
         if(not isProf(request.user)):
             return Response(status=403)
-        return render(request, template_name="project-form.html", context={'project_types' : ProjectType.choices, 'degrees': Degree.choices})
+        return render(request, template_name="project-form.html", context={'project_types' : Project.Category.choices, 'degrees': Degree.choices})
 
     # NOTE: student only
     @method_decorator(login_required)
@@ -207,7 +209,7 @@ class ProjectViewSet(ModelViewSet):
         
         interest_text = ', '.join([it['research_field'] for it in serializer.data['tags']])
 
-        return render(request, template_name='project-form.html',context={'project' : serializer.data, 'project_types' : ProjectType.choices, 'degrees': Degree.choices, 'interest_text': interest_text})
+        return render(request, template_name='project-form.html',context={'project' : serializer.data, 'project_types' : Project.Category.choices, 'degrees': Degree.choices, 'interest_text': interest_text})
 class BookmarkViewSet(ModelViewSet):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkSerializer

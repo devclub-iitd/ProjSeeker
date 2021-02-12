@@ -41,6 +41,20 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="filter-container">
+            <h4 class="filter-header">By Duration</h4>
+            <div class="filter-main">
+                {% for d in durations %}
+                <label for="{{d.0}}"><input type="checkbox" name="{{d.0}}" id="{{d.0}}" onchange="applyFilter('duration')">{{d.1}}</label>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="filter-container">
+            <h4 class="filter-header">By funding</h4>
+            <div class="filter-main">
+                <label for="paid"><input type="checkbox" name="paid" id="True" onchange="applyFilter('is_paid')">Funding available?</label>
+            </div>
+        </div>
     </div>
     <div class="col2">
         <div class="row">
@@ -80,6 +94,14 @@
             queryTerm: 'tags__research_field',
             selections: [],
         },
+        'duration': {
+            queryTerm: 'duration__icontains',
+            selections: []
+        },
+        'is_paid': {
+            queryTerm: 'is_paid',
+            selections: []
+        }
 
     };
     const searchQueryTerm = 'search';

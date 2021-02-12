@@ -30,12 +30,6 @@ class Degree(models.TextChoices):
     dual = 'Dual', _('Dual')
     phd = 'PhD', _('PhD')
 
-class ProjectType(models.TextChoices):
-    disa = 'DISA', _('DISA')
-    sura = 'SURA', _('SURA')
-    major = 'Major Project', _('Major Project')
-    minor = 'Minor Project', _('Minor Project')
-    design = 'Design Project', _('Design Project')
 
 def upload_handler(student, filename):
     print('user_{0}/{1}'.format(student.user.id, filename))
@@ -84,20 +78,36 @@ class Professor(models.Model):
     
 
 class Project(models.Model):
+
+    class Category(models.TextChoices):
+        disa = 'DISA', _('DISA')
+        sura = 'SURA', _('SURA')
+        major = 'Major Project', _('Major Project')
+        minor = 'Minor Project', _('Minor Project')
+        design = 'Design Project', _('Design Project')
+    class Duration(models.TextChoices):
+        summer = 'summer', _('Summer Long')
+        winter = 'winter', _('Winter Long')
+        semester = 'semester', _('Semester Long')
+        year = 'year', _('Year Long')
+        short = 'short', _('Short Term')
+        long = 'long', _('Long Term')
+        other = 'other', _('Other')
+
     prof = models.ForeignKey("Professor",  on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
-    cpi = models.CharField(max_length=10, verbose_name=_("Minimum CPI required"))
+    cpi = models.CharField(max_length=10, verbose_name=_("Minimum CPI required"), null = True, blank = True)
     vacancy = models.PositiveSmallIntegerField()
-    min_year = models.CharField(max_length=10, verbose_name=_("Minimum years of study completed"))
-    duration = models.CharField(max_length=50)
+    min_year = models.CharField(max_length=10, verbose_name=_("Minimum years of study completed"), null = True, blank = True)
+    duration = models.CharField(max_length=50, choices=Category.choices ,null = True, blank = True)
     learning_outcome = models.TextField()
     prereq = models.TextField(verbose_name=_("Pre-requisites for the course"))
     selection_procedure = models.TextField()
     tags = models.ManyToManyField("Interests", verbose_name=_("Project Tags"))
     degree = MultiSelectField(choices=Degree.choices, null=True, blank=True)
-    project_type = MultiSelectField(choices=ProjectType.choices, null=True, blank=True)
-
+    project_type = MultiSelectField(choices=Duration.choices, null=True, blank=True)
+    is_paid = models.BooleanField(_("Funding available?"), default=False)
     # TODO run validation based on these data and times
     release_date = models.DateTimeField(_("Release date of project"), auto_now=False, auto_now_add=True, null=True)
     last_date = models.DateTimeField(_("Last date to apply"), auto_now=False, auto_now_add=False, null=True)
