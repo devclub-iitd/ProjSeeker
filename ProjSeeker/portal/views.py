@@ -1,3 +1,4 @@
+from django.db.models.query_utils import Q
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
@@ -31,7 +32,7 @@ def isProf(user):
 
 class ProjectFilter(filters.FilterSet):
 
-    title__icontains = filters.filters.CharFilter(field_name='title', lookup_expr='icontains')
+    search = filters.filters.CharFilter(method='search_project')
     applied = filters.filters.BooleanFilter(method='filter_applied')
     bookmarked = filters.filters.BooleanFilter(method='filter_bookmarked')
     floated = filters.filters.BooleanFilter(method='filter_floated')
@@ -41,6 +42,16 @@ class ProjectFilter(filters.FilterSet):
     degree__icontains = filters.filters.MultipleChoiceFilter(choices=Degree.choices)
     project_type__icontains = filters.filters.MultipleChoiceFilter(choices=ProjectType.choices)
     tags__research_field = filters.filters.MultipleChoiceFilter(choices=Interests.to_choices())
+
+    def search_project(self, queryset, name, value):
+        q = Q(title__icontains=value)
+        q |= Q(description__icontains=value)
+        q |= Q(prof__user__first_name__icontains=value)
+        q |= Q(prof__user__last_name__icontains=value)
+        try:
+            return Project.objects.filter(q)
+        except:
+            return Project.objects.none()
 
     def filter_applied(self, queryset, name, value):
         try:

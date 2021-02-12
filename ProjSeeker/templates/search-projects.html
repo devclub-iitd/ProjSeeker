@@ -82,6 +82,7 @@
         },
 
     };
+    const searchQueryTerm = 'search';
     var searchTerm = "";
     var visibleData = {};
 
@@ -124,7 +125,7 @@
     };
 
     const queryBuilder = () => {
-        let query = `title__icontains=${searchTerm}`;
+        let query = `${searchQueryTerm}=${searchTerm}`;
         Object.keys(multiChoiceFilters).forEach((key) => {
             const filter = multiChoiceFilters[key];
             const qTerm = `&${filter.queryTerm}=`;
