@@ -159,7 +159,7 @@ class ProjectViewSet(ModelViewSet):
 
     @action(detail=False)
     def find_projects(self,request):
-        return render(request, template_name="search-projects.html", context={'depts': Departments.choices, 'degrees': Degree.choices, 'types': Project.Category.choices, 'tags': Interests.to_choices(), 'durations': Project.Duration.choices })
+        return render(request, template_name="search-projects.html", context={'depts': Departments.choices, 'degrees': Degree.choices, 'types': Project.Category.choices, 'durations': Project.Duration.choices })
 
     @method_decorator(login_required)
     @action(detail=False)

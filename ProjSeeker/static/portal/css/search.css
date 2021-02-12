@@ -6,7 +6,7 @@
 }
 
 .page-heading {
-    color:white;
+    color: white;
     font-size: 20px;
     text-transform: uppercase;
     margin-bottom: 3.6rem;
@@ -40,7 +40,7 @@ label {
     margin: 2px 0;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
     margin-right: 1rem;
     vertical-align: middle;
 }
@@ -51,15 +51,26 @@ input[type="checkbox"] {
     gap: 2rem;
 }
 
+input[name='intDummy'] {
+    position: relative;
+    margin: 10px 0 0;
+    width: 100%;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background-color: rgb(224, 240, 255);
+    padding: 5px 10px;
+}
+
 #projSearch {
     border-radius: 5px;
     border: none;
     outline: none;
     padding: 10px 18px;
     font-size: 14px;
-    -webkit-box-shadow: 0px 7px 15px -6px rgba(0,0,0,0.34);
-    -moz-box-shadow: 0px 7px 15px -6px rgba(0,0,0,0.34);
-    box-shadow: 0px 7px 15px -6px rgba(0,0,0,0.34);
+    -webkit-box-shadow: 0px 7px 15px -6px rgba(0, 0, 0, 0.34);
+    -moz-box-shadow: 0px 7px 15px -6px rgba(0, 0, 0, 0.34);
+    box-shadow: 0px 7px 15px -6px rgba(0, 0, 0, 0.34);
 }
 
 #projSearch::placeholder {
@@ -76,7 +87,7 @@ input[type="checkbox"] {
 }
 
 #loader {
-    display: flex;    
+    display: flex;
     width: 200px;
     margin: auto;
     margin-top: 20%;

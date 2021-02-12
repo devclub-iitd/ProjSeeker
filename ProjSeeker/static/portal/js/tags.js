@@ -55,6 +55,10 @@ $('.search-suggestions').on('click', '.suggestion', (e) => {
 });
 
 const createTag = (tagVal) => {
+    try {
+        createCheckbox(tagVal);
+    } catch(e) {
+    }
     const tagContainer = document.querySelector('.tag-container');
     const tag = document.createElement('div');
     const interests = document.getElementById('interests');
@@ -69,6 +73,10 @@ const createTag = (tagVal) => {
 }
 
 const handleTagDelete = (tag) => {
+    try {
+        deleteCheckbox(tag.textContent);
+    } catch(e) {
+    }
     var text = tag.textContent;
     console.log(text);
     tag.remove();

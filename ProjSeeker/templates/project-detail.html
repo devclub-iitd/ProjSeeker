@@ -37,7 +37,7 @@
                 <div class="tab-pane fade show active" id="nav-basic" role="tabpanel" aria-labelledby="nav-basic-tab">
                     <ul>
                         <li><b>Vacancy :</b> {{project.vacancy}}</li>
-                        <li><b>Duration :</b> {{project.duration}}</li>
+                        <li><b>Duration :</b> {{ project.duration }}</li>
                         <li><b>Project Type :</b> | {% for type in project.project_type %}{{type}} | {% endfor %}</li>
                         <li><b>Release Date :</b> {{project.release_date}}</li>
                         <li><b>Last Date :</b> {{project.last_date}}</li>
