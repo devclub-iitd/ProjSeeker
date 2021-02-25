@@ -149,6 +149,10 @@ const displayData = () => {
     })
 };
 
+$('#filterBtn').click(() => {
+    $('.sort-list').fadeToggle(100);
+})
+
 const sortBy = (key, reverse) => {
     if (!key)
         key = 'id'

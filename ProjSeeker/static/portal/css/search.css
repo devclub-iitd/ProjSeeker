@@ -77,13 +77,44 @@ input[name='intDummy'] {
     letter-spacing: 3px;
 }
 
+.sort-section {
+    position: relative;
+}
+
 #filterBtn {
     border-radius: 5px;
     color: black;
+    width: 100%;
+    height: 100%;
     background-color: white;
     font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
+}
+
+.sort-list {
+    display: none;
+    position: absolute;
+    width: 100%;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 10px;
+    background-color: white;
+    -webkit-box-shadow: -3px 3px 14px -3px rgba(0, 0, 0, 0.41);
+    -moz-box-shadow: -3px 3px 14px -3px rgba(0, 0, 0, 0.41);
+    box-shadow: -3px 3px 14px -3px rgba(0, 0, 0, 0.41);
+}
+
+.sort-op {
+    padding: 5px 10px;
+    transition: all 50ms ease-in;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sort-op:hover {
+    background: var(--primary-blue);
+    color: white;
 }
 
 #loader {

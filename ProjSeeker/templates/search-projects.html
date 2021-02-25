@@ -1,6 +1,6 @@
 {% extends 'bg-base.html' %}
 {% load static %}
-{% block title %}Project Search{% endblock %}
+{% block title %} Project Search{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'portal/css/search.css' %}">
 <link rel="stylesheet" href="{% static 'portal/css/dashboard.css' %}">
@@ -65,7 +65,13 @@
     <div class="col2">
         <div class="row">
             <input type="text" name="search" id="projSearch" onkeyup="searchProjects()" placeholder="SEARCH FOR PROJECTS">
-            <button class="bold" id="filterBtn" type="button">Sort By</button>
+            <div class="sort-section">
+                <button class="bold" id="filterBtn" type="button">Sort By</button>
+                <ul class="sort-list">
+                    <li class="sort-op">Name</li>
+                    <li class="sort-op">Date</li>
+                </ul>
+            </div>
         </div>
         <img id="loader" src="{% static 'portal/assets/loader2.svg' %}" alt="loader">
         <div class="project-grid" style="display: none;">

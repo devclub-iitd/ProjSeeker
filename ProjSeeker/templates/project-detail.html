@@ -55,6 +55,7 @@
                     <ul>
                         <li><b>Selection Procedure :</b> {{project.selection_procedure}}</li>
                         <li><b>Learning Outcome :</b> {{project.learning_outcome}}</li>
+                        <li><b>Funding :</b> {% if project.is_paid %}Stipend Available {% else %} Not Available {% endif %}</li>
                     </ul>
                 </div>
             </div>
