@@ -70,13 +70,27 @@
             {% else %}
             <div class="action-container">
                 <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader">
-                <button type="submit" class="btn btn-red bold wide-text" formmethod="PATCH" value="{{status_choices.rejected}}">Reject Application</button>
+                <a href="#reject-modal" rel="modal:open" class="btn btn-red bold wide-text">Reject Application</a>
+
                 <button type="submit" class="btn btn-green wide-text bold" formmethod="PATCH" value="{{status_choices.accepted}}">Accept Application</button>
                 <button type="submit" class="btn wide-text bold" formmethod="PATCH" value="{{status_choices.on_hold}}">Put on hold</button>
             </div>
             {% endif %}
 
         </form>
+        <div id="reject-modal" class="modal">
+            <div class="modal-title">
+                <p>Are you sure you want to reject this application?</p>
+            </div>
+            <form action="#" class="modal-form">
+                <label for="remark">Rejection Remark</label>
+                <textarea name="remark" id="remark" rows="4"></textarea>
+            </form>
+            <div class="modal-actions">
+                <button id="delete-button" type="submit" class="btn btn-red bold wide-text" formmethod="PATCH" value="{{status_choices.rejected}}">Reject</button>
+                <a class="btn wide-text bold" rel="modal:close">Cancel</a>
+            </div>
+        </div>
         {% else %}
         <form id="applForm" action="/applications/">
             {% csrf_token %}
@@ -120,9 +134,13 @@
         };
     }
     $(function () {
-        document.querySelectorAll("textarea").forEach(t => t.disabled = true);
-        document.querySelectorAll("select").forEach(t => t.disabled = true);
-        document.querySelectorAll("input").forEach(t => t.disabled = true);
+        document.querySelectorAll('textarea').forEach(t => {
+            if (t.id !== 'remark')
+                t.disabled = true;
+        });
+
+        document.querySelectorAll('select').forEach(t => t.disabled = true);
+        document.querySelectorAll('input').forEach(t => t.disabled = true);
     });
 
 </script>
@@ -132,7 +150,7 @@
     $(function () {
         var pref = $('#preference').attr('value');
         document.querySelector('#preference').selectedIndex = pref - 1;
-        
+
         $('#delete-button').click(() => {
             $('#applForm').submit();
         });

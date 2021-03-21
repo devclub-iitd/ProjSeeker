@@ -109,7 +109,12 @@ input[name='intDummy'] {
     padding: 5px 10px;
     transition: all 50ms ease-in;
     border-radius: 5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.34);
     cursor: pointer;
+}
+
+.sort-op:last-child {
+    border: none;
 }
 
 .sort-op:hover {

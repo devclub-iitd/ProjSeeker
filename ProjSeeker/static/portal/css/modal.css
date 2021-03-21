@@ -13,3 +13,12 @@
     gap: 2rem;
     justify-content: flex-end;
 }
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-form textarea {
+    margin-bottom: 16px;
+}

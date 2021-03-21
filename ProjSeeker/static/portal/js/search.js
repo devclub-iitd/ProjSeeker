@@ -153,30 +153,34 @@ $('#filterBtn').click(() => {
     $('.sort-list').fadeToggle(100);
 })
 
-const sortBy = (key, reverse) => {
+const sortBy = (key, elem) => {
+    $('.sort-list').fadeOut(100);
+    var reverse = $(elem).attr('data-reverse');
     if (!key)
         key = 'id'
-    if (!reverse)
-        reverse = false;
-
+        
     if (visibleData.projects.length == 0)
         return;
 
     const isDate = key.search('date') !== -1;
-    console.assert(Object.keys(visibleData.projects[0]).includes(key))
-
+        
     visibleData.projects.sort((a, b) => {
         const aKey = (isDate) ? new Date(a[key]) : a[key];
         const bKey = (isDate) ? new Date(b[key]) : b[key];
 
         if (aKey < bKey) {
-            return (reverse) ? 1 : -1;
+            return (reverse === 'true') ? 1 : -1;
         }
         if (aKey > bKey) {
-            return (reverse) ? -1 : 1;
+            return (reverse === 'true') ? -1 : 1;
         }
         return 0;
     });
+
+    if (reverse === 'false') 
+        $(elem).attr('data-reverse', 'true');
+    else 
+        $(elem).attr('data-reverse', 'false');
 
     displayData();
 };
