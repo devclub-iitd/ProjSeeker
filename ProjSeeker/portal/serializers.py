@@ -81,6 +81,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     tags = InterestSerializer(many=True, read_only=True)
     degree = serializers.MultipleChoiceField(choices=Degree.choices)
     project_type = serializers.MultipleChoiceField(choices=Project.Category.choices)
+    duration = serializers.ChoiceField(choices=Project.Duration.choices)
     class Meta:
         model = Project
         fields = ['id','prof','title','description','cpi','vacancy','min_year','duration','learning_outcome','prereq','selection_procedure','release_date','last_date', 'tags', 'degree', 'project_type', 'is_paid']
@@ -92,15 +93,20 @@ class ProjectSerializer(serializers.ModelSerializer):
         
         ret_val = super().is_valid(raise_exception=raise_exception)
 
-        process_interests(interests_text=tags, obj=self.instance.tags)
+        try:
+            process_interests(interests_text=tags, obj=self.instance.tags)
+        except:
+            pass
 
         return ret_val
 
     def save(self, **kwargs):
-        instance = super().save(**kwargs)
+        instance = super().save()
         if('prof' in kwargs.keys()):
             instance.prof = kwargs['prof']
-            instance.save()
+        if('tags' in kwargs.keys()):
+            process_interests(kwargs['tags'], self.instance.tags)
+        instance.save()
         return instance
 
 class BookmarkSerializer(serializers.ModelSerializer):

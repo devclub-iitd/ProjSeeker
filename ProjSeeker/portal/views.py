@@ -11,7 +11,6 @@ from django.contrib.auth.decorators import login_required
 from django_filters import rest_framework as filters
 
 
-
 # Create your views here.
 def index(request):
     return render(request, 'home.html')
@@ -121,6 +120,8 @@ class ProjectViewSet(ModelViewSet):
         if(not isProf(request.user)):
             return Response(403)
         print(request.data)
+        kwargs['tags'] = request.data['tags']
+        
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -187,7 +188,7 @@ class ProjectViewSet(ModelViewSet):
     def create_new_project(self, request):
         if(not isProf(request.user)):
             return Response(status=403)
-        return render(request, template_name="project-form.html", context={'project_types' : Project.Category.choices, 'degrees': Degree.choices})
+        return render(request, template_name="project-form.html", context={'project_types' : Project.Category.choices, 'degrees': Degree.choices, 'durations': Project.Duration.choices})
 
     # NOTE: student only
     @method_decorator(login_required)
@@ -209,7 +210,7 @@ class ProjectViewSet(ModelViewSet):
         
         interest_text = ', '.join([it['research_field'] for it in serializer.data['tags']])
 
-        return render(request, template_name='project-form.html',context={'project' : serializer.data, 'project_types' : Project.Category.choices, 'degrees': Degree.choices, 'interest_text': interest_text})
+        return render(request, template_name='project-form.html',context={'project' : serializer.data, 'project_types' : Project.Category.choices, 'degrees': Degree.choices, 'interest_text': interest_text, 'durations': Project.Duration.choices})
 class BookmarkViewSet(ModelViewSet):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkSerializer

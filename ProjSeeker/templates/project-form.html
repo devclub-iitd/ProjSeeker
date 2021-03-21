@@ -29,7 +29,7 @@
                     <input type="text" name="title" id="title" value="{{project.title}}" required>
                     <label for="description">Describe the Project</label>
                     <textarea name="description" id="description" cols="30" rows="4" required>{{project.description}}</textarea>
-                    <label for="project_type">Type of Project</label>
+                    <label id="project_type" for="project_type">Type of Project</label>
 
                     {% for ptype in project_types %}
                     <span class="check-label">
@@ -42,8 +42,20 @@
                     </span>
                     {% endfor %}
 
-                    <label for="duration">Duration of Project</label>
-                    <input type="text" name="duration" id="duration" value="{{project.duration}}" required>
+                    <label id="duration" for="duration">Duration of Project</label>
+
+                    {% for d in durations %}
+                    <span class="check-label">
+                        {% if d.0 in project.duration %}
+                        <input type="checkbox" name="duration" id="{{d.1}}" value="{{d.0}}" checked="true">
+                        {% else %}
+                        <input type="checkbox" name="duration" id="{{d.1}}" value="{{d.0}}">
+                        {% endif %}
+                        {{d.1}}
+                    </span>
+                    {% endfor %}
+
+                    <!-- <input type="text" name="duration" id="duration" value="{{project.duration}}" required> -->
                     <label for="vacancy">Vacancy (Number of People)</label>
                     <input type="number" name="vacancy" id="vacancy" value="{{project.vacancy}}" required>
                     <div class="action-container">
@@ -54,7 +66,7 @@
                     <legend class="section-heading">Eligibility Requirements</legend>
                     <label for="cpi">Minimum CPI Required</label>
                     <input type="text" name="cpi" id="cpi" value="{{project.cpi}}" required>
-                    <label for="degree">Eligible Degrees</label>
+                    <label id="degree" for="degree">Eligible Degrees</label>
 
                     {% for degree in degrees %}
                     <span class="check-label">
@@ -85,7 +97,12 @@
                     <label for="last_date">Last date of applying</label>
                     <input type="datetime-local" name="last_date" id="last_date" value="{{project.last_date}}" required style="width: 30%;">
                     <label for="is_paid">Will a stipend be offered? (Check if applicable)</label>
-                    <input type="checkbox" name="is_paid" id="is_paid" value="true">
+                    
+                    {% if project.is_paid %}
+                        <input type="checkbox" name="is_paid" id="is_paid" value="true" checked="true">
+                    {% else %}
+                        <input type="checkbox" name="is_paid" id="is_paid" value="true">
+                    {% endif %}
                     <label for="tags">Project Tags (Helps students find your projects)</label>
                     <div class="int-searchbar">
                         <input type="text" name="intDummy" autocomplete="off" style="width:100%;">
@@ -104,7 +121,7 @@
                         {% if project.id is None %}
                         <button type="submit" class="btn btn-green bold wide-text" formmethod="POST">Create Project</button>
                         {% else %}
-                        <button type="submit" class="btn btn-green bold wide-text" formmethod="PATCH">Update Project</button>
+                        <button type="submit" class="btn btn-green bold wide-text" formmethod="PUT">Update Project</button>
                         <a href="#delete-modal" rel="modal:open" class="btn btn-red bold wide-text">Delete project</a>
                         <div id="delete-modal" class="modal">
                             <div class="modal-title">
