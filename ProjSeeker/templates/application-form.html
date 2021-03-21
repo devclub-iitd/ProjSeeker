@@ -49,6 +49,10 @@
             <textarea name="cover_letter" id="sop" cols="30" rows="5">{{application.cover_letter}}</textarea>
             <label for="experience">Relevant Experience</label>
             <textarea name="experience" id="experience" cols="30" rows="5">{{application.experience}}</textarea>
+            {% if application.status == status_choices.rejected %}
+                <label for="remark">Rejection remark</label>
+                <textarea name="remark" id="remark" cols="30" rows="2">{{application.remark}}</textarea>
+            {% endif %}
             {% if not is_prof %}
             <!-- TODO: find a better way to display status on both the prof and student side-->
             {% if application.status == status_choices.in_review %}
@@ -131,6 +135,7 @@
     var getData = () => {
         return {
             status: $("button[type=submit]:focus").attr('value'),
+            remark: $('#remark')[0].value,
         };
     }
     $(function () {
@@ -145,7 +150,6 @@
 
 </script>
 {% endif %}
-
 <script>
     $(function () {
         var pref = $('#preference').attr('value');

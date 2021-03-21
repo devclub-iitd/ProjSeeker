@@ -118,4 +118,4 @@ class ApplicationSerializer(serializers.ModelSerializer):
     status = serializers.ChoiceField(choices=Status.choices)
     class Meta:
         model = Application
-        fields = ['id', 'student', 'project', 'preference', 'cover_letter', 'experience', 'status']
+        fields = ['id', 'student', 'project', 'preference', 'cover_letter', 'experience', 'status', 'remark']
