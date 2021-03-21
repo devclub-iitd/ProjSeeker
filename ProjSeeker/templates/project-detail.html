@@ -80,7 +80,7 @@
                 {% if application_id %}
                 <a href="/applications/{{application_id}}/" class="btn btn-red">View Application</a>
                 {% else %}
-                <a href="/projects/{{project.id}}/apply" class="btn btn-red">Apply Now</a>
+                <a href="/projects/{{project.id}}/apply" id="apply-now" class="btn btn-red">Apply Now</a>
                 {% endif %}
         </div>
         {% endif %}
@@ -92,6 +92,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 <script>
     $(function () {
+
+        var d = new Date(`{{project.last_date}}`);
+        if(d.getTime() - d.getTimezoneOffset() * 1000 * 60 < new Date().getTime()){
+            console.log("Deadline passed!");
+            // BUG: not working for some reason
+            $('#apply-now')[0].disabled = true;
+        }
+
         $('#bookmark-form').click(function (event) {
             $('#loader').css('display', 'block');
             $.ajax({

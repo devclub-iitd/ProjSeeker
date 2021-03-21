@@ -391,7 +391,15 @@ class ApplicationViewSet(ModelViewSet):
         request.data._mutable = True
         request.data['student'] = student.id
         request.data['status'] = Status.in_review
-        return super().create(request, *args, **kwargs)
+        try:
+            proj = Project.objects.get(id=request.data['project'])
+            from datetime import datetime as dt
+            if proj.last_date < dt.now():
+                raise ValidationError("Deadline has passed")
+            return super().create(request, *args, **kwargs)
+
+        except Exception as e:
+            return Response(status=400, data=str(e))
 
     @method_decorator(login_required)
     def retrieve(self, request, *args, **kwargs):
@@ -409,4 +417,3 @@ class ApplicationViewSet(ModelViewSet):
         request.data['project'] = instance.project.id
         request.data['student'] = instance.student.id
         return super().update(request, *args, **kwargs)
-    

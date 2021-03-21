@@ -130,7 +130,7 @@ class Application(models.Model):
     cover_letter = models.TextField(_("Cover letter for the application"))
     experience = models.TextField(_("Relevant Experience"))
     status = models.CharField(_("Accepted status"), max_length=50, choices=Status.choices, default=Status.in_review)
-    remark = models.TextField(_("Rejection Remark"))
+    remark = models.TextField(_("Rejection Remark"), default="")
 
     def __str__(self):
         return f'{self.student} | {self.project}'
