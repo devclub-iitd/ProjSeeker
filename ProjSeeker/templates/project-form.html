@@ -7,8 +7,6 @@
 <link rel="stylesheet" href="{% static 'portal/css/modal.css' %}">
 {% endblock style %}
 {% block content %}
-<div class="message-container" style="display: none;">
-</div>
 <div class=" project-container">
     {% if project.id is None %}
     <div class="project-header">Create new Project</div>
@@ -26,9 +24,9 @@
                 <div class="form-section" id="basic-section">
                     <legend class="section-heading">Basic Details</legend>
                     <label for="title">Project Title </label>
-                    <input type="text" name="title" id="title" value="{{project.title}}" required>
+                    <input type="text" name="title" id="title" value="{{project.title}}">
                     <label for="description">Describe the Project</label>
-                    <textarea name="description" id="description" cols="30" rows="4" required>{{project.description}}</textarea>
+                    <textarea name="description" id="description" cols="30" rows="4">{{project.description}}</textarea>
                     <label id="project_type" for="project_type">Type of Project</label>
 
                     {% for ptype in project_types %}
@@ -55,9 +53,9 @@
                     </span>
                     {% endfor %}
 
-                    <!-- <input type="text" name="duration" id="duration" value="{{project.duration}}" required> -->
+                    <!-- <input type="text" name="duration" id="duration" value="{{project.duration}}"> -->
                     <label for="vacancy">Vacancy (Number of People)</label>
-                    <input type="number" name="vacancy" id="vacancy" value="{{project.vacancy}}" required>
+                    <input type="number" name="vacancy" id="vacancy" value="{{project.vacancy}}" min="0">
                     <div class="action-container">
                         <button class="btn wide-text" data-target="elig-section" type="button">NEXT</button>
                     </div>
@@ -65,7 +63,7 @@
                 <div class="form-section" id="elig-section" style="display: none;">
                     <legend class="section-heading">Eligibility Requirements</legend>
                     <label for="cpi">Minimum CPI Required</label>
-                    <input type="text" name="cpi" id="cpi" value="{{project.cpi}}" required>
+                    <input type="text" name="cpi" id="cpi" value="{{project.cpi}}">
                     <label id="degree" for="degree">Eligible Degrees</label>
 
                     {% for degree in degrees %}
@@ -80,9 +78,9 @@
                     {% endfor %}
 
                     <label for="min_year">Minimum Year</label>
-                    <input type="text" name="min_year" id="min_year" value="{{project.min_year}}" required>
+                    <input type="text" name="min_year" id="min_year" value="{{project.min_year}}">
                     <label for="prereq">Project Prerequisites</label>
-                    <textarea name="prereq" id="prereq" cols="30" rows="4" required>{{project.prereq}}</textarea>
+                    <textarea name="prereq" id="prereq" cols="30" rows="4">{{project.prereq}}</textarea>
                     <div class="action-container">
                         <button class="btn btn-red wide-text" data-target="basic-section" type="button">Go Back</button>
                         <button class="btn wide-text" data-target="more-section" type="button">NEXT</button>
@@ -95,13 +93,13 @@
                     <label for="selection_procedure">Selection Procedure</label>
                     <textarea name="selection_procedure" id="selection_procedure" cols="30" rows="4">{{project.selection_procedure}}</textarea>
                     <label for="last_date">Last date of applying</label>
-                    <input type="datetime-local" name="last_date" id="last_date" value="{{project.last_date}}" required style="width: 30%;">
+                    <input type="datetime-local" min="2020-09-14" name="last_date" id="last_date" value="{{project.last_date}}" style="width: 30%;">
                     <label for="is_paid">Will a stipend be offered? (Check if applicable)</label>
-                    
+
                     {% if project.is_paid %}
-                        <input type="checkbox" name="is_paid" id="is_paid" value="true" checked="true">
+                    <input type="checkbox" name="is_paid" id="is_paid" value="true" checked="true">
                     {% else %}
-                        <input type="checkbox" name="is_paid" id="is_paid" value="true">
+                    <input type="checkbox" name="is_paid" id="is_paid" value="true">
                     {% endif %}
                     <label for="tags">Project Tags (Helps students find your projects)</label>
                     <div class="int-searchbar">
@@ -138,6 +136,8 @@
             </form>
     </div>
 </div>
+<div class="message-container" style="display: none;">
+</div>
 {% endblock content %}
 {% block script %}
 <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -152,6 +152,8 @@
             }
         });
     });
+
+    const activeErrors = [];
 
     $('#delBtn').click(() => {
         $('#projectForm').submit();
@@ -189,7 +191,7 @@
                     const message = messageTemplate.clone();
                     message.html('<p>Success!</p>')
 
-                    $('#more-section').prepend(message);
+                    $('#more-section').append(message);
                     message.fadeIn(250);
                     // TODO add loading screen
                     setTimeout(() => {
@@ -204,17 +206,22 @@
                 error: (e) => {
                     $('#loader').fadeOut(50);
                     // TODO: proper error handling if some required fields are missing
-                    const errorContainer = messageTemplate.clone();
-                    errorContainer.addClass('error');
-                    errorContainer.html('<p>Please re-check the form for errors and correct them</p>');
-                    $('#more-section').prepend(errorContainer);
-                    errorContainer.fadeIn(250);
+                    if (activeErrors.length == 0) {
+                        const errorContainer = messageTemplate.clone();
+                        errorContainer.addClass('error');
+                        errorContainer.html('<p>Please re-check the form for errors and correct them</p>');
+                        $('#more-section').append(errorContainer);
+                        errorContainer.fadeIn(250);
+                    }
 
                     const errors = JSON.parse(e.responseText);
 
                     Object.keys(errors).forEach((key) => {
-                        $(`#${key}`).css({ 'border': '2px solid rgba(255, 57, 57, 0.523)', 'background-color': ' rgba(255, 128, 128, 0.349)' });
-                        $(`#${key}`).after(`<span class="error-text">${errors[key]}</span>`)
+                        if (!activeErrors.includes(key)) {
+                            $(`#${key}`).css({ 'border': '2px solid rgba(255, 57, 57, 0.523)', 'background-color': ' rgba(255, 128, 128, 0.349)' });
+                            $(`#${key}`).after(`<span class="error-text">${errors[key]}</span>`)
+                            activeErrors.push(key);
+                        }
                     })
                 }
             });
