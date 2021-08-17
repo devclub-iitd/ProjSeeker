@@ -51,7 +51,7 @@
             <textarea name="experience" id="experience" cols="30" rows="5">{{application.experience}}</textarea>
             {% if application.status == status_choices.rejected %}
                 <label for="remark">Rejection remark</label>
-                <textarea name="remark" id="remark" cols="30" rows="2">{{application.remark}}</textarea>
+                <textarea name="remark" id="remark" cols="30" rows="2" readonly="true">{{application.remark}}</textarea>
             {% endif %}
             {% if not is_prof %}
             <!-- TODO: find a better way to display status on both the prof and student side-->
@@ -179,7 +179,9 @@
                 },
                 error: (e) => {
                     // TODO: Proper error handling!
-                    console.error(e);
+                    const err = e.responseJSON['detail'];
+                    console.error(err);
+                    alert(err);
                 }
             });
             return false;

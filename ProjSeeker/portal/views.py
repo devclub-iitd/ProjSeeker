@@ -7,7 +7,7 @@ from .models import *
 from .serializers import *
 from rest_framework.decorators import action
 from rest_framework import permissions, request
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django_filters import rest_framework as filters
 
 
@@ -19,15 +19,14 @@ def index(request):
 def dashboard(request):
     return render(request, 'dashboard.html', context={'is_prof': isProf(request.user), 'is_student': isStudent(request.user)})
 
+
 def isStudent(user):
-    if( not user.is_authenticated):
-        return False
-    return len(user.student_set.all()) == 1
+    return user.has_perm('portal.is_student')
+
 
 def isProf(user):
-    if( not user.is_authenticated):
-        return False
-    return len(user.professor_set.all()) == 1
+    return user.has_perm('portal.is_prof')
+
 
 class ProjectFilter(filters.FilterSet):
 
@@ -35,14 +34,20 @@ class ProjectFilter(filters.FilterSet):
     applied = filters.filters.BooleanFilter(method='filter_applied')
     bookmarked = filters.filters.BooleanFilter(method='filter_bookmarked')
     floated = filters.filters.BooleanFilter(method='filter_floated')
-    status = filters.filters.ChoiceFilter(choices=Status.choices, method='filter_appl_status')
+    status = filters.filters.ChoiceFilter(
+        choices=Status.choices, method='filter_appl_status')
     is_paid = filters.filters.BooleanFilter(field_name='is_paid')
-    
-    prof__dept = filters.filters.MultipleChoiceFilter(choices=Departments.choices)
-    degree__icontains = filters.filters.MultipleChoiceFilter(choices=Degree.choices)
-    project_type__icontains = filters.filters.MultipleChoiceFilter(choices=Project.Category.choices)
-    duration__icontains = filters.filters.MultipleChoiceFilter(choices=Project.Duration.choices)
-    tags__research_field = filters.filters.MultipleChoiceFilter(choices=Interests.to_choices())
+
+    prof__dept = filters.filters.MultipleChoiceFilter(
+        choices=Departments.choices)
+    degree__icontains = filters.filters.MultipleChoiceFilter(
+        choices=Degree.choices)
+    project_type__icontains = filters.filters.MultipleChoiceFilter(
+        choices=Project.Category.choices)
+    duration__icontains = filters.filters.MultipleChoiceFilter(
+        choices=Project.Duration.choices)
+    tags__research_field = filters.filters.MultipleChoiceFilter(
+        choices=Interests.to_choices())
 
     def search_project(self, queryset, name, value):
         q = Q(title__icontains=value)
@@ -59,7 +64,8 @@ class ProjectFilter(filters.FilterSet):
             user = self.request.user
             assert isStudent(user)
 
-            applied = Application.objects.select_related('project').filter(student__user=user)
+            applied = Application.objects.select_related(
+                'project').filter(student__user=user)
             pids = [appl.project.id for appl in applied]
 
             return Project.objects.filter(id__in=pids)
@@ -77,7 +83,7 @@ class ProjectFilter(filters.FilterSet):
             return Project.objects.filter(id__in=pids)
         except:
             return Project.objects.none()
-    
+
     def filter_floated(self, queryset, name, value):
         try:
             user = self.request.user
@@ -86,12 +92,13 @@ class ProjectFilter(filters.FilterSet):
             return Project.objects.filter(prof__user=user)
         except:
             return Project.objects.none()
-    
+
     def filter_appl_status(self, queryset, name, value):
         try:
             user = self.request.user
 
-            appls = Application.objects.filter(student__user=user,status=value)
+            appls = Application.objects.filter(
+                student__user=user, status=value)
             pids = [appl.project.id for appl in appls]
 
             return Project.objects.filter(id__in=pids)
@@ -103,31 +110,28 @@ class ProjectFilter(filters.FilterSet):
         fields = ['title', 'prof']
 
 
-# TODO handle security of all endpoints!! -> Prof/User access control
 class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     filter_backends = [filters.DjangoFilterBackend]
-    filterset_class = ProjectFilter    
+    filterset_class = ProjectFilter
 
     def update(self, request, *args, **kwargs):
         print(request.data)
         return super().update(request, *args, **kwargs)
 
-    # NOTE: Prof Only
     @method_decorator(login_required)
+    @method_decorator(permission_required('portal.is_prof'))
     def create(self, request, *args, **kwargs):
-        if(not isProf(request.user)):
-            return Response(403)
         print(request.data)
         kwargs['tags'] = request.data['tags']
-        
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         kwargs['prof'] = Professor.objects.get(user=request.user)
         serializer.save(*args, **kwargs)
-        
+
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=201, headers=headers)
 
@@ -142,86 +146,85 @@ class ProjectViewSet(ModelViewSet):
             bmk = Bookmark.objects.filter(user=request.user, project=instance)
             if bmk.exists():
                 bookmark_id = bmk[0].id
-            
+
             appl = instance.application_set.all().filter(student__user=request.user)
             if appl.exists():
                 application_id = appl[0].id
 
-        return render(request,template_name='project-detail.html', context={'project': serializer.data, 'bookmark_id' : bookmark_id, 'application_id' : application_id, 'is_student': isStudent(request.user)})
+        return render(request, template_name='project-detail.html', context={'project': serializer.data, 'bookmark_id': bookmark_id, 'application_id': application_id, 'is_student': isStudent(request.user)})
 
     def list(self, request, *args, **kwargs):
         qset = self.filter_queryset(queryset=self.get_queryset())
         serializer = self.get_serializer(qset, many=True)
 
         return Response(data={
-            'projects' : serializer.data,
-            'is_prof' : isProf(request.user),
+            'projects': serializer.data,
+            'is_prof': isProf(request.user),
         })
 
     @action(detail=False)
-    def find_projects(self,request):
-        return render(request, template_name="search-projects.html", context={'depts': Departments.choices, 'degrees': Degree.choices, 'types': Project.Category.choices, 'durations': Project.Duration.choices })
+    def find_projects(self, request):
+        return render(request, template_name="search-projects.html", context={'depts': Departments.choices, 'degrees': Degree.choices, 'types': Project.Category.choices, 'durations': Project.Duration.choices})
 
     @method_decorator(login_required)
     @action(detail=False)
     def my_projects(self, request):
         qset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(qset, many=True)
-        
+
         if 'applied' in request.GET.keys() and request.GET['applied'] == 'true':
             return Response(data={
-                'projects' : serializer.data,
+                'projects': serializer.data,
                 'is_student': isStudent(request.user),
                 'is_prof': isProf(request.user),
             })
         else:
-            return render(request=request, template_name="dashboard.html", context={'projects' : serializer.data,'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
-    
+            return render(request=request, template_name="dashboard.html", context={'projects': serializer.data, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
+
     @method_decorator(login_required)
     @action(detail=False)
     def applied_projects(self, request):
-        return render(request=request, template_name="applied-projects.html", context={'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
-        
-    # NOTE: Prof only
+        return render(request=request, template_name="applied-projects.html", context={'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
+
     @method_decorator(login_required)
+    @method_decorator(permission_required('portal.is_prof'))
     @action(detail=False, methods=['GET'])
     def create_new_project(self, request):
-        if(not isProf(request.user)):
-            return Response(status=403)
-        return render(request, template_name="project-form.html", context={'project_types' : Project.Category.choices, 'degrees': Degree.choices, 'durations': Project.Duration.choices})
+        return render(request, template_name="project-form.html", context={'project_types': Project.Category.choices, 'degrees': Degree.choices, 'durations': Project.Duration.choices})
 
-    # NOTE: student only
     @method_decorator(login_required)
-    @action(detail=True, methods=['GET'],url_name='apply-project',url_path='apply')
+    @method_decorator(permission_required('portal.is_student'))
+    @action(detail=True, methods=['GET'], url_name='apply-project', url_path='apply')
     def apply_for_project(self, request, pk=None):
         project = self.get_object()
         serializer = self.get_serializer(project, many=False)
-        
-        return render(request, template_name='application-form.html',context={'project' : serializer.data, 'isApplied': False})
 
-    # NOTE: prof only
+        return render(request, template_name='application-form.html', context={'project': serializer.data, 'isApplied': False})
+
     @method_decorator(login_required)
-    @action(detail=True, methods=['GET'],url_name='edit-project', url_path='edit')
+    @method_decorator(permission_required('portal.is_prof'))
+    @action(detail=True, methods=['GET'], url_name='edit-project', url_path='edit')
     def edit(self, request, pk=None):
         project = self.get_object()
         if(project.prof.user != request.user):
             return Response(403)
         serializer = self.get_serializer(project, many=False)
-        
-        interest_text = ', '.join([it['research_field'] for it in serializer.data['tags']])
 
-        return render(request, template_name='project-form.html',context={'project' : serializer.data, 'project_types' : Project.Category.choices, 'degrees': Degree.choices, 'interest_text': interest_text, 'durations': Project.Duration.choices})
+        interest_text = ', '.join([it['research_field']
+                                  for it in serializer.data['tags']])
+
+        return render(request, template_name='project-form.html', context={'project': serializer.data, 'project_types': Project.Category.choices, 'degrees': Degree.choices, 'interest_text': interest_text, 'durations': Project.Duration.choices})
+
+
 class BookmarkViewSet(ModelViewSet):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # NOTE: student only
+    @method_decorator(permission_required('portal.is_student'))
     @method_decorator(login_required)
     def create(self, request, *args, **kwargs):
-        if not isStudent(request.user):
-            return Response(403)
-        
+
         request.data._mutable = True
         request.data['user'] = request.user.id
         project_id = request.data['project'][0]
@@ -232,14 +235,17 @@ class BookmarkViewSet(ModelViewSet):
         return super().create(request, *args, **kwargs)
 
 # TODO Refactor Student and Professor view sets and serializer code
+
+
 class StudentViewSet(ModelViewSet):
-    queryset=Student.objects.all()
-    serializer_class=StudentSerializer
-    permission_classes=[permissions.IsAuthenticated]
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def check_object_permissions(self, request, obj):
         if(obj.user.id != request.user.id):
-            raise Exception("Unauthorized user")
+            self.permission_denied(
+                request, message='Unauthorized User', code=403)
         return super().check_object_permissions(request, obj)
 
     def update(self, request, *args, **kwargs):
@@ -274,7 +280,7 @@ class StudentViewSet(ModelViewSet):
             student.transcript.delete()
         return Response(200)
 
-    @action(detail=False,methods=['GET'])
+    @action(detail=False, methods=['GET'])
     def profile(self, request):
         user = request.user
         students = user.student_set.all()
@@ -282,22 +288,25 @@ class StudentViewSet(ModelViewSet):
         if(len(students) == 1):
             student = students[0]
             serializer = self.get_serializer(student, many=False)
-            interest_text = ', '.join([it['research_field'] for it in serializer.data['interests']])
-            return render(request, template_name='profile.html', context={'user_data':serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+            interest_text = ', '.join([it['research_field']
+                                      for it in serializer.data['interests']])
+            return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
         return Response(404)
-    
+
+
 class ProfViewSet(ModelViewSet):
-    queryset=Professor.objects.all()
-    serializer_class=ProfSerializer
-    permission_classes=[permissions.IsAuthenticated]
+    queryset = Professor.objects.all()
+    serializer_class = ProfSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def check_object_permissions(self, request, obj):
         if(obj.user.id != request.user.id):
-            raise Exception("Unauthorized user")
+            self.permission_denied(
+                request, message='Unauthorized User', code=403)
         return super().check_object_permissions(request, obj)
 
     def update(self, request, *args, **kwargs):
-        
+
         request.data._mutable = True
         if(not request.data['pic']):
             del request.data['pic']
@@ -308,7 +317,7 @@ class ProfViewSet(ModelViewSet):
                 request.data['dept'] = dept[1]
 
         print(request.data)
-        
+
         return super().update(request, *args, **kwargs)
 
     @action(detail=False, methods=['POST'])
@@ -328,7 +337,7 @@ class ProfViewSet(ModelViewSet):
             prof.pic.delete()
         return Response(200)
 
-    @action(detail=False,methods=['GET'])
+    @action(detail=False, methods=['GET'])
     def profile(self, request):
         user = request.user
         professors = user.professor_set.all()
@@ -336,80 +345,80 @@ class ProfViewSet(ModelViewSet):
         if(len(professors) == 1):
             prof = professors[0]
             serializer = self.get_serializer(prof, many=False)
-            interest_text = ', '.join([it['research_field'] for it in serializer.data['interests']])
-            return render(request, template_name='profile.html', context={'user_data':serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+            interest_text = ', '.join([it['research_field']
+                                      for it in serializer.data['interests']])
+            return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
         return Response(404)
-    
+
+
 class InterestViewSet(ModelViewSet):
-    queryset=Interests.objects.all()
-    serializer_class=InterestSerializer
+    queryset = Interests.objects.all()
+    serializer_class = InterestSerializer
     filter_backends = [filters.DjangoFilterBackend]
     filter_fields = {
         'research_field': ['startswith']
     }
+
+
 class ApplicationViewSet(ModelViewSet):
-    queryset=Application.objects.all()
-    serializer_class=ApplicationSerializer
-    permission_classes=[permissions.IsAuthenticated]
+    queryset = Application.objects.all()
+    serializer_class = ApplicationSerializer
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [filters.DjangoFilterBackend]
     filter_fields = ['status']
 
     def check_object_permissions(self, request, obj):
         if(obj.student.user.id != request.user.id and obj.project.prof.user.id != request.user.id):
-            raise Exception("Forbidden")
+            self.permission_denied(request, message='Forbidden', code=403)
+        if request.method != 'GET' and obj.project.deadline_passed() and isStudent(request.user):
+            self.permission_denied(
+                request, message='Deadline Passed!', code=400)
         return super().check_object_permissions(request, obj)
 
-    # NOTE: Prof only
     @action(detail=False)
     @method_decorator(login_required)
+    @method_decorator(permission_required('portal.is_prof'))
     def list_received_applications(self, request):
         user = request.user
-        if(not isProf(user)):
-            return Response(403)
         applications = Application.objects.filter(project__prof__user=user)
         applications = self.filter_queryset(applications)
 
         serializer = self.get_serializer(applications, many=True)
         data = serializer.data
         for appl in data:
-            appl['project_title'] = Project.objects.get(id=appl['project']).title
+            appl['project_title'] = Project.objects.get(
+                id=appl['project']).title
             stud_user = Student.objects.get(id=appl['student']).user
-            appl['student_name'] = stud_user.first_name + " " + stud_user.last_name
-        
-        return Response({'applications': data, 'is_student': isStudent(request.user), 'is_prof' : isProf(request.user)})
+            appl['student_name'] = stud_user.first_name + \
+                " " + stud_user.last_name
 
-    # NOTE: Prof only
+        return Response({'applications': data, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
+
     @method_decorator(login_required)
+    @method_decorator(permission_required('portal.is_prof'))
     @action(detail=False)
     def view_received_applications(self, request):
         return render(request=request, template_name='application-card.html', context={'is_prof': isProf(request.user), 'is_student': isStudent(request.user)})
-    
-    # NOTE: Student only
+
     @method_decorator(login_required)
+    @method_decorator(permission_required('portal.is_student'))
     def create(self, request, *args, **kwargs):
         student = Student.objects.get(user__id=request.user.id)
         request.data._mutable = True
         request.data['student'] = student.id
         request.data['status'] = Status.in_review
-        try:
-            proj = Project.objects.get(id=request.data['project'])
-            from datetime import datetime as dt
-            if proj.last_date < dt.now():
-                raise ValidationError("Deadline has passed")
-            return super().create(request, *args, **kwargs)
 
-        except Exception as e:
-            return Response(status=400, data=str(e))
+        return super().create(request, *args, **kwargs)
 
     @method_decorator(login_required)
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        project_data = ProjectSerializer(Project.objects.get(id=instance.project.id),many=False).data
+        project_data = ProjectSerializer(Project.objects.get(
+            id=instance.project.id), many=False).data
         serializer = self.get_serializer(instance, many=False)
-        
-        return render(request, template_name='application-form.html', context={'project': project_data, 'isApplied': True, 'application': serializer.data, 'is_prof': isProf(request.user), 'status_choices' : Status, 'student_user_id': instance.student.user.id})
 
-    # NOTE: Student only
+        return render(request, template_name='application-form.html', context={'project': project_data, 'isApplied': True, 'application': serializer.data, 'is_prof': isProf(request.user), 'status_choices': Status, 'student_user_id': instance.student.user.id})
+
     @method_decorator(login_required)
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

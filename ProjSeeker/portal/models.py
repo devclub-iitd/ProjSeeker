@@ -10,19 +10,21 @@ from multiselectfield import MultiSelectField
 class Departments(models.TextChoices):
     CSE = 'CSE', _('Computer Science and Engineering')
     EE = 'EE', _('Electrical Engineering')
-    ME = 'ME', _('Mechanical Engineering')    
-    CH = 'CH', _('Chemical Engineering')    
-    CE = 'CE', _('Civil Engineering')    
-    BB = 'BB', _('Biotech Engineering')    
-    TT = 'TT', _('Textile Engineering')    
-    PH = 'PH', _('Engineering Physics')    
-    MT = 'MT', _('Mathematics')    
+    ME = 'ME', _('Mechanical Engineering')
+    CH = 'CH', _('Chemical Engineering')
+    CE = 'CE', _('Civil Engineering')
+    BB = 'BB', _('Biotech Engineering')
+    TT = 'TT', _('Textile Engineering')
+    PH = 'PH', _('Engineering Physics')
+    MT = 'MT', _('Mathematics')
+
 
 class Status(models.TextChoices):
     in_review = 'IR', _('In Review')
     on_hold = 'OH', _('On Hold')
     accepted = 'AC', _('Accepted')
     rejected = 'RE', _('Rejected')
+
 
 class Degree(models.TextChoices):
     btech = 'BTech', _('BTech')
@@ -42,19 +44,29 @@ def upload_transcript(s, _): return upload_handler(s, 'transcript.pdf')
 
 
 class Student(models.Model):
-    user = models.ForeignKey(User, verbose_name=_("Auth User"), on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name=_(
+        "Auth User"), on_delete=models.CASCADE)
     bio = models.TextField()
-    cv = models.FileField(_("Resume"), upload_to= upload_cv,storage=OverwriteStorage(), null=True)
-    transcript = models.FileField(_("Transcripts"), upload_to= upload_transcript , storage=OverwriteStorage(), null=True)
-    pic = models.FileField(_("Profile Pic"), upload_to=upload_pic, null=True, storage=OverwriteStorage())
-    cgpa = models.FloatField(_("CGPA"), validators=[MaxValueValidator(10)], null=True)
+    cv = models.FileField(_("Resume"), upload_to=upload_cv,
+                          storage=OverwriteStorage(), null=True)
+    transcript = models.FileField(
+        _("Transcripts"), upload_to=upload_transcript, storage=OverwriteStorage(), null=True)
+    pic = models.FileField(
+        _("Profile Pic"), upload_to=upload_pic, null=True, storage=OverwriteStorage())
+    cgpa = models.FloatField(_("CGPA"), validators=[
+                             MaxValueValidator(10)], null=True)
     interests = models.ManyToManyField("Interests")
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
 
+    class Meta:
+        permissions = (('is_student', 'Is Student'),)
+
+
 class Interests(models.Model):
-    research_field = models.CharField(_("Research Area of Interest"), max_length=50)
+    research_field = models.CharField(
+        _("Research Area of Interest"), max_length=50)
 
     def __str__(self):
         return self.research_field
@@ -63,19 +75,26 @@ class Interests(models.Model):
     def to_choices():
         interests = Interests.objects.all()
         return [(intr.research_field, intr.research_field) for intr in interests]
-    
+
 
 class Professor(models.Model):
-    user = models.ForeignKey(User, verbose_name=_("Auth User"), on_delete=models.CASCADE)
-    dept = models.CharField(_("department"), max_length=50, choices=Departments.choices)
+    user = models.ForeignKey(User, verbose_name=_(
+        "Auth User"), on_delete=models.CASCADE)
+    dept = models.CharField(_("department"), max_length=50,
+                            choices=Departments.choices)
     interests = models.ManyToManyField("Interests")
-    webpage_link = models.URLField(_("Webpage Link"), max_length=200, null=True)
-    pic = models.FileField(_("Profile Pic"), upload_to=upload_pic, storage=OverwriteStorage(), null=True)
+    webpage_link = models.URLField(
+        _("Webpage Link"), max_length=200, null=True)
+    pic = models.FileField(
+        _("Profile Pic"), upload_to=upload_pic, storage=OverwriteStorage(), null=True)
     bio = models.TextField(_("Biography"), null=True)
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name} @ {self.dept}'
-    
+
+    class Meta:
+        permissions = (('is_prof', 'Is Prof'),)
+
 
 class Project(models.Model):
 
@@ -85,6 +104,7 @@ class Project(models.Model):
         major = 'Major Project', _('Major Project')
         minor = 'Minor Project', _('Minor Project')
         design = 'Design Project', _('Design Project')
+
     class Duration(models.TextChoices):
         summer = 'summer', _('Summer Long')
         winter = 'winter', _('Winter Long')
@@ -97,39 +117,53 @@ class Project(models.Model):
     prof = models.ForeignKey("Professor",  on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
-    cpi = models.CharField(max_length=10, verbose_name=_("Minimum CPI required"), null = True, blank = True)
+    cpi = models.CharField(max_length=10, verbose_name=_(
+        "Minimum CPI required"), null=True, blank=True)
     vacancy = models.PositiveSmallIntegerField()
-    min_year = models.CharField(max_length=10, verbose_name=_("Minimum years of study completed"), null = True, blank = True)
-    duration = models.CharField(max_length=50, choices=Category.choices ,null = True, blank = True)
+    min_year = models.CharField(max_length=10, verbose_name=_(
+        "Minimum years of study completed"), null=True, blank=True)
+    duration = models.CharField(
+        max_length=50, choices=Category.choices, null=True, blank=True)
     learning_outcome = models.TextField()
     prereq = models.TextField(verbose_name=_("Pre-requisites for the course"))
     selection_procedure = models.TextField()
     tags = models.ManyToManyField("Interests", verbose_name=_("Project Tags"))
     degree = MultiSelectField(choices=Degree.choices, null=True, blank=True)
-    project_type = MultiSelectField(choices=Duration.choices, null=True, blank=True)
+    project_type = MultiSelectField(
+        choices=Duration.choices, null=True, blank=True)
     is_paid = models.BooleanField(_("Funding available?"), default=False)
-    # TODO run validation based on these data and times
-    release_date = models.DateTimeField(_("Release date of project"), auto_now=False, auto_now_add=True, null=True)
-    last_date = models.DateTimeField(_("Last date to apply"), auto_now=False, auto_now_add=False, null=True)
+    release_date = models.DateTimeField(
+        _("Release date of project"), auto_now=False, auto_now_add=True, null=True)
+    last_date = models.DateTimeField(
+        _("Last date to apply"), auto_now=False, auto_now_add=False, null=True)
 
     def __str__(self):
         return f'{self.title} | {self.prof}'
-    
+
+    def deadline_passed(self) -> bool:
+        from datetime import datetime as dt
+        return self.last_date < dt.now()
+
+
 class Bookmark(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey("Project", on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.user} -> {self.project}'
-    
-    
+
+
 class Application(models.Model):
-    student = models.ForeignKey("Student", verbose_name=_("Student"), on_delete=models.CASCADE)
-    project = models.ForeignKey("Project", verbose_name=_("Project applied to"), on_delete=models.CASCADE)
-    preference = models.PositiveSmallIntegerField(_("Preference"), default=1, validators=[MaxValueValidator(5)])
+    student = models.ForeignKey("Student", verbose_name=_(
+        "Student"), on_delete=models.CASCADE)
+    project = models.ForeignKey("Project", verbose_name=_(
+        "Project applied to"), on_delete=models.CASCADE)
+    preference = models.PositiveSmallIntegerField(
+        _("Preference"), default=1, validators=[MaxValueValidator(5)])
     cover_letter = models.TextField(_("Cover letter for the application"))
     experience = models.TextField(_("Relevant Experience"))
-    status = models.CharField(_("Accepted status"), max_length=50, choices=Status.choices, default=Status.in_review)
+    status = models.CharField(_("Accepted status"), max_length=50,
+                              choices=Status.choices, default=Status.in_review)
     remark = models.TextField(_("Rejection Remark"), default="")
 
     def __str__(self):
