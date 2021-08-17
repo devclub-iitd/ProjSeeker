@@ -1,92 +1,165 @@
-{% extends 'bg-base.html' %}
-{% load static %}
-{% block title %} Project Search{% endblock %}
-{% block style %}
-<link rel="stylesheet" href="{% static 'portal/css/search.css' %}">
-<link rel="stylesheet" href="{% static 'portal/css/dashboard.css' %}">
-{% endblock %}
-{% block content %}
+{% extends 'bg-base.html' %} {% load static %} {% block title %} Project
+Search{% endblock %} {% block style %}
+<link rel="stylesheet" href="{% static 'portal/css/search.css' %}" />
+<link rel="stylesheet" href="{% static 'portal/css/dashboard.css' %}" />
+{% endblock %} {% block content %}
 <div class="search-grid">
-    <div class="col1">
-        <h2 class="page-heading wide-text bold">Filters</h2>
-        <div class="filter-container">
-            <h4 class="filter-header">By Deparment</h4>
-            <div class="filter-main">
-                {% for dept in depts %}
-                <label for="{{dept.0}}"><input type="checkbox" name="{{dept.0}}" id="{{dept.0}}" onchange="applyFilter('dept')">{{dept.1}}</label>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="filter-container">
-            <h4 class="filter-header">By Tag</h4>
-            <div class="filter-main" id="tag-filter">
-                <label for="interests">Interests</label>
-                <div class="int-searchbar">
-                    <input type="text" name="intDummy" autocomplete="off" placeholder="Search by tags">
-                    <ul class="search-suggestions" style="top:38px">
-                    </ul>
-                </div>
-                <input type="hidden" name="interests" id="interests" value="{{ interest_text }}">
-                <div class="tag-container" style="margin-top: 15px;">
-                </div>
-            </div>
-        </div>
-        <div class="filter-container">
-            <h4 class="filter-header">By Project Type</h4>
-            <div class="filter-main">
-                {% for t in types %}
-                <label for="{{t.0}}"><input type="checkbox" name="{{t.0}}" id="{{t.0}}" onchange="applyFilter('type')">{{t.1}}</label>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="filter-container">
-            <h4 class="filter-header">By Degree Requirement</h4>
-            <div class="filter-main">
-                {% for d in degrees %}
-                <label for="{{d.0}}"><input type="checkbox" name="{{d.0}}" id="{{d.0}}" onchange="applyFilter('degree')">{{d.1}}</label>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="filter-container">
-            <h4 class="filter-header">By Duration</h4>
-            <div class="filter-main">
-                {% for d in durations %}
-                <label for="{{d.0}}"><input type="checkbox" name="{{d.0}}" id="{{d.0}}" onchange="applyFilter('duration')">{{d.1}}</label>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="filter-container">
-            <h4 class="filter-header">By funding</h4>
-            <div class="filter-main">
-                <label for="paid"><input type="checkbox" name="paid" id="True" onchange="applyFilter('is_paid')">Funding available?</label>
-            </div>
-        </div>
+  <div class="col1">
+    <h2 class="page-heading wide-text bold">Filters</h2>
+    <div class="filter-container">
+      <h4 class="filter-header">By Deparment</h4>
+      <div class="filter-main">
+        {% for dept in depts %}
+        <label for="{{dept.0}}"
+          ><input
+            type="checkbox"
+            name="{{dept.0}}"
+            id="{{dept.0}}"
+            onchange="applyFilter('dept')"
+          />{{dept.1}}</label
+        >
+        {% endfor %}
+      </div>
     </div>
-    <div class="col2">
-        <div class="row">
-            <input type="text" name="search" id="projSearch" onkeyup="searchProjects()" placeholder="SEARCH FOR PROJECTS">
-            <div class="sort-section">
-                <button class="bold" id="filterBtn" type="button">Sort By</button>
-                <ul class="sort-list">
-                    <li class="sort-op" onclick="sortBy('title', this)" data-reverse="false">Project Title</li>
-                    <li class="sort-op" onclick="sortBy('last_date', this)" data-reverse="false">Applcation Deadline</li>
-                </ul>
-            </div>
+    <div class="filter-container">
+      <h4 class="filter-header">By Tag</h4>
+      <div class="filter-main" id="tag-filter">
+        <label for="interests">Interests</label>
+        <div class="int-searchbar">
+          <input
+            type="text"
+            name="intDummy"
+            autocomplete="off"
+            placeholder="Search by tags"
+          />
+          <ul class="search-suggestions" style="top: 38px"></ul>
         </div>
-        <img id="loader" src="{% static 'portal/assets/loader2.svg' %}" alt="loader">
-        <div class="project-grid" style="display: none;">
-            <div id="cardTemplate" style="display: none;" class="project-card">
-                <h2 class="project-title"></h2>
-                <h3 class="prof-name"></h3>
-                <p class="project-desc"></p>
-                <a href="" class="btn btn-xs card-btn wide-text bold">More</a>
-            </div>
-
-        </div>
+        <input
+          type="hidden"
+          name="interests"
+          id="interests"
+          value="{{ interest_text }}"
+        />
+        <div class="tag-container" style="margin-top: 15px"></div>
+      </div>
     </div>
+    <div class="filter-container">
+      <h4 class="filter-header">By Project Type</h4>
+      <div class="filter-main">
+        {% for t in types %}
+        <label for="{{t.0}}"
+          ><input
+            type="checkbox"
+            name="{{t.0}}"
+            id="{{t.0}}"
+            onchange="applyFilter('type')"
+          />{{t.1}}</label
+        >
+        {% endfor %}
+      </div>
+    </div>
+    <div class="filter-container">
+      <h4 class="filter-header">By Degree Requirement</h4>
+      <div class="filter-main">
+        {% for d in degrees %}
+        <label for="{{d.0}}"
+          ><input
+            type="checkbox"
+            name="{{d.0}}"
+            id="{{d.0}}"
+            onchange="applyFilter('degree')"
+          />{{d.1}}</label
+        >
+        {% endfor %}
+      </div>
+    </div>
+    <div class="filter-container">
+      <h4 class="filter-header">By Duration</h4>
+      <div class="filter-main">
+        {% for d in durations %}
+        <label for="{{d.0}}"
+          ><input
+            type="checkbox"
+            name="{{d.0}}"
+            id="{{d.0}}"
+            onchange="applyFilter('duration')"
+          />{{d.1}}</label
+        >
+        {% endfor %}
+      </div>
+    </div>
+    <div class="filter-container">
+      <h4 class="filter-header">By Funding</h4>
+      <div class="filter-main">
+        <label for="paid"
+          ><input
+            type="checkbox"
+            name="paid"
+            id="True"
+            onchange="applyFilter('is_paid')"
+          />Funding available?</label
+        >
+      </div>
+    </div>
+    <div class="filter-container">
+      <h4 class="filter-header">By Deadline</h4>
+      <div class="filter-main">
+        <label for="deadline"
+          ><input
+            type="checkbox"
+            name="deadline"
+            id="True"
+            onchange="applyFilter('exclude_passed')"
+          />Exclude passed deadlines?</label
+        >
+      </div>
+    </div>
+  </div>
+  <div class="col2">
+    <div class="row">
+      <input
+        type="text"
+        name="search"
+        id="projSearch"
+        onkeyup="searchProjects()"
+        placeholder="SEARCH FOR PROJECTS"
+      />
+      <div class="sort-section">
+        <button class="bold" id="filterBtn" type="button">Sort By</button>
+        <ul class="sort-list">
+          <li
+            class="sort-op"
+            onclick="sortBy('title', this)"
+            data-reverse="false"
+          >
+            Project Title
+          </li>
+          <li
+            class="sort-op"
+            onclick="sortBy('last_date', this)"
+            data-reverse="false"
+          >
+            Applcation Deadline
+          </li>
+        </ul>
+      </div>
+    </div>
+    <img
+      id="loader"
+      src="{% static 'portal/assets/loader2.svg' %}"
+      alt="loader"
+    />
+    <div class="project-grid" style="display: none">
+      <div id="cardTemplate" style="display: none" class="project-card">
+        <h2 class="project-title"></h2>
+        <h3 class="prof-name"></h3>
+        <p class="project-desc"></p>
+        <a href="" class="btn btn-xs card-btn wide-text bold">More</a>
+      </div>
+    </div>
+  </div>
 </div>
-{% endblock %}
-{% block script %}
+{% endblock %} {% block script %}
 <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="{% static 'portal/js/search.js' %}"></script>
 <script src="{% static 'portal/js/tags.js' %}"></script>

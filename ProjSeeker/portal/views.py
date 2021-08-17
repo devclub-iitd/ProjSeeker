@@ -34,6 +34,9 @@ class ProjectFilter(filters.FilterSet):
     applied = filters.filters.BooleanFilter(method='filter_applied')
     bookmarked = filters.filters.BooleanFilter(method='filter_bookmarked')
     floated = filters.filters.BooleanFilter(method='filter_floated')
+    exclude_passed = filters.filters.BooleanFilter(
+        method='filter_out_passed')
+
     status = filters.filters.ChoiceFilter(
         choices=Status.choices, method='filter_appl_status')
     is_paid = filters.filters.BooleanFilter(field_name='is_paid')
@@ -104,6 +107,10 @@ class ProjectFilter(filters.FilterSet):
             return Project.objects.filter(id__in=pids)
         except:
             return Project.objects.none()
+
+    def filter_out_passed(self, queryset, name, value):
+        from datetime import datetime as dt
+        return Project.objects.filter(last_date__gte=dt.now())
 
     class Meta:
         model = Project
@@ -182,6 +189,7 @@ class ProjectViewSet(ModelViewSet):
             return render(request=request, template_name="dashboard.html", context={'projects': serializer.data, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
 
     @method_decorator(login_required)
+    @method_decorator(permission_required('portal.is_student'))
     @action(detail=False)
     def applied_projects(self, request):
         return render(request=request, template_name="applied-projects.html", context={'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
