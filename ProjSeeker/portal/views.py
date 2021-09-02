@@ -416,6 +416,11 @@ class ApplicationViewSet(ModelViewSet):
         request.data['student'] = student.id
         request.data['status'] = Status.in_review
 
+        project = Project.objects.get(id=int(request.data['project']))
+        if project is None or project.deadline_passed():
+            self.permission_denied(
+                request, message='Deadline Passed', code=400)
+
         return super().create(request, *args, **kwargs)
 
     @method_decorator(login_required)
@@ -426,7 +431,7 @@ class ApplicationViewSet(ModelViewSet):
         serializer = self.get_serializer(instance, many=False)
         student_name = f'{instance.student.user.first_name} {instance.student.user.last_name}'
 
-        return render(request, template_name='application-form.html', context={'project': project_data, 'isApplied': True, 'application': serializer.data, 'is_prof': isProf(request.user), 'status_choices': Status, 'student_user_id': instance.student.user.id, 'student_name' : student_name })
+        return render(request, template_name='application-form.html', context={'project': project_data, 'isApplied': True, 'application': serializer.data, 'is_prof': isProf(request.user), 'status_choices': Status, 'student_user_id': instance.student.user.id, 'student_name': student_name})
 
     @method_decorator(login_required)
     def update(self, request, *args, **kwargs):

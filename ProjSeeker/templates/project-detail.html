@@ -96,8 +96,7 @@
         var d = new Date(`{{project.last_date}}`);
         if(d.getTime() - d.getTimezoneOffset() * 1000 * 60 < new Date().getTime()){
             console.log("Deadline passed!");
-            // BUG: not working for some reason
-            $('#apply-now')[0].disabled = true;
+            $('#apply-now').addClass('disabled')
         }
 
         $('#bookmark-form').click(function (event) {
