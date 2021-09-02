@@ -13,7 +13,11 @@
         <div class="project-basic">
             <ul class="detail-list">
                 <li><b>Project Title</b> : <a href="/projects/{{project.id}}">{{project.title}}</a></li>
-                <li><b>Professor</b> : <a href="{{project.prof.webpage_link}}">{{project.prof.user.first_name}} {{project.prof.user.last_name}}</a></li>
+                {% if is_prof %}
+                <li><b>Student Name</b> : {{student_name}} </li>
+                {% else %}
+                <li><b>Professor</b> : {{project.prof.user.first_name}} {{project.prof.user.last_name}}</li>
+                {% endif %}
                 <li><b>Department</b> : {{project.prof.dept}} </li>
             </ul>
         </div>
@@ -36,7 +40,7 @@
                 <a href="/uploads/user_{{student_user_id}}/cv.pdf" class="btn wide-text bold">View Resume</a>
                 <a href="/uploads/user_{{student_user_id}}/transcript.pdf" class="btn wide-text bold">View Transcript</a>
             </div>
-            {% endif %}
+            {% else %}
             <label for="preference">Preference</label>
             <select name="preference" id="preference" value="{{application.preference}}">
                 <option value="1">1</option>
@@ -45,13 +49,14 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select>
+            {% endif %}
             <label for="sop">Statement of Purpose</label>
             <textarea name="cover_letter" id="sop" cols="30" rows="5">{{application.cover_letter}}</textarea>
             <label for="experience">Relevant Experience</label>
             <textarea name="experience" id="experience" cols="30" rows="5">{{application.experience}}</textarea>
             {% if application.status == status_choices.rejected %}
-                <label for="remark">Rejection remark</label>
-                <textarea name="remark" id="remark" cols="30" rows="2" readonly="true">{{application.remark}}</textarea>
+            <label for="remark">Rejection remark</label>
+            <textarea name="remark" id="remark" cols="30" rows="2" readonly="true">{{application.remark}}</textarea>
             {% endif %}
             {% if not is_prof %}
             <!-- TODO: find a better way to display status on both the prof and student side-->

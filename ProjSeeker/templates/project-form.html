@@ -57,7 +57,12 @@
                     <label for="vacancy">Vacancy (Number of People)</label>
                     <input type="number" name="vacancy" id="vacancy" value="{{project.vacancy}}" min="0">
                     <div class="action-container">
-                        <button class="btn wide-text" data-target="elig-section" type="button">NEXT</button>
+                        <div class="left-actions actions">
+                            <button type="submit" class="btn btn-green bold wide-text" formmethod="PUT">Update Project</button>
+                        </div>
+                        <div class="right-actions actions">
+                            <button class="btn wide-text" data-target="elig-section" type="button">NEXT</button>
+                        </div>
                     </div>
                 </div>
                 <div class="form-section" id="elig-section" style="display: none;">
@@ -82,8 +87,13 @@
                     <label for="prereq">Project Prerequisites</label>
                     <textarea name="prereq" id="prereq" cols="30" rows="4">{{project.prereq}}</textarea>
                     <div class="action-container">
-                        <button class="btn btn-red wide-text" data-target="basic-section" type="button">Go Back</button>
-                        <button class="btn wide-text" data-target="more-section" type="button">NEXT</button>
+                        <div class="left-actions actions">
+                            <button type="submit" class="btn btn-green bold wide-text" formmethod="PUT">Update Project</button>
+                        </div>
+                        <div class="right-actions actions">
+                            <button class="btn btn-red wide-text" data-target="basic-section" type="button">Go Back</button>
+                            <button class="btn wide-text" data-target="more-section" type="button">NEXT</button>
+                        </div>
                     </div>
                 </div>
                 <div class="form-section" id="more-section" style="display: none;">
@@ -114,13 +124,15 @@
                         {% endfor %}
                     </div>
                     <div class="action-container">
-                        <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader" style="display: hidden;">
-                        <button class="btn wide-text" data-target="elig-section" type="button">Go Back</button>
-                        {% if project.id is None %}
-                        <button type="submit" class="btn btn-green bold wide-text" formmethod="POST">Create Project</button>
-                        {% else %}
-                        <button type="submit" class="btn btn-green bold wide-text" formmethod="PUT">Update Project</button>
-                        <a href="#delete-modal" rel="modal:open" class="btn btn-red bold wide-text">Delete project</a>
+                        <div class="right-actions actions">
+                            <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader" style="display: hidden;">
+                            {% if project.id is None %}
+                            <button type="submit" class="btn btn-green bold wide-text" formmethod="POST">Create Project</button>
+                            {% else %}
+                            <button type="submit" class="btn btn-green bold wide-text" formmethod="PUT">Update Project</button>
+                            <a href="#delete-modal" rel="modal:open" class="btn btn-red bold wide-text">Delete project</a>
+                            <button class="btn wide-text" data-target="elig-section" type="button">Go Back</button>
+                        </div>
                         <div id="delete-modal" class="modal">
                             <div class="modal-title">
                                 <p>Are you sure you want to delete this project?</p>

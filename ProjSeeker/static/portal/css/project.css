@@ -70,12 +70,11 @@
     margin-top: 20px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     flex-wrap: wrap;
-    gap: 1.5rem;
 }
 
-.action-container > .btn {
+.action-container .btn {
     background-color: var(--bright-blue);
     font-size: 14px;
     font-weight: 500;
@@ -88,6 +87,15 @@
 
 .action-container > .btn-red {
     background-color: #ff0e56;
+}
+
+.actions {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.right-actions {
+    margin-left: auto;
 }
 
 .custom-tabs {
@@ -286,8 +294,22 @@ select {
 
     .action-container {
         display: grid;
-        gap: 1rem;
+        gap: 0.25rem;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .action-container .btn {
+        transform: scale(0.8);
+    }
+
+    .actions {
+        display: grid;
+        gap: 0.25rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .right-actions {
+        margin: 0;
     }
 
     .action-container > a:last-child {

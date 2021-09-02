@@ -424,8 +424,9 @@ class ApplicationViewSet(ModelViewSet):
         project_data = ProjectSerializer(Project.objects.get(
             id=instance.project.id), many=False).data
         serializer = self.get_serializer(instance, many=False)
+        student_name = f'{instance.student.user.first_name} {instance.student.user.last_name}'
 
-        return render(request, template_name='application-form.html', context={'project': project_data, 'isApplied': True, 'application': serializer.data, 'is_prof': isProf(request.user), 'status_choices': Status, 'student_user_id': instance.student.user.id})
+        return render(request, template_name='application-form.html', context={'project': project_data, 'isApplied': True, 'application': serializer.data, 'is_prof': isProf(request.user), 'status_choices': Status, 'student_user_id': instance.student.user.id, 'student_name' : student_name })
 
     @method_decorator(login_required)
     def update(self, request, *args, **kwargs):
