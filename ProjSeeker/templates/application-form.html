@@ -26,13 +26,13 @@
             {% csrf_token %}
             <label for="applStatus">Current Applications Status</label>
             {% if application.status == status_choices.rejected%}
-            <button style="margin-right: auto;" class="btn btn-red bold wide-text">{{status_choices.rejected.label}}</button>
+            <button type="button" style="margin-right: auto;" class="btn btn-red bold wide-text">{{status_choices.rejected.label}}</button>
             {% elif application.status == status_choices.accepted%}
-            <button style="margin-right: auto;" class="btn btn-green wide-text bold">{{status_choices.accepted.label}}</button>
+            <button type="button" style="margin-right: auto;" class="btn btn-green wide-text bold">{{status_choices.accepted.label}}</button>
             {% elif application.status == status_choices.on_hold%}
-            <button style="margin-right: auto;" class="btn wide-text bold">{{status_choices.on_hold.label}}</button>
+            <button type="button" style="margin-right: auto;" class="btn wide-text bold">{{status_choices.on_hold.label}}</button>
             {% elif application.status == status_choices.in_review %}
-            <button style="margin-right: auto;" class="btn wide-text bold">{{status_choices.in_review.label}}</button>
+            <button type="button" style="margin-right: auto;" class="btn wide-text bold">{{status_choices.in_review.label}}</button>
             {% endif %}
             {% if is_prof %}
             <label for="documents">View Documents</label>
@@ -41,8 +41,8 @@
                 <a href="/uploads/user_{{student_user_id}}/transcript.pdf" class="btn wide-text bold">View Transcript</a>
             </div>
             {% else %}
-            <label for="preference">Preference</label>
-            <select name="preference" id="preference" value="{{application.preference}}">
+            <label hidden="true" for="preference">Preference</label>
+            <select hidden="true" name="preference" id="preference" value="{{application.preference}}">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -187,6 +187,7 @@
                     const err = e.responseJSON['detail'];
                     console.error(err);
                     alert(err);
+                    $('#loader').fadeOut(100);
                 }
             });
             return false;
