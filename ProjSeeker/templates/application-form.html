@@ -62,9 +62,11 @@
             <!-- TODO: find a better way to display status on both the prof and student side-->
             {% if application.status == status_choices.in_review %}
             <div class="action-container">
-                <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader">
-                <a href="#delete-modal" rel="modal:open" class="btn btn-red bold wide-text">Delete Application</a>
-                <button type="submit" class="btn wide-text bold" formmethod="PATCH">Update Application</button>
+                <div class="right-actions actions">
+                    <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader">
+                    <a href="#delete-modal" rel="modal:open" class="btn btn-red bold wide-text">Delete Application</a>
+                    <button type="submit" class="btn wide-text bold" formmethod="PATCH">Update Application</button>
+                </div>
                 <div id="delete-modal" class="modal">
                     <div class="modal-title">
                         <p>Are you sure you want to delete this application?</p>
@@ -78,11 +80,13 @@
             {% endif %}
             {% else %}
             <div class="action-container">
-                <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader">
-                <a href="#reject-modal" rel="modal:open" class="btn btn-red bold wide-text">Reject Application</a>
+                <div class="right-actions actions">
+                    <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader">
+                    <a href="#reject-modal" rel="modal:open" class="btn btn-red bold wide-text">Reject Application</a>
 
-                <button type="submit" class="btn btn-green wide-text bold" formmethod="PATCH" value="{{status_choices.accepted}}">Accept Application</button>
-                <button type="submit" class="btn wide-text bold" formmethod="PATCH" value="{{status_choices.on_hold}}">Put on hold</button>
+                    <button type="submit" class="btn btn-green wide-text bold" formmethod="PATCH" value="{{status_choices.accepted}}">Accept Application</button>
+                    <button type="submit" class="btn wide-text bold" formmethod="PATCH" value="{{status_choices.on_hold}}">Put on hold</button>
+                </div>
             </div>
             {% endif %}
 
@@ -117,8 +121,10 @@
             <label for="experience">Relevant Experience</label>
             <textarea name="experience" id="experience" cols="30" rows="5"></textarea>
             <div class="action-container">
-                <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader">
-                <button type="submit" class="btn wide-text bold" formmethod="POST">Apply Now!</button>
+                <div class="right-actions actions">
+                    <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader">
+                    <button type="submit" class="btn wide-text bold" formmethod="POST">Apply Now!</button>
+                </div>
             </div>
         </form>
         {% endif %}
@@ -155,11 +161,14 @@
 
 </script>
 {% endif %}
+{% if not is_prof %}
+<script>
+    var pref = $('#preference').attr('value');
+    document.querySelector('#preference').selectedIndex = pref - 1;
+</script>
+{% endif %}
 <script>
     $(function () {
-        var pref = $('#preference').attr('value');
-        document.querySelector('#preference').selectedIndex = pref - 1;
-
         $('#delete-button').click(() => {
             $('#applForm').submit();
         });
