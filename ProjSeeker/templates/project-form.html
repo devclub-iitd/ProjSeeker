@@ -61,6 +61,7 @@
                             <button type="submit" class="btn btn-green bold wide-text" formmethod="PUT">Update Project</button>
                         </div>
                         <div class="right-actions actions">
+                            <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader" style="display: hidden;">
                             <button class="btn wide-text" data-target="elig-section" type="button">NEXT</button>
                         </div>
                     </div>
@@ -91,6 +92,7 @@
                             <button type="submit" class="btn btn-green bold wide-text" formmethod="PUT">Update Project</button>
                         </div>
                         <div class="right-actions actions">
+                            <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader" style="display: hidden;">
                             <button class="btn btn-red wide-text" data-target="basic-section" type="button">Go Back</button>
                             <button class="btn wide-text" data-target="more-section" type="button">NEXT</button>
                         </div>
@@ -222,7 +224,7 @@
                         const errorContainer = messageTemplate.clone();
                         errorContainer.addClass('error');
                         errorContainer.html('<p>Please re-check the form for errors and correct them</p>');
-                        $('#more-section').append(errorContainer);
+                        $('#projectForm').append(errorContainer);
                         errorContainer.fadeIn(250);
                     }
 

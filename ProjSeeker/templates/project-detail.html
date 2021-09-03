@@ -62,26 +62,28 @@
         </div>
         {% if is_student %}
         <div class="action-container">
-            <img src="{% static 'portal/assets/loader.svg' %}" alt="loader" id="loader">
-            {% if user.is_authenticated %}
-            {% if bookmark_id %}
-            <form id="bookmark-form" action="/bookmarks/{{bookmark_id}}/" method="DELETE">
-                {% csrf_token %}
-                <input value="Un-bookmark" type="submit" class="btn wide-text">
-                {% else %}
-                <form id="bookmark-form" action="/bookmarks/" method="POST">
+            <div class="right-actions actions">
+                <img src="{% static 'portal/assets/loader.svg' %}" alt="loader" id="loader">
+                {% if user.is_authenticated %}
+                {% if bookmark_id %}
+                <form id="bookmark-form" action="/bookmarks/{{bookmark_id}}/" method="DELETE">
                     {% csrf_token %}
-                    <input value="Bookmark" type="submit" class="btn wide-text">
+                    <input value="Un-bookmark" type="submit" class="btn wide-text">
+                    {% else %}
+                    <form id="bookmark-form" action="/bookmarks/" method="POST">
+                        {% csrf_token %}
+                        <input value="Bookmark" type="submit" class="btn wide-text">
+                        {% endif %}
+                        <input name="project" hidden type="number" value="{{project.id}}">
+                    </form>
                     {% endif %}
-                    <input name="project" hidden type="number" value="{{project.id}}">
-                </form>
-                {% endif %}
-                <a href="mailto:{{project.prof.user.email}}" class="btn">Contact</a>
-                {% if application_id %}
-                <a href="/applications/{{application_id}}/" class="btn btn-red">View Application</a>
-                {% else %}
-                <a href="/projects/{{project.id}}/apply" id="apply-now" class="btn btn-red">Apply Now</a>
-                {% endif %}
+                    <a href="mailto:{{project.prof.user.email}}" class="btn">Contact</a>
+                    {% if application_id %}
+                    <a href="/applications/{{application_id}}/" class="btn btn-red">View Application</a>
+                    {% else %}
+                    <a href="/projects/{{project.id}}/apply" id="apply-now" class="btn btn-red">Apply Now</a>
+                    {% endif %}
+            </div>
         </div>
         {% endif %}
     </div>
@@ -94,7 +96,7 @@
     $(function () {
 
         var d = new Date(`{{project.last_date}}`);
-        if(d.getTime() - d.getTimezoneOffset() * 1000 * 60 < new Date().getTime()){
+        if (d.getTime() - d.getTimezoneOffset() * 1000 * 60 < new Date().getTime()) {
             console.log("Deadline passed!");
             $('#apply-now').addClass('disabled')
         }
