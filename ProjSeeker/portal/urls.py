@@ -1,4 +1,3 @@
-from django.contrib.auth.models import Group, Permission
 from django.conf.urls import include, url
 from .views import *
 from django.views.generic.base import TemplateView
@@ -39,13 +38,6 @@ urlpatterns = [
         {'get': 'list_received_applications'}), name='list-received-applications'),
     url(r'^view-applications$', ApplicationViewSet.as_view(
         {'get': 'view_received_applications'}), name='view-received-applications'),
+    path('uploads/user_<int:pk>/<str:file_name>',
+         get_uploaded_file, name='get-uploaded-file'),
 ]
-
-stud_gp, _ = Group.objects.get_or_create(name='student')
-prof_gp, _ = Group.objects.get_or_create(name='prof')
-
-stud_perm = Permission.objects.get(codename='is_student')
-prof_perm = Permission.objects.get(codename='is_prof')
-
-stud_gp.permissions.add(stud_perm)
-prof_gp.permissions.add(prof_perm)

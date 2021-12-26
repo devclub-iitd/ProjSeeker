@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:10.1-alpine
+    volumes:
+      - projseeker_db:/var/lib/postgresql/data/
+    env_file:
+      - "./.env"
+    restart: always
+
+  web:
+    build: .
+    volumes:
+      - "uploads:/code/ProjSeeker/uploads"
+      - "staticfiles:/code/ProjSeeker/staticfiles"
+    restart: "always"
+    env_file:
+      - "./.env"
+    depends_on:
+      - db
+  nginx:
+    build: ./nginx/
+    ports:
+      - "80:80"
+    restart: "always"
+    volumes:
+      - "uploads:/code/protected"
+      - "staticfiles:/code/staticfiles"
+    depends_on:
+      - web
+volumes:
+  projseeker_db:
+  uploads:
+  staticfiles:

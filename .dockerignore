@@ -1,0 +1,8 @@
+ProjSeeker/uploads
+ProjSeeker/db.sqlite3
+ProjSeeker/portal/migrations
+venv/
+.vscode/
+.git/
+.gitignore
+.env

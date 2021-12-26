@@ -6,7 +6,16 @@ from .storage import OverwriteStorage
 from multiselectfield import MultiSelectField
 
 
+def isStudent(user):
+    return user.has_perm('portal.is_student')
+
+
+def isProf(user):
+    return user.has_perm('portal.is_prof')
+
 # Create your models here.
+
+
 class Departments(models.TextChoices):
     CSE = 'CSE', _('Computer Science and Engineering')
     EE = 'EE', _('Electrical Engineering')

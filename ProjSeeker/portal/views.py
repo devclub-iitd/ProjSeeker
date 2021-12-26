@@ -1,10 +1,12 @@
-from django.db.models.query_utils import Q
+from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
+from django.core.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.viewsets import *
 from .models import *
 from .serializers import *
+from .filters import ProjectFilter
 from rest_framework.decorators import action
 from rest_framework import permissions, request
 from django.contrib.auth.decorators import login_required, permission_required
@@ -12,109 +14,14 @@ from django_filters import rest_framework as filters
 
 
 # Create your views here.
+
+
 def index(request):
     return render(request, 'home.html')
 
 
 def dashboard(request):
     return render(request, 'dashboard.html', context={'is_prof': isProf(request.user), 'is_student': isStudent(request.user)})
-
-
-def isStudent(user):
-    return user.has_perm('portal.is_student')
-
-
-def isProf(user):
-    return user.has_perm('portal.is_prof')
-
-
-class ProjectFilter(filters.FilterSet):
-
-    search = filters.filters.CharFilter(method='search_project')
-    applied = filters.filters.BooleanFilter(method='filter_applied')
-    bookmarked = filters.filters.BooleanFilter(method='filter_bookmarked')
-    floated = filters.filters.BooleanFilter(method='filter_floated')
-    exclude_passed = filters.filters.BooleanFilter(
-        method='filter_out_passed')
-
-    status = filters.filters.ChoiceFilter(
-        choices=Status.choices, method='filter_appl_status')
-    is_paid = filters.filters.BooleanFilter(field_name='is_paid')
-
-    prof__dept = filters.filters.MultipleChoiceFilter(
-        choices=Departments.choices)
-    degree__icontains = filters.filters.MultipleChoiceFilter(
-        choices=Degree.choices)
-    project_type__icontains = filters.filters.MultipleChoiceFilter(
-        choices=Project.Category.choices)
-    duration__icontains = filters.filters.MultipleChoiceFilter(
-        choices=Project.Duration.choices)
-    tags__research_field = filters.filters.MultipleChoiceFilter(
-        choices=Interests.to_choices())
-
-    def search_project(self, queryset, name, value):
-        q = Q(title__icontains=value)
-        q |= Q(description__icontains=value)
-        q |= Q(prof__user__first_name__icontains=value)
-        q |= Q(prof__user__last_name__icontains=value)
-        try:
-            return Project.objects.filter(q)
-        except:
-            return Project.objects.none()
-
-    def filter_applied(self, queryset, name, value):
-        try:
-            user = self.request.user
-            assert isStudent(user)
-
-            applied = Application.objects.select_related(
-                'project').filter(student__user=user)
-            pids = [appl.project.id for appl in applied]
-
-            return Project.objects.filter(id__in=pids)
-        except:
-            return Project.objects.none()
-
-    def filter_bookmarked(self, queryset, name, value):
-        try:
-            user = self.request.user
-            # assert isStudent(user)
-
-            bookmarked = Bookmark.objects.filter(user=user)
-            pids = [bmk.project.id for bmk in bookmarked]
-
-            return Project.objects.filter(id__in=pids)
-        except:
-            return Project.objects.none()
-
-    def filter_floated(self, queryset, name, value):
-        try:
-            user = self.request.user
-            assert isProf(user)
-
-            return Project.objects.filter(prof__user=user)
-        except:
-            return Project.objects.none()
-
-    def filter_appl_status(self, queryset, name, value):
-        try:
-            user = self.request.user
-
-            appls = Application.objects.filter(
-                student__user=user, status=value)
-            pids = [appl.project.id for appl in appls]
-
-            return Project.objects.filter(id__in=pids)
-        except:
-            return Project.objects.none()
-
-    def filter_out_passed(self, queryset, name, value):
-        from datetime import datetime as dt
-        return Project.objects.filter(last_date__gte=dt.now())
-
-    class Meta:
-        model = Project
-        fields = ['title', 'prof']
 
 
 class ProjectViewSet(ModelViewSet):
@@ -241,6 +148,17 @@ class BookmarkViewSet(ModelViewSet):
             return Response(status=400)
 
         return super().create(request, *args, **kwargs)
+
+
+@login_required
+def get_uploaded_file(request, pk, file_name):
+    user = request.user
+    if user.id != pk or file_name not in ['cv.pdf', 'transcript.pdf', 'pic.jpg']:
+        raise PermissionDenied()
+    response = HttpResponse()
+    response['X-Accel-Redirect'] = f'/protected/user_{pk}/{file_name}'
+    return response
+
 
 # TODO Refactor Student and Professor view sets and serializer code
 
