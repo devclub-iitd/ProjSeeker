@@ -16,6 +16,7 @@ router.register(r'bookmarks', BookmarkViewSet)
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
     url(r"^index$", index, name="index"),
+    url(r"^auth/iitd/confirm$", authenticate, name="auth-iitd"),
     url("", include(router.urls)),
     url(r"^student-profile$",
         login_required(StudentViewSet.as_view({'get': 'profile'})), name="student-profile"),

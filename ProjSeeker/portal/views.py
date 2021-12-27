@@ -1,5 +1,6 @@
-from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.http.response import HttpResponse, HttpResponseForbidden, HttpResponseServerError
+from django.shortcuts import redirect, render
+from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.core.exceptions import PermissionDenied
 from rest_framework.response import Response
@@ -11,8 +12,10 @@ from rest_framework.decorators import action
 from rest_framework import permissions, request
 from django.contrib.auth.decorators import login_required, permission_required
 from django_filters import rest_framework as filters
-
-
+from django.contrib.auth import login, logout
+from django.utils.crypto import get_random_string
+import os
+import requests
 # Create your views here.
 
 
@@ -22,6 +25,54 @@ def index(request):
 
 def dashboard(request):
     return render(request, 'dashboard.html', context={'is_prof': isProf(request.user), 'is_student': isStudent(request.user)})
+
+
+def authenticate(request):
+
+    def check_student_id(unique_iitd_id):
+        return unique_iitd_id[:4].isnumeric()
+
+    r = requests.post(os.environ.get("OauthTokenURL"), {'client_id': os.environ.get("CLIENT_ID"),
+                                                        'client_secret': os.environ.get("CLIENT_SECRET"),
+                                                        'grant_type': os.environ.get("AUTHORIZATION_CODE"),
+                                                        'code': request.GET.get('code')})
+
+    oauth_resp = r.json()
+    if oauth_resp.status_code != 200:
+        return HttpResponseForbidden()
+    access_token = oauth_resp['access_token']
+    r = requests.post(os.environ.get("ResourceURL"), {
+        'access_token': access_token
+    })
+    profile_resp = r.json()
+    if profile_resp.status_code != 200:
+        return redirect(reverse('home'))
+    try:
+        email = profile_resp["email"]
+        name = profile_resp["name"]
+        unique_iitd_id = profile_resp["uniqueiitdid"]
+        dept = profile_resp["department"]
+
+        is_student = check_student_id(unique_iitd_id)
+        existing_user = User.objects.filter(
+            username=unique_iitd_id, email=email)
+        if existing_user.exists():
+            login(request, existing_user[0])
+        else:
+            user = User.objects.create(
+                username=unique_iitd_id, email=email, first_name=name)
+            user.set_password(get_random_string(32))
+            user.save()
+            if is_student:
+                Student.objects.create(user=user)
+            else:
+                Professor.objects.create(user=user, dept=dept.upper())
+            login(request, user)
+
+        return redirect(reverse('dashboard'))
+    except Exception as e:
+        print("An error occured: ", e)
+        return HttpResponseServerError()
 
 
 class ProjectViewSet(ModelViewSet):
