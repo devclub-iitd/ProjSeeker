@@ -132,3 +132,4 @@ dmypy.json
 .pyre/
 .gitsecret/keys/random_seed
 !*.secret
+nginx/cert.zip
