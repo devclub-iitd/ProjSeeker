@@ -42,6 +42,27 @@ class Degree(models.TextChoices):
     phd = 'PhD', _('PhD')
 
 
+class Category(models.TextChoices):
+    ai_ml = 'ai_ml', _(
+        'Artificial Intelligence (AI) and Machine Learning (ML)')
+    nlp = 'NLP', _('Natural Language Processing')
+    da = 'data analysis', _('Databases and Data Analytics')
+    algo = 'algos', _('Algorithms and Complexity Theory')
+    arch = 'architecture', _('Architecture and Embedded Systems')
+    vision = 'vision', _('Computer Graphics/Vision')
+    networks = 'networks', _('Computer Networks and Distributed Systems')
+    pl = 'prog lang', _('Programming Languages, Semantics and Verification')
+    os = 'os', _(
+        'Operating Systems, High Performance Computing and Systems Software')
+    ict = 'ict', _(
+        'Information and Communication Technologies for Development')
+    neuro = 'neuro', _('Neuroinformatics and Medical informatics')
+    cybersec = 'cyber security', _(
+        'Cyber Security and Secure Information Systems')
+
+    other = 'other', _('Other')
+
+
 def upload_handler(student, filename):
     print('user_{0}/{1}'.format(student.user.id, filename))
     return 'user_{0}/{1}'.format(student.user.id, filename)
@@ -50,24 +71,33 @@ def upload_handler(student, filename):
 def upload_pic(s, _): return upload_handler(s, 'pic.jpg')
 def upload_cv(s, _): return upload_handler(s, 'cv.pdf')
 def upload_transcript(s, _): return upload_handler(s, 'transcript.pdf')
+def upload_noc(s, _): return upload_handler(s, 'noc.pdf')
 
 
 class Student(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
         "Auth User"), on_delete=models.CASCADE)
     bio = models.TextField()
+    degree = models.CharField(
+        _("Degree"), choices=Degree.choices, max_length=50)
     cv = models.FileField(_("Resume"), upload_to=upload_cv,
                           storage=OverwriteStorage(), null=True)
     transcript = models.FileField(
         _("Transcripts"), upload_to=upload_transcript, storage=OverwriteStorage(), null=True)
     pic = models.FileField(
         _("Profile Pic"), upload_to=upload_pic, null=True, storage=OverwriteStorage())
+    noc = models.FileField(
+        _("NOC"), upload_to=upload_noc, null=True, storage=OverwriteStorage())
     cgpa = models.FloatField(_("CGPA"), validators=[
                              MaxValueValidator(10)], null=True)
     interests = models.ManyToManyField("Interests")
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
+
+    @staticmethod
+    def get_docs():
+        return ['transcript', 'cv', 'pic', 'noc']
 
     class Meta:
         permissions = (('is_student', 'Is Student'),)
@@ -100,6 +130,10 @@ class Professor(models.Model):
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name} @ {self.dept}'
+
+    @staticmethod
+    def get_docs():
+        return ['pic']
 
     class Meta:
         permissions = (('is_prof', 'Is Prof'),)
@@ -136,6 +170,8 @@ class Project(models.Model):
     learning_outcome = models.TextField()
     prereq = models.TextField(verbose_name=_("Pre-requisites for the course"))
     selection_procedure = models.TextField()
+    category = models.CharField(
+        _("Project Category"), choices=Category.choices, max_length=200)
     tags = models.ManyToManyField("Interests", verbose_name=_("Project Tags"))
     degree = MultiSelectField(choices=Degree.choices, null=True, blank=True)
     project_type = MultiSelectField(

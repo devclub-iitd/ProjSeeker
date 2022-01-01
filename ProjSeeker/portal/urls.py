@@ -20,6 +20,8 @@ urlpatterns = [
     url("", include(router.urls)),
     url(r"^student-profile$",
         login_required(StudentViewSet.as_view({'get': 'profile'})), name="student-profile"),
+    url(r"^check-documents$",
+        login_required(StudentViewSet.as_view({'post': 'check_documents'})), name="document-check"),
     url(r"^delete-student-doc$", login_required(StudentViewSet.as_view(
         {'post': 'delete_file'})), name="delete-student-doc"),
     url(r"^prof-profile$",

@@ -1,4 +1,4 @@
-from django.http.response import HttpResponse, HttpResponseForbidden, HttpResponseServerError
+from django.http.response import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseServerError
 from django.shortcuts import redirect, render
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -226,49 +226,55 @@ class StudentViewSet(ModelViewSet):
         return super().check_object_permissions(request, obj)
 
     def update(self, request, *args, **kwargs):
-        print(request.data)
         request.data._mutable = True
-        if(not request.data['transcript']):
-            del request.data['transcript']
-        if(not request.data['cv']):
-            del request.data['cv']
-        if(not request.data['pic']):
-            del request.data['pic']
+
+        for doc in Student.get_docs():
+            if doc in request.data and not request.data[doc]:
+                del request.data[doc]
         return super().update(request, *args, **kwargs)
 
     @action(detail=False, methods=['POST'])
     def delete_file(self, request):
-        student = request.user.student_set.all()
-        if(len(student) != 1):
-            return Response(403)
-        student = student[0]
-        if(student.user.id != request.user.id):
-            return Response(403)
-
-        print(request.data)
+        student = request.user.student_set.all()[0]
 
         file_type = request.data['type']
-        print(file_type)
-        if(file_type == 'pic'):
-            student.pic.delete()
-        elif(file_type == 'cv'):
-            student.cv.delete()
-        elif(file_type == 'transcript'):
-            student.transcript.delete()
+        if file_type not in Student.get_docs():
+            return Response(400)
+        getattr(student, file_type).delete()
         return Response(200)
 
     @action(detail=False, methods=['GET'])
     def profile(self, request):
         user = request.user
-        students = user.student_set.all()
+        student = user.student_set.all()[0]
 
-        if(len(students) == 1):
-            student = students[0]
-            serializer = self.get_serializer(student, many=False)
-            interest_text = ', '.join([it['research_field']
-                                      for it in serializer.data['interests']])
-            return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
-        return Response(404)
+        serializer = self.get_serializer(student, many=False)
+        interest_text = ', '.join([it['research_field']
+                                   for it in serializer.data['interests']])
+        return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
+
+    @action(detail=False, methods=['POST'])
+    def check_documents(self, request):
+        user = request.user
+        student = user.student_set.all()[0]
+        valid = False
+        try:
+            valid &= hasattr(student.cv, 'file')
+            valid &= hasattr(student.transcript, 'file')
+
+            if student.degree == Degree.phd:
+                valid &= hasattr(student.noc, 'file')
+
+            if valid:
+                return Response(200)
+
+        except:
+            pass
+
+        return Response(status=401, data={
+            "err": True,
+            "msg": "Please upload your documents before applying for a project"
+        })
 
 
 class ProfViewSet(ModelViewSet):
@@ -285,47 +291,36 @@ class ProfViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs):
 
         request.data._mutable = True
-        if(not request.data['pic']):
-            del request.data['pic']
+        for doc in Professor.get_docs():
+            if doc in request.data and not request.data[doc]:
+                del request.data[doc]
 
         instance = self.get_object()
         for dept in Departments.choices:
             if(instance.dept == dept[0]):
                 request.data['dept'] = dept[1]
 
-        print(request.data)
-
         return super().update(request, *args, **kwargs)
 
     @action(detail=False, methods=['POST'])
     def delete_file(self, request):
-        prof = request.user.professor_set.all()
-        if(len(prof) != 1):
-            return Response(403)
-        prof = prof[0]
-        if(prof.user.id != request.user.id):
-            return Response(403)
-
-        print(request.data)
+        prof = request.user.professor_set.all()[0]
 
         file_type = request.data['type']
-        print(file_type)
-        if(file_type == 'pic'):
-            prof.pic.delete()
+        if file_type not in Professor.get_docs():
+            return Response(400)
+        getattr(prof, file_type).delete()
         return Response(200)
 
     @action(detail=False, methods=['GET'])
     def profile(self, request):
         user = request.user
-        professors = user.professor_set.all()
+        prof = user.professor_set.all()[0]
 
-        if(len(professors) == 1):
-            prof = professors[0]
-            serializer = self.get_serializer(prof, many=False)
-            interest_text = ', '.join([it['research_field']
-                                      for it in serializer.data['interests']])
-            return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
-        return Response(404)
+        serializer = self.get_serializer(prof, many=False)
+        interest_text = ', '.join([it['research_field']
+                                   for it in serializer.data['interests']])
+        return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
 
 
 class InterestViewSet(ModelViewSet):
