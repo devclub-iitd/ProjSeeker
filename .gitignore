@@ -133,3 +133,10 @@ dmypy.json
 .gitsecret/keys/random_seed
 !*.secret
 nginx/cert.zip
+nginx/dhparam.pem
+nginx/fullchain1.pem
+nginx/privkey1.pem
+nginx/certs/dhparam.pem
+nginx/certs/fullchain1.pem
+nginx/certs/options-ssl-nginx.conf
+nginx/certs/privkey1.pem

@@ -22,13 +22,17 @@ services:
     build: ./nginx/
     ports:
       - "80:80"
+      - "443:443"
     restart: "always"
     volumes:
       - "uploads:/code/protected"
       - "staticfiles:/code/staticfiles"
+      - "nginx_logs:/var/log/nginx"
+      - "/etc/letsencrypt:/certs"
     depends_on:
       - web
 volumes:
   projseeker_db:
   uploads:
   staticfiles:
+  nginx_logs:
