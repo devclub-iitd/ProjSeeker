@@ -28,7 +28,7 @@ services:
       - "uploads:/code/protected"
       - "staticfiles:/code/staticfiles"
       - "nginx_logs:/var/log/nginx"
-      - "/etc/letsencrypt:/certs"
+      - "/home/baadalvm/certs:/certs"
     depends_on:
       - web
 volumes:
