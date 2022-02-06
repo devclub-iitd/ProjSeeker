@@ -7,6 +7,10 @@ until psql $DATABASE_URL -c '\l'; do
 	sleep 1
 done
 cd ./ProjSeeker
+unset http_proxy
+unset HTTP_PROXY
+unset https_proxy
+unset HTTPS_PROXY
 python manage.py makemigrations
 python manage.py makemigrations portal
 python manage.py migrate
@@ -16,5 +20,5 @@ python manage.py create_superuser
 python manage.py collectstatic --noinput
 #move to .env
 echo "Starting WEB Server"
-python manage.py runserver 0.0.0.0:8000
+python -u manage.py runserver 0.0.0.0:8000
 # echo "Script complete"
