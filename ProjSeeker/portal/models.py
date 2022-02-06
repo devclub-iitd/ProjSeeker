@@ -42,27 +42,6 @@ class Degree(models.TextChoices):
     phd = 'PhD', _('PhD')
 
 
-class Category(models.TextChoices):
-    ai_ml = 'ai_ml', _(
-        'Artificial Intelligence (AI) and Machine Learning (ML)')
-    nlp = 'NLP', _('Natural Language Processing')
-    da = 'data analysis', _('Databases and Data Analytics')
-    algo = 'algos', _('Algorithms and Complexity Theory')
-    arch = 'architecture', _('Architecture and Embedded Systems')
-    vision = 'vision', _('Computer Graphics/Vision')
-    networks = 'networks', _('Computer Networks and Distributed Systems')
-    pl = 'prog lang', _('Programming Languages, Semantics and Verification')
-    os = 'os', _(
-        'Operating Systems, High Performance Computing and Systems Software')
-    ict = 'ict', _(
-        'Information and Communication Technologies for Development')
-    neuro = 'neuro', _('Neuroinformatics and Medical informatics')
-    cybersec = 'cyber security', _(
-        'Cyber Security and Secure Information Systems')
-
-    other = 'other', _('Other')
-
-
 def upload_handler(student, filename):
     print('user_{0}/{1}'.format(student.user.id, filename))
     return 'user_{0}/{1}'.format(student.user.id, filename)
@@ -142,6 +121,27 @@ class Professor(models.Model):
 class Project(models.Model):
 
     class Category(models.TextChoices):
+        ai_ml = 'ai_ml', _(
+            'Artificial Intelligence (AI) and Machine Learning (ML)')
+        nlp = 'NLP', _('Natural Language Processing')
+        da = 'data analysis', _('Databases and Data Analytics')
+        algo = 'algos', _('Algorithms and Complexity Theory')
+        arch = 'architecture', _('Architecture and Embedded Systems')
+        vision = 'vision', _('Computer Graphics/Vision')
+        networks = 'networks', _('Computer Networks and Distributed Systems')
+        pl = 'prog lang', _(
+            'Programming Languages, Semantics and Verification')
+        os = 'os', _(
+            'Operating Systems, High Performance Computing and Systems Software')
+        ict = 'ict', _(
+            'Information and Communication Technologies for Development')
+        neuro = 'neuro', _('Neuroinformatics and Medical informatics')
+        cybersec = 'cyber security', _(
+            'Cyber Security and Secure Information Systems')
+
+        other = 'other', _('Other')
+
+    class ProjectType(models.TextChoices):
         disa = 'DISA', _('DISA')
         sura = 'SURA', _('SURA')
         major = 'Major Project', _('Major Project')
@@ -166,7 +166,7 @@ class Project(models.Model):
     min_year = models.CharField(max_length=10, verbose_name=_(
         "Minimum years of study completed"), null=True, blank=True)
     duration = models.CharField(
-        max_length=50, choices=Category.choices, null=True, blank=True)
+        max_length=50, choices=Duration.choices, null=True, blank=True)
     learning_outcome = models.TextField()
     prereq = models.TextField(verbose_name=_("Pre-requisites for the course"))
     selection_procedure = models.TextField()
@@ -175,7 +175,7 @@ class Project(models.Model):
     tags = models.ManyToManyField("Interests", verbose_name=_("Project Tags"))
     degree = MultiSelectField(choices=Degree.choices, null=True, blank=True)
     project_type = MultiSelectField(
-        choices=Duration.choices, null=True, blank=True)
+        choices=ProjectType.choices, null=True, blank=True)
     is_paid = models.BooleanField(_("Funding available?"), default=False)
     release_date = models.DateTimeField(
         _("Release date of project"), auto_now=False, auto_now_add=True, null=True)

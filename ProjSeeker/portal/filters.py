@@ -46,7 +46,7 @@ class ProjectFilter(filters.FilterSet):
     degree__icontains = filters.filters.MultipleChoiceFilter(
         choices=Degree.choices)
     project_type__icontains = filters.filters.MultipleChoiceFilter(
-        choices=Project.Category.choices)
+        choices=Project.ProjectType.choices)
     duration__icontains = filters.filters.MultipleChoiceFilter(
         choices=Project.Duration.choices)
     tag = LazyMultipleChoiceFilter(

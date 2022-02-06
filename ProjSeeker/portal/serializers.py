@@ -17,6 +17,7 @@ def process_interests(interests_text, obj):
             new_intr = Interests.objects.create(research_field=text)
             obj.add(new_intr)
 
+
 class ChoiceField(serializers.ChoiceField):
 
     def to_representation(self, obj):
@@ -34,30 +35,40 @@ class ChoiceField(serializers.ChoiceField):
                 return key
         self.fail('invalid_choice', input=data)
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username','first_name','last_name', 'email']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']
+
+
 class InterestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interests
         fields = ['id', 'research_field']
+
+
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
     interests = InterestSerializer(many=True, read_only=True)
+
     class Meta:
         model = Student
-        fields = ['id','user','bio','cgpa', 'interests','cv','transcript','pic']
-    
+        fields = ['id', 'user', 'bio', 'cgpa',
+                  'interests', 'cv', 'transcript', 'pic']
+
     def is_valid(self, raise_exception):
 
         interests_text = self.initial_data['interests']
         del self.initial_data['interests']
         ret_val = super().is_valid(raise_exception=raise_exception)
-        
-        process_interests(interests_text=interests_text, obj=self.instance.interests)
+
+        process_interests(interests_text=interests_text,
+                          obj=self.instance.interests)
 
         return ret_val
+
+
 class ProfSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
     interests = InterestSerializer(many=True, read_only=True)
@@ -67,30 +78,39 @@ class ProfSerializer(serializers.ModelSerializer):
         interests_text = self.initial_data['interests']
         del self.initial_data['interests']
         ret_val = super().is_valid(raise_exception=raise_exception)
-        
-        process_interests(interests_text=interests_text, obj=self.instance.interests)
+
+        process_interests(interests_text=interests_text,
+                          obj=self.instance.interests)
 
         return ret_val
+
     class Meta:
         model = Professor
-        fields = ['id', 'user', 'dept', 'interests', 'webpage_link', 'bio', 'pic']
+        fields = ['id', 'user', 'dept', 'interests',
+                  'webpage_link', 'bio', 'pic']
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     prof = ProfSerializer(many=False, read_only=True)
     release_date = DateTimeField(format="%c", required=False)
     last_date = DateTimeField(format="%c", required=False)
     tags = InterestSerializer(many=True, read_only=True)
     degree = serializers.MultipleChoiceField(choices=Degree.choices)
-    project_type = serializers.MultipleChoiceField(choices=Project.Category.choices)
+    category = serializers.ChoiceField(choices=Project.Category.choices)
+    project_type = serializers.MultipleChoiceField(
+        choices=Project.ProjectType.choices)
     duration = serializers.ChoiceField(choices=Project.Duration.choices)
+
     class Meta:
         model = Project
-        fields = ['id','prof','title','description','cpi','vacancy','min_year','duration','learning_outcome','prereq','selection_procedure','release_date','last_date', 'tags', 'degree', 'project_type', 'is_paid']
-    
+        fields = ['id', 'prof', 'title', 'description', 'cpi', 'vacancy', 'min_year', 'duration', 'learning_outcome',
+                  'prereq', 'selection_procedure', 'release_date', 'last_date', 'tags', 'degree', 'project_type', 'is_paid']
+
     def is_valid(self, raise_exception):
         tags = self.initial_data['tags']
         self.initial_data._mutable = True
         del self.initial_data['tags']
-        
+
         ret_val = super().is_valid(raise_exception=raise_exception)
 
         try:
@@ -109,13 +129,17 @@ class ProjectSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class BookmarkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bookmark
         fields = '__all__'
 
+
 class ApplicationSerializer(serializers.ModelSerializer):
     status = serializers.ChoiceField(choices=Status.choices)
+
     class Meta:
         model = Application
-        fields = ['id', 'student', 'project', 'preference', 'cover_letter', 'experience', 'status', 'remark']
+        fields = ['id', 'student', 'project', 'preference',
+                  'cover_letter', 'experience', 'status', 'remark']
