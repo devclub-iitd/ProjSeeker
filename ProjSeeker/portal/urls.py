@@ -41,6 +41,7 @@ urlpatterns = [
         {'get': 'list_received_applications'}), name='list-received-applications'),
     url(r'^view-applications$', ApplicationViewSet.as_view(
         {'get': 'view_received_applications'}), name='view-received-applications'),
+    url(r'^auth/iitd$', iitd_redirect, name='iitd_redirect'),
     path('uploads/user_<int:pk>/<str:file_name>',
          get_uploaded_file, name='get-uploaded-file'),
 ]

@@ -27,21 +27,26 @@ def dashboard(request):
     return render(request, 'dashboard.html', context={'is_prof': isProf(request.user), 'is_student': isStudent(request.user)})
 
 
+def iitd_redirect(request):
+
+    return redirect(f'{os.environ.get("IITD_REDIRECT_URL")}?response_type=code&client_id={os.environ.get("CLIENT_ID")}&state=xyz')
+
+
 def authenticate(request):
 
     def check_student_id(unique_iitd_id):
         return unique_iitd_id[:4].isnumeric()
 
-    r = requests.post(os.environ.get("OauthTokenURL"), {'client_id': os.environ.get("CLIENT_ID"),
-                                                        'client_secret': os.environ.get("CLIENT_SECRET"),
-                                                        'grant_type': os.environ.get("AUTHORIZATION_CODE"),
-                                                        'code': request.GET.get('code')})
+    r = requests.post(os.environ.get("IITD_OAUTH_TOKEN_URL"), {'client_id': os.environ.get("CLIENT_ID"),
+                                                               'client_secret': os.environ.get("CLIENT_SECRET"),
+                                                               'grant_type': os.environ.get("AUTHORIZATION_CODE"),
+                                                               'code': request.GET.get('code')})
 
     oauth_resp = r.json()
     if oauth_resp.status_code != 200:
         return HttpResponseForbidden()
     access_token = oauth_resp['access_token']
-    r = requests.post(os.environ.get("ResourceURL"), {
+    r = requests.post(os.environ.get("IITD_RESOURCE_URL"), {
         'access_token': access_token
     })
     profile_resp = r.json()
