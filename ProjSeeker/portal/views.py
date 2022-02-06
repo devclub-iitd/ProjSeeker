@@ -38,14 +38,12 @@ def authenticate(request):
     def check_student_id(unique_iitd_id):
         return unique_iitd_id[:4].isnumeric()
 
-    print(request)
     r = requests.post(os.environ.get("IITD_OAUTH_TOKEN_URL"), {'client_id': os.environ.get("CLIENT_ID"),
                                                                'client_secret': os.environ.get("CLIENT_SECRET"),
                                                                'grant_type': os.environ.get("AUTHORIZATION_CODE"),
                                                                'code': request.GET.get('code')})
-    print(r)
+
     oauth_resp = r.json()
-    print(oauth_resp)
     if r.status_code != 200:
         print("An error occured in fetching token:\n %s" % oauth_resp)
         return HttpResponseForbidden()

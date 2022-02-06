@@ -7,10 +7,6 @@ until psql $DATABASE_URL -c '\l'; do
 	sleep 1
 done
 cd ./ProjSeeker
-unset http_proxy
-unset HTTP_PROXY
-unset https_proxy
-unset HTTPS_PROXY
 python manage.py makemigrations
 python manage.py makemigrations portal
 python manage.py migrate
