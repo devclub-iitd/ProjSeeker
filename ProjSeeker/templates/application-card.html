@@ -1,123 +1,117 @@
-{% extends 'dashboard-base.html' %}
-{% load static %}
-{% block style %}
-<link rel="stylesheet" href="{% static 'portal/css/applications.css' %}">
-{% endblock %}
-{% block content %}
+{% extends 'dashboard-base.html' %} {% load static %} {% block style %}
+<link rel="stylesheet" href="{% static 'portal/css/applications.css' %}" />
+{% endblock %} {% block content %}
 <div class="tabs">
-    <span class="tab-btn tab-active" data-target="#in-review">In Review</span>
-    <span class="tab-btn" data-target="#accepted">Accepted</span>
-    <span class="tab-btn" data-target="#rejected">Rejected</span>
-    <span class="tab-btn" data-target="#on-hold">On Hold</span>
+  <span class="tab-btn tab-active" data-target="#in-review">In Review</span>
+  <span class="tab-btn" data-target="#accepted">Accepted</span>
+  <span class="tab-btn" data-target="#rejected">Rejected</span>
+  <span class="tab-btn" data-target="#on-hold">On Hold</span>
 </div>
-<img id="loader" src="{% static 'portal/assets/loader2.svg' %}" alt="loader">
+<img id="loader" src="{% static 'portal/assets/loader2.svg' %}" alt="loader" />
 <div class="tab-content">
-    <div class="tab-pane" id="in-review">
-        <div class="project-grid">
-            <div id="cardTemplate" style="display: none;" class="project-card">
-                <h2 class="project-title"></h2>
-                <h3 class="prof-name"></h3>
-                <p class="project-desc"></p>
-                <a href="" class="btn btn-xs card-btn wide-text bold">View Application</a>
-            </div>
-        </div>
+  <div class="tab-pane" id="in-review">
+    <div class="project-grid">
+      <div id="cardTemplate" style="display: none" class="project-card">
+        <h2 class="project-title"></h2>
+        <h3 class="prof-name"></h3>
+        <p class="project-desc"></p>
+        <a href="" class="btn btn-xs card-btn wide-text bold">View Application</a>
+      </div>
     </div>
-    <div class="tab-pane" id="accepted" style="display: none;">
-        <div class="project-grid">
-        </div>
-    </div>
-    <div class="tab-pane" id="rejected" style="display: none;">
-        <div class="project-grid">
-        </div>
-    </div>
-    <div class="tab-pane" id="on-hold" style="display: none;">
-        <div class="project-grid">
-        </div>
-    </div>
+  </div>
+  <div class="tab-pane" id="accepted" style="display: none">
+    <div class="project-grid"></div>
+  </div>
+  <div class="tab-pane" id="rejected" style="display: none">
+    <div class="project-grid"></div>
+  </div>
+  <div class="tab-pane" id="on-hold" style="display: none">
+    <div class="project-grid"></div>
+  </div>
 </div>
-{% endblock %}
-
-{% block script %}
-<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+{% endblock %} {% block script %}
+<script src="{% static 'portal/js/jquery-3.5.1.min.js' %}"></script>
 <script>
-    $(document).ready(() => {
-        const acceptedTab = $('#accepted > .project-grid');
-        const inReviewTab = $('#in-review > .project-grid');
-        const rejectedTab = $('#rejected > .project-grid');
-        const onHoldTab = $('#on-hold > .project-grid');
-        $.ajax({
-            url: '/received-applications?status=IR',
-            success: (r) => {
-                console.log(r);
-                displayData(r, inReviewTab);
-            },
-            error: (e) => {
-                console.error(e);
-            }
-        });
-
-        $.ajax({
-            url: '/received-applications?status=AC',
-            success: (r) => {
-                displayData(r, acceptedTab);
-            },
-            error: (e) => {
-                console.error(e);
-            }
-        });
-
-        $.ajax({
-            url: '/received-applications?status=RE',
-            success: (r) => {
-                displayData(r, rejectedTab);
-            },
-            error: (e) => {
-                console.error(e);
-            }
-        });
-
-        $.ajax({
-            url: '/received-applications?status=OH',
-            success: (r) => {
-                displayData(r, onHoldTab);
-            },
-            error: (e) => {
-                console.error(e);
-            }
-        });
-
-        $('#loader').fadeOut(200);
-        $('.tab-content').delay(200).fadeIn(200);
+  $(document).ready(() => {
+    const acceptedTab = $("#accepted > .project-grid");
+    const inReviewTab = $("#in-review > .project-grid");
+    const rejectedTab = $("#rejected > .project-grid");
+    const onHoldTab = $("#on-hold > .project-grid");
+    $.ajax({
+      url: "/received-applications?status=IR",
+      success: (r) => {
+        console.log(r);
+        displayData(r, inReviewTab);
+      },
+      error: (e) => {
+        console.error(e);
+      },
     });
 
-    $('.tab-btn').click(function () {
-        $('.tab-pane').fadeOut(200);
-        $('.tab-btn').removeClass('tab-active');
-        $(this).addClass('tab-active')
-        $(`${$(this).attr('data-target')}`).delay(200).fadeIn(200);
+    $.ajax({
+      url: "/received-applications?status=AC",
+      success: (r) => {
+        displayData(r, acceptedTab);
+      },
+      error: (e) => {
+        console.error(e);
+      },
     });
 
-    const cardTemplate = $('#cardTemplate');
+    $.ajax({
+      url: "/received-applications?status=RE",
+      success: (r) => {
+        displayData(r, rejectedTab);
+      },
+      error: (e) => {
+        console.error(e);
+      },
+    });
 
-    const truncate = (str, no_words) => {
-        return str.split(" ").splice(0, no_words).join(" ") + " ...";
+    $.ajax({
+      url: "/received-applications?status=OH",
+      success: (r) => {
+        displayData(r, onHoldTab);
+      },
+      error: (e) => {
+        console.error(e);
+      },
+    });
+
+    $("#loader").fadeOut(200);
+    $(".tab-content").delay(200).fadeIn(200);
+  });
+
+  $(".tab-btn").click(function () {
+    $(".tab-pane").fadeOut(200);
+    $(".tab-btn").removeClass("tab-active");
+    $(this).addClass("tab-active");
+    $(`${$(this).attr("data-target")}`)
+      .delay(200)
+      .fadeIn(200);
+  });
+
+  const cardTemplate = $("#cardTemplate");
+
+  const truncate = (str, no_words) => {
+    return str.split(" ").splice(0, no_words).join(" ") + " ...";
+  };
+
+  const displayData = (visibleData, projGrid) => {
+    if (visibleData.applications.length == 0) {
+      projGrid.append("<h2>No applications found for this section!</h2>");
+      return;
     }
-
-    const displayData = ((visibleData, projGrid) => {
-        if (visibleData.applications.length == 0) {
-            projGrid.append("<h2>No applications found for this section!</h2>");
-            return;
-        }
-        visibleData.applications.forEach((appl) => {
-            var newNode = cardTemplate.clone();
-            newNode[0].style.display = "flex";
-            var children = newNode.children();
-            children[0].innerText = truncate(appl.project_title, 4);
-            children[1].innerHTML = `<b>Student Name :</b> ${appl.student_name}`;
-            children[2].innerText = truncate(appl.cover_letter, 30);
-            children[3].href = `/applications/${appl.id}`;
-            projGrid[0].appendChild(newNode[0]);
-        })
+    visibleData.applications.forEach((appl) => {
+      var newNode = cardTemplate.clone();
+      newNode[0].style.display = "flex";
+      var children = newNode.children();
+      children[0].innerText = truncate(appl.project_title, 4);
+      children[1].innerHTML = `<b>Student Name :</b> ${appl.student_name}`;
+      children[2].innerText = truncate(appl.cover_letter, 30);
+      children[3].href = `/applications/${appl.id}`;
+      projGrid[0].appendChild(newNode[0]);
     });
+  };
 </script>
 {% endblock %}

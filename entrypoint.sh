@@ -10,6 +10,7 @@ cd ./ProjSeeker
 python manage.py makemigrations
 python manage.py makemigrations portal
 python manage.py migrate
+python manage.py migrate portal
 python manage.py create_groups
 python manage.py create_superuser
 # python manage.py crontab add
