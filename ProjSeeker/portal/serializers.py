@@ -47,7 +47,7 @@ class StudentSerializer(serializers.ModelSerializer):
     interests = InterestSerializer(many=True, read_only=True)
     class Meta:
         model = Student
-        fields = ['id','user','bio','cgpa', 'interests','cv','transcript','pic']
+        fields = ['id','user','bio','cgpa', 'interests','cv','transcript','pic', 'degree', 'noc']
     
     def is_valid(self, raise_exception):
 

@@ -42,6 +42,16 @@
             <textarea name="bio" id="bio" cols="30" rows="2">{{user_data.bio}}</textarea>
 
             {% if not is_prof %}
+            <div class="inline">
+                <div style="display: flex; flex-direction: column;">
+                    <label for="dept">Degree</label>
+                    <input type="text" name="dept" id="dept" value="{{user_data.degree}}" disabled>
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <label for="dept">Department</label>
+                    <input type="text" name="dept" id="dept" value="{{user_data.dept}}" disabled>
+                </div>
+            </div>
             <label for="cgpa">CGPA</label>
             <input type="text" name="cgpa" id="cgpa" value="{{user_data.cgpa}}">
 
@@ -63,7 +73,18 @@
                 {% endif %}
             </div>
 
+
             <input type="file" name="transcript" id="transcript">
+            {% ifequal user_data.degree "PhD" %}
+            <label for="noc">NOC</label>
+            <div class="inline-flex">
+                {% if user_data.noc is not None %}
+                <a class="btn wide-text" target="_blank" href="{{user_data.noc}}">View NOC</a>
+                <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('noc')">Delete NOC</a>
+                {% endif %}
+            </div>
+            <input type="file" name="noc" id="noc">
+            {% endifequal %}
 
             {% endif %}
 

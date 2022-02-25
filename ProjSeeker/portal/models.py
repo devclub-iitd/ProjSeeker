@@ -84,9 +84,9 @@ class Student(models.Model):
     transcript = models.FileField(
         _("Transcripts"), upload_to=upload_transcript, storage=OverwriteStorage(), null=True)
     pic = models.FileField(
-        _("Profile Pic"), upload_to=upload_pic, null=True, storage=OverwriteStorage())
+        _("Profile Pic"), upload_to=upload_pic, null=True, storage=OverwriteStorage(), blank=True)
     noc = models.FileField(
-        _("NOC"), upload_to=upload_noc, null=True, storage=OverwriteStorage())
+        _("NOC"), upload_to=upload_noc, null=True, storage=OverwriteStorage(), blank=True)
     cgpa = models.FloatField(_("CGPA"), validators=[
                              MaxValueValidator(10)], null=True)
     interests = models.ManyToManyField("Interests")
@@ -97,6 +97,9 @@ class Student(models.Model):
     @staticmethod
     def get_docs():
         return ['transcript', 'cv', 'pic', 'noc']
+    
+    def degree_verbose(self):
+        return dict(Degree)[self.degree]
 
     class Meta:
         permissions = (('is_student', 'Is Student'),)
