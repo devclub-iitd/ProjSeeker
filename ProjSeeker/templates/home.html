@@ -14,7 +14,9 @@
     <p class="subtext">Find what you love and start building.</p>
     <div class="divider-line"></div>
     <div class="cta-grid">
+        {% if user.is_authenticated %}
         <a href="{% url 'find-projects' %}" class="cta cta1">Find Projects</a>
+        {% endif %}
         <a href="#" class="cta cta2">Learn More</a>
     </div>
 </div>

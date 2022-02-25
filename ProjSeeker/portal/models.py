@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from .storage import OverwriteStorage
 from multiselectfield import MultiSelectField
 
-
 def isStudent(user):
     return user.has_perm('portal.is_student')
 
@@ -187,7 +186,8 @@ class Project(models.Model):
 
     def deadline_passed(self) -> bool:
         from datetime import datetime as dt
-        return self.last_date < dt.now()
+        from pytz import UTC as utc
+        return self.last_date < utc.localize(dt.now())
 
 
 class Bookmark(models.Model):
