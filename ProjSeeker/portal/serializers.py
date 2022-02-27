@@ -104,7 +104,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['id', 'prof', 'title', 'description', 'cpi', 'vacancy', 'min_year', 'duration', 'learning_outcome',
-                  'prereq', 'selection_procedure', 'release_date', 'last_date', 'tags', 'degree', 'project_type', 'is_paid']
+                  'prereq', 'selection_procedure', 'release_date', 'last_date', 'tags', 'degree', 'project_type', 'is_paid', 'category']
 
     def is_valid(self, raise_exception):
         tags = self.initial_data['tags']

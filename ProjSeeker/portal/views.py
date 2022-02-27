@@ -83,7 +83,7 @@ def authenticate(request):
             gp.user_set.add(user)
             login(request, user)
 
-        return redirect(reverse('dashboard'))
+        return redirect(reverse('find-projects'))
     except Exception as e:
         print("Error occured in processing kerberos profile:\n %s" % e)
         return HttpResponseServerError()
@@ -141,6 +141,7 @@ class ProjectViewSet(ModelViewSet):
             'is_prof': isProf(request.user),
         })
 
+    @method_decorator(login_required)
     @ action(detail=False)
     def find_projects(self, request):
         return render(request, template_name="search-projects.html", context={'depts': Departments.choices, 'degrees': Degree.choices, 'types': Project.ProjectType.choices, 'durations': Project.Duration.choices})
