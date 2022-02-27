@@ -57,9 +57,11 @@
                     <label for="vacancy">Vacancy (Number of People)</label>
                     <input type="number" name="vacancy" id="vacancy" value="{{project.vacancy}}" min="0">
                     <div class="action-container">
+                        {% if project.id is not None %}
                         <div class="left-actions actions">
                             <button type="submit" class="btn btn-green bold wide-text" formmethod="PUT">Update Project</button>
                         </div>
+                        {% endif %}
                         <div class="right-actions actions">
                             <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader" style="display: hidden;">
                             <button class="btn wide-text" data-target="elig-section" type="button">NEXT</button>
@@ -88,9 +90,11 @@
                     <label for="prereq">Project Prerequisites</label>
                     <textarea name="prereq" id="prereq" cols="30" rows="4">{{project.prereq}}</textarea>
                     <div class="action-container">
+                        {% if project.id is not None %}
                         <div class="left-actions actions">
                             <button type="submit" class="btn btn-green bold wide-text" formmethod="PUT">Update Project</button>
                         </div>
+                        {% endif %}
                         <div class="right-actions actions">
                             <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader" style="display: hidden;">
                             <button class="btn btn-red wide-text" data-target="basic-section" type="button">Go Back</button>
@@ -129,6 +133,7 @@
                         <div class="right-actions actions">
                             <img id="loader" src="{% static 'portal/assets/loader.svg' %}" alt="loader" style="display: hidden;">
                             {% if project.id is None %}
+                            <button class="btn wide-text" data-target="elig-section" type="button">Go Back</button>
                             <button type="submit" class="btn btn-green bold wide-text" formmethod="POST">Create Project</button>
                             {% else %}
                             <button type="submit" class="btn btn-green bold wide-text" formmethod="PUT">Update Project</button>

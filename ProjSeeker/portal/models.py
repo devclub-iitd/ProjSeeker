@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from .storage import OverwriteStorage
 from multiselectfield import MultiSelectField
 
-
 def isStudent(user):
     return user.has_perm('portal.is_student')
 
@@ -64,9 +63,9 @@ class Student(models.Model):
     transcript = models.FileField(
         _("Transcripts"), upload_to=upload_transcript, storage=OverwriteStorage(), null=True)
     pic = models.FileField(
-        _("Profile Pic"), upload_to=upload_pic, null=True, storage=OverwriteStorage())
+        _("Profile Pic"), upload_to=upload_pic, null=True, storage=OverwriteStorage(), blank=True)
     noc = models.FileField(
-        _("NOC"), upload_to=upload_noc, null=True, storage=OverwriteStorage())
+        _("NOC"), upload_to=upload_noc, null=True, storage=OverwriteStorage(), blank=True)
     cgpa = models.FloatField(_("CGPA"), validators=[
                              MaxValueValidator(10)], null=True)
     interests = models.ManyToManyField("Interests")
@@ -77,6 +76,9 @@ class Student(models.Model):
     @staticmethod
     def get_docs():
         return ['transcript', 'cv', 'pic', 'noc']
+    
+    def degree_verbose(self):
+        return dict(Degree)[self.degree]
 
     class Meta:
         permissions = (('is_student', 'Is Student'),)
@@ -187,7 +189,8 @@ class Project(models.Model):
 
     def deadline_passed(self) -> bool:
         from datetime import datetime as dt
-        return self.last_date < dt.now()
+        from pytz import UTC as utc
+        return self.last_date < utc.localize(dt.now())
 
 
 class Bookmark(models.Model):

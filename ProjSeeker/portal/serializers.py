@@ -54,8 +54,8 @@ class StudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ['id', 'user', 'bio', 'cgpa',
-                  'interests', 'cv', 'transcript', 'pic']
+        fields = ['id', 'user', 'bio', 'cgpa', 'interests',
+                  'cv', 'transcript', 'pic', 'degree', 'noc']
 
     def is_valid(self, raise_exception):
 

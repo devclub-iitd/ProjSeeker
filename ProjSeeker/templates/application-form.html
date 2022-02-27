@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="{% static 'portal/css/modal.css' %}">
 {% endblock style %}
 {% block content %}
+<div class="message-container" style="display: none;"></div>
 <div class=" project-container">
     <div class="project-header">Apply for Project</div>
     <div class="project-main">
@@ -127,6 +128,15 @@
                 </div>
             </div>
         </form>
+        <div id="error-modal" class="modal">
+            <div class="modal-title">
+                <p>Error processing application</p>
+            </div>
+            Please upload all your documents (CV, Transcript and NOC if you\'re a PhD student) to proceed with the application
+            <div class="modal-actions">
+                <a class="btn wide-text bold" rel="modal:close">Okay</a>
+            </div>
+        </div>
         {% endif %}
         </form>
     </div>
@@ -172,33 +182,57 @@
         $('#delete-button').click(() => {
             $('#applForm').submit();
         });
-
         $('#applForm').submit(function (event) {
+            let valid = false;
             $('#loader').fadeIn(100);
-            const type = $("button[type=submit]:focus").attr('formmethod');
             $.ajax({
-                method: type,
-                url: $(this).attr('action'),
-                data: getData(),
+                method: 'POST',
+                url: '/check-documents',
+                data: [],
                 headers: {
                     'X-CSRFTOKEN': $('#applForm > input[type=hidden]').val(),
                 },
                 success: (r) => {
-                    // TODO add loading screen
-                    setTimeout(() => {
-                        if (type == 'DELETE')
-                            location.href = `{% url 'dashboard' %}`
-                        location.href = `/applications/${r.id}`
-                    }, 1000);
+                    valid = true
                 },
                 error: (e) => {
-                    // TODO: Proper error handling!
-                    const err = e.responseJSON['detail'];
-                    console.error(err);
-                    alert(err);
-                    $('#loader').fadeOut(100);
+                    $('#loader').fadeOut(100)
+                    const errorContainer = $('.message-container').clone();
+                    errorContainer.addClass('error');
+                    errorContainer.text('Please upload your documents (CV, Transcript and NOC if you are PhD student) to proceed further');
+                    errorContainer.html(errorContainer.html() + ' Please <a href="/student-profile">click here</a> to upload your documents');
+                    $('#applForm').append(errorContainer);
+                    errorContainer.fadeIn(250);
                 }
             });
+
+            const type = $("button[type=submit]:focus").attr('formmethod');
+            if (valid) {
+                $.ajax({
+                    method: type,
+                    url: $(this).attr('action'),
+                    data: getData(),
+                    headers: {
+                        'X-CSRFTOKEN': $('#applForm > input[type=hidden]').val(),
+                    },
+                    success: (r) => {
+                        // TODO add loading screen
+                        setTimeout(() => {
+                            if (type == 'DELETE')
+                                location.href = `{% url 'dashboard' %}`
+                            location.href = `/applications/${r.id}`
+                        }, 1000);
+                    },
+                    error: (e) => {
+                        // TODO: Proper error handling!
+                        const err = e.responseJSON['detail'];
+                        console.log(err.msg)
+                        console.error(err);
+                        alert(err);
+                        $('#loader').fadeOut(100);
+                    }
+                });
+            }
             return false;
         });
     });
