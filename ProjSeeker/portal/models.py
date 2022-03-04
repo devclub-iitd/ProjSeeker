@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from .storage import OverwriteStorage
 from multiselectfield import MultiSelectField
 
+
 def isStudent(user):
     return user.has_perm('portal.is_student')
 
@@ -16,15 +17,22 @@ def isProf(user):
 
 
 class Departments(models.TextChoices):
-    CSE = 'CSE', _('Computer Science and Engineering')
-    EE = 'EE', _('Electrical Engineering')
-    ME = 'ME', _('Mechanical Engineering')
-    CH = 'CH', _('Chemical Engineering')
-    CE = 'CE', _('Civil Engineering')
-    BB = 'BB', _('Biotech Engineering')
-    TT = 'TT', _('Textile Engineering')
-    PH = 'PH', _('Engineering Physics')
-    MT = 'MT', _('Mathematics')
+    CSE = 'cse', _('Computer Science and Engineering')
+    EE = 'ee', _('Electrical Engineering')
+    ME = 'mech', _('Mechanical Engineering')
+    CH = 'ch', _('Chemical Engineering')
+    CE = 'ce', _('Civil Engineering')
+    BB = 'bb', _('Biotech Engineering')
+    TT = 'tt', _('Textile Engineering')
+    PH = 'ph', _('Engineering Physics')
+    MT = 'mt', _('Mathematics')
+
+    @staticmethod
+    def get_department_by_name(name):
+        for department in Departments:
+            if department.value == name:
+                return department
+        return name
 
 
 class Status(models.TextChoices):
@@ -35,10 +43,17 @@ class Status(models.TextChoices):
 
 
 class Degree(models.TextChoices):
-    btech = 'BTech', _('BTech')
-    mtech = 'MTech', _('MTech')
-    dual = 'Dual', _('Dual')
-    phd = 'PhD', _('PhD')
+    btech = 'btech', _('BTech')
+    mtech = 'mtech', _('MTech')
+    dual = 'dual', _('Dual')
+    phd = 'phd', _('PhD')
+
+    @staticmethod
+    def get_degree_by_name(name):
+        for degree in Degree:
+            if degree.value == name:
+                return degree
+        return name
 
 
 def upload_handler(student, filename):
@@ -57,7 +72,9 @@ class Student(models.Model):
         "Auth User"), on_delete=models.CASCADE)
     bio = models.TextField()
     degree = models.CharField(
-        _("Degree"), choices=Degree.choices, max_length=50)
+        _("Degree"), choices=Degree.choices, max_length=50, null=True)
+    dept = models.CharField(_("department"), max_length=50,
+                            choices=Departments.choices, null=True)
     cv = models.FileField(_("Resume"), upload_to=upload_cv,
                           storage=OverwriteStorage(), null=True)
     transcript = models.FileField(
@@ -76,7 +93,7 @@ class Student(models.Model):
     @staticmethod
     def get_docs():
         return ['transcript', 'cv', 'pic', 'noc']
-    
+
     def degree_verbose(self):
         return dict(Degree)[self.degree]
 

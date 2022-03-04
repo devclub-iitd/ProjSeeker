@@ -51,11 +51,18 @@ class InterestSerializer(serializers.ModelSerializer):
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
     interests = InterestSerializer(many=True, read_only=True)
+    dept = ChoiceField(choices=Departments.choices,
+                       allow_blank=True, read_only=True)
+    degree = ChoiceField(choices=Degree.choices,
+                         allow_blank=True, read_only=True)
+    pic = serializers.FileField(required=False)
+    cv = serializers.FileField(required=False)
+    noc = serializers.FileField(required=False)
 
     class Meta:
         model = Student
         fields = ['id', 'user', 'bio', 'cgpa', 'interests',
-                  'cv', 'transcript', 'pic', 'degree', 'noc']
+                  'cv', 'transcript', 'pic', 'degree', 'dept', 'noc']
 
     def is_valid(self, raise_exception):
 
@@ -72,7 +79,8 @@ class StudentSerializer(serializers.ModelSerializer):
 class ProfSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
     interests = InterestSerializer(many=True, read_only=True)
-    dept = ChoiceField(choices=Departments.choices)
+    dept = ChoiceField(choices=Departments.choices, read_only=True)
+    pic = serializers.FileField(required=False)
 
     def is_valid(self, raise_exception):
         interests_text = self.initial_data['interests']

@@ -39,7 +39,7 @@
 
             </div>
             <label for="bio">Bio</label>
-            <textarea name="bio" id="bio" cols="30" rows="2">{{user_data.bio}}</textarea>
+            <textarea name="bio" id="bio" cols="30" rows="2">{{user_data.bio|default_if_none:'' }}</textarea>
 
             {% if not is_prof %}
             <div class="inline">
@@ -53,7 +53,7 @@
                 </div>
             </div>
             <label for="cgpa">CGPA</label>
-            <input type="text" name="cgpa" id="cgpa" value="{{user_data.cgpa}}">
+            <input type="text" name="cgpa" id="cgpa" value="{{user_data.cgpa|default_if_none:''}}">
 
             <label for="resume">Resume</label>
             <div class="inline-flex">

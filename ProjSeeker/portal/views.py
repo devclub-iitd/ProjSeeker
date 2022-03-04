@@ -63,6 +63,10 @@ def authenticate(request):
         uniqueiitdid = profile_resp["uniqueiitdid"]
         username = profile_resp["user_id"]
         dept = profile_resp["department"]
+        degree = profile_resp["category"]
+
+        student_dept = Departments.get_department_by_name(dept)
+        student_degree = Degree.get_degree_by_name(degree)
 
         is_student = check_student_id(uniqueiitdid)
         existing_user = User.objects.filter(
@@ -76,7 +80,8 @@ def authenticate(request):
             user.save()
             if is_student:
                 gp = Group.objects.get(name='student')
-                Student.objects.create(user=user)
+                Student.objects.create(
+                    user=user, dept=student_dept, degree=student_degree)
             else:
                 gp = Group.objects.get(name='prof')
                 Professor.objects.create(user=user, dept=dept.upper())
@@ -242,10 +247,6 @@ class StudentViewSet(ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         request.data._mutable = True
-
-        for doc in Student.get_docs():
-            if doc in request.data and not request.data[doc]:
-                del request.data[doc]
         return super().update(request, *args, **kwargs)
 
     @ action(detail=False, methods=['POST'])
@@ -306,15 +307,6 @@ class ProfViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs):
 
         request.data._mutable = True
-        for doc in Professor.get_docs():
-            if doc in request.data and not request.data[doc]:
-                del request.data[doc]
-
-        instance = self.get_object()
-        for dept in Departments.choices:
-            if(instance.dept == dept[0]):
-                request.data['dept'] = dept[1]
-
         return super().update(request, *args, **kwargs)
 
     @ action(detail=False, methods=['POST'])
