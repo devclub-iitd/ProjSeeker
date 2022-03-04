@@ -84,7 +84,7 @@ def authenticate(request):
                     user=user, dept=student_dept, degree=student_degree)
             else:
                 gp = Group.objects.get(name='prof')
-                Professor.objects.create(user=user, dept=dept.upper())
+                Professor.objects.create(user=user, dept=student_dept)
             gp.user_set.add(user)
             login(request, user)
 
