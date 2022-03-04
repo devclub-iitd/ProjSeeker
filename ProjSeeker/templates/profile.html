@@ -17,11 +17,12 @@
                 <a href="#" class="btn btn-red" onclick="deleteDoc('pic', false)">Delete Picture</a>
                 {% endif %}
                 {% endif %}
-
+                {% if is_self_profile %}
                 <div style="display: flex; flex-direction: column;">
                     <label for="picture">Edit Profile Picture</label>
                     <input type="file" name="pic" id="picture" onchange="checkJpeg(this)">
                 </div>
+                {% endif %}
                 <div style="display: flex; flex-direction: column;">
                     <label for="name">Name</label>
                     <input type="text" name="name" id="name" value="{{user_data.user.first_name}} {{user_data.user.last_name}}" disabled>
@@ -33,13 +34,21 @@
                 </div>
                 <div style="display: flex; flex-direction: column;">
                     <label for="dept">Webpage link</label>
+                    {% if is_self_profile %}
                     <input type="text" name="webpage_link" id="webpage_link" value="{{user_data.webpage_link}}">
+                    {% else %}
+                    <input type="text" name="webpage_link" id="webpage_link" value="{{user_data.webpage_link}}" disabled>
+                    {% endif %}
                 </div>
                 {% endif %}
 
             </div>
             <label for="bio">Bio</label>
+            {% if is_self_profile %}
             <textarea name="bio" id="bio" cols="30" rows="2">{{user_data.bio|default_if_none:'' }}</textarea>
+            {% else %}
+            <textarea name="bio" id="bio" cols="30" rows="2" disabled>{{user_data.bio|default_if_none:'' }}</textarea>
+            {% endif %}
 
             {% if not is_prof %}
             <div class="inline">
@@ -53,52 +62,84 @@
                 </div>
             </div>
             <label for="cgpa">CGPA</label>
+            {% if is_self_profile %}
             <input type="text" name="cgpa" id="cgpa" value="{{user_data.cgpa|default_if_none:''}}">
+            {% else %}
+            <input type="text" name="cgpa" id="cgpa" value="{{user_data.cgpa|default_if_none:''}}" disabled>
+            {% endif %}
+
 
             <label for="resume">Resume</label>
             <div class="inline-flex">
                 {% if user_data.cv is not None %}
                 <a href="{{user_data.cv}}" target="_blank" class="btn wide-text">View Resume</a>
-                <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('cv')">Delete Resume</a>
+                {% if is_self_profile %}
+                    <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('cv')">Delete Resume</a>
+                {% endif %}
+
                 {% endif %}
             </div>
 
+            {% if is_self_profile %}
             <input type="file" name="cv" id="cv" onchange="checkPdf(this)">
+            {% endif %}
 
             <label for="transcript">Transcript</label>
             <div class="inline-flex">
                 {% if user_data.transcript is not None %}
                 <a class="btn wide-text" target="_blank" href="{{user_data.transcript}}">View Transcript</a>
+                {% if is_self_profile %}
+
                 <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('transcript')">Delete Transcript</a>
+                {% endif %}
+
                 {% endif %}
             </div>
 
-
+            {% if is_self_profile %}
             <input type="file" name="transcript" id="transcript">
-            {% ifequal user_data.degree "PhD" %}
+            {% endif %}
+
+            {% ifequal user_data.degree "phd" %}
             <label for="noc">NOC</label>
             <div class="inline-flex">
                 {% if user_data.noc is not None %}
                 <a class="btn wide-text" target="_blank" href="{{user_data.noc}}">View NOC</a>
+                {% if is_self_profile %}
+
                 <a href="#" class="btn btn-red wide-text" onclick="deleteDoc('noc')">Delete NOC</a>
                 {% endif %}
+
+                {% endif %}
             </div>
+            {% if is_self_profile %}
+
             <input type="file" name="noc" id="noc">
+            {% endif %}
+
             {% endifequal %}
 
             {% endif %}
 
             <label for="interests">Interests</label>
+            {% if is_self_profile %}
             <div class="int-searchbar">
                 <input type="text" name="intDummy" autocomplete="off">
                 <ul class="search-suggestions">
                     <li class="suggestions">No results found</li>
                 </ul>
             </div>
+            {% endif %}
             <input type="hidden" name="interests" id="interests" value="{{ interest_text }}">
             <div class="tag-container">
                 {% for interest in user_data.interests %}
+                {% if is_self_profile %}
+
                 <div class="tag" onclick="handleTagDelete(this)">{{interest.research_field}}</div>
+                {% else %}
+                <div class="tag">{{interest.research_field}}</div>
+
+                {% endif %}
                 {% endfor %}
             </div>
             <button type="submit" class="btn wide-text bold">Save</button>

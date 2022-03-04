@@ -1,5 +1,5 @@
 from django.http.response import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseServerError
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.core.exceptions import PermissionDenied
@@ -261,13 +261,17 @@ class StudentViewSet(ModelViewSet):
 
     @ action(detail=False, methods=['GET'])
     def profile(self, request):
-        user = request.user
+        user_id = request.GET.get('id', request.user.id)
+        user = get_object_or_404(User, id=user_id)
+        is_self_profile = (user == request.user)
+        print(user, is_self_profile)
+
         student = user.student_set.all()[0]
 
         serializer = self.get_serializer(student, many=False)
         interest_text = ', '.join([it['research_field']
                                    for it in serializer.data['interests']])
-        return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
+        return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user), 'is_self_profile': is_self_profile})
 
     @ action(detail=False, methods=['POST'])
     def check_documents(self, request):
