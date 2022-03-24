@@ -35,9 +35,9 @@
                 <div style="display: flex; flex-direction: column;">
                     <label for="dept">Webpage link</label>
                     {% if is_self_profile %}
-                    <input type="text" name="webpage_link" id="webpage_link" value="{{user_data.webpage_link}}">
+                    <input type="text" name="webpage_link" id="webpage_link" value="{{user_data.webpage_link|default_if_none:''}}">
                     {% else %}
-                    <input type="text" name="webpage_link" id="webpage_link" value="{{user_data.webpage_link}}" disabled>
+                    <input type="text" name="webpage_link" id="webpage_link" value="{{user_data.webpage_link|default_if_none:''}}" disabled>
                     {% endif %}
                 </div>
                 {% endif %}
