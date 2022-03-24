@@ -13,6 +13,7 @@ python manage.py migrate
 python manage.py migrate portal
 python manage.py create_groups
 python manage.py create_superuser
+python manage.py create_dummy_data
 # python manage.py crontab add
 python manage.py collectstatic --noinput
 #move to .env
