@@ -331,11 +331,11 @@ class ProfViewSet(ModelViewSet):
     def profile(self, request):
         user = request.user
         prof = user.professor_set.all()[0]
-
+        is_self_profile = True
         serializer = self.get_serializer(prof, many=False)
         interest_text = ', '.join([it['research_field']
                                    for it in serializer.data['interests']])
-        return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user)})
+        return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user), 'is_self_profile': is_self_profile})
 
 
 class InterestViewSet(ModelViewSet):
