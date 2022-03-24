@@ -149,7 +149,7 @@ class ProjectViewSet(ModelViewSet):
     @method_decorator(login_required)
     @ action(detail=False)
     def find_projects(self, request):
-        return render(request, template_name="search-projects.html", context={'depts': Departments.choices, 'degrees': Degree.choices, 'types': Project.ProjectType.choices, 'durations': Project.Duration.choices, 'categories': Project.Category.choices})
+        return render(request, template_name="search-projects.html", context={'depts': Departments.choices, 'degrees': Degree.choices, 'types': Project.ProjectType.choices, 'durations': Project.Duration.choices, 'depts': Departments.choices})
 
     @ method_decorator(login_required)
     @ action(detail=False)
@@ -176,7 +176,7 @@ class ProjectViewSet(ModelViewSet):
     @ method_decorator(permission_required('portal.is_prof'))
     @ action(detail=False, methods=['GET'])
     def create_new_project(self, request):
-        return render(request, template_name="project-form.html", context={'project_types': Project.ProjectType.choices, 'degrees': Degree.choices, 'durations': Project.Duration.choices, 'categories': Project.Category.choices})
+        return render(request, template_name="project-form.html", context={'project_types': Project.ProjectType.choices, 'degrees': Degree.choices, 'durations': Project.Duration.choices, 'depts': Departments.choices})
 
     @ method_decorator(login_required)
     @ method_decorator(permission_required('portal.is_student'))
@@ -199,7 +199,7 @@ class ProjectViewSet(ModelViewSet):
         interest_text = ', '.join([it['research_field']
                                   for it in serializer.data['tags']])
 
-        return render(request, template_name='project-form.html', context={'project': serializer.data, 'project_types': Project.ProjectType.choices, 'degrees': Degree.choices, 'interest_text': interest_text, 'durations': Project.Duration.choices, 'categories': Project.Category.choices})
+        return render(request, template_name='project-form.html', context={'project': serializer.data, 'project_types': Project.ProjectType.choices, 'degrees': Degree.choices, 'interest_text': interest_text, 'durations': Project.Duration.choices, 'depts': Departments.choices})
 
 
 class BookmarkViewSet(ModelViewSet):

@@ -41,16 +41,18 @@ class ProjectFilter(filters.FilterSet):
         choices=Status.choices, method='filter_appl_status')
     is_paid = filters.filters.BooleanFilter(field_name='is_paid')
 
-    prof__dept = filters.filters.MultipleChoiceFilter(
+    depts__icontains = filters.filters.MultipleChoiceFilter(
         choices=Departments.choices)
+    # prof__dept = filters.filters.MultipleChoiceFilter(
+    #     choices=Departments.choices)
     degree__icontains = filters.filters.MultipleChoiceFilter(
         choices=Degree.choices)
     project_type__icontains = filters.filters.MultipleChoiceFilter(
         choices=Project.ProjectType.choices)
     duration__icontains = filters.filters.MultipleChoiceFilter(
         choices=Project.Duration.choices)
-    category__icontains = filters.filters.MultipleChoiceFilter(
-        choices=Project.Category.choices)
+    # category__icontains = filters.filters.MultipleChoiceFilter(
+    #     choices=Project.Category.choices)
     tag = LazyMultipleChoiceFilter(
         field_name='tags__research_field', choices=Interests.to_choices)
 

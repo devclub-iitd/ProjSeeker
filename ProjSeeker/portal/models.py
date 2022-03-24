@@ -153,26 +153,26 @@ class Professor(models.Model):
 
 class Project(models.Model):
 
-    class Category(models.TextChoices):
-        ai_ml = 'ai_ml', _(
-            'Artificial Intelligence (AI) and Machine Learning (ML)')
-        nlp = 'NLP', _('Natural Language Processing')
-        da = 'data analysis', _('Databases and Data Analytics')
-        algo = 'algos', _('Algorithms and Complexity Theory')
-        arch = 'architecture', _('Architecture and Embedded Systems')
-        vision = 'vision', _('Computer Graphics/Vision')
-        networks = 'networks', _('Computer Networks and Distributed Systems')
-        pl = 'prog lang', _(
-            'Programming Languages, Semantics and Verification')
-        os = 'os', _(
-            'Operating Systems, High Performance Computing and Systems Software')
-        ict = 'ict', _(
-            'Information and Communication Technologies for Development')
-        neuro = 'neuro', _('Neuroinformatics and Medical informatics')
-        cybersec = 'cyber security', _(
-            'Cyber Security and Secure Information Systems')
+    # class Category(models.TextChoices):
+    #     ai_ml = 'ai_ml', _(
+    #         'Artificial Intelligence (AI) and Machine Learning (ML)')
+    #     nlp = 'NLP', _('Natural Language Processing')
+    #     da = 'data analysis', _('Databases and Data Analytics')
+    #     algo = 'algos', _('Algorithms and Complexity Theory')
+    #     arch = 'architecture', _('Architecture and Embedded Systems')
+    #     vision = 'vision', _('Computer Graphics/Vision')
+    #     networks = 'networks', _('Computer Networks and Distributed Systems')
+    #     pl = 'prog lang', _(
+    #         'Programming Languages, Semantics and Verification')
+    #     os = 'os', _(
+    #         'Operating Systems, High Performance Computing and Systems Software')
+    #     ict = 'ict', _(
+    #         'Information and Communication Technologies for Development')
+    #     neuro = 'neuro', _('Neuroinformatics and Medical informatics')
+    #     cybersec = 'cyber security', _(
+    #         'Cyber Security and Secure Information Systems')
 
-        other = 'other', _('Other')
+    #     other = 'other', _('Other')
 
     class ProjectType(models.TextChoices):
         disa = 'DISA', _('DISA')
@@ -203,8 +203,10 @@ class Project(models.Model):
     learning_outcome = models.TextField()
     prereq = models.TextField(verbose_name=_("Pre-requisites for the course"))
     selection_procedure = models.TextField()
-    category = models.CharField(
-        _("Project Category"), choices=Category.choices, max_length=200)
+    depts = MultiSelectField(
+        choices=Departments.choices, null=True, blank=True)
+    # category = models.CharField(
+    #     _("Project Category"), choices=Category.choices, max_length=200)
     tags = models.ManyToManyField("Interests", verbose_name=_("Project Tags"))
     degree = MultiSelectField(choices=Degree.choices, null=True, blank=True)
     project_type = MultiSelectField(

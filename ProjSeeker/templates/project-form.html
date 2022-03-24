@@ -84,7 +84,19 @@
                         {{degree.1}}
                     </span>
                     {% endfor %}
-                    <label id="category" for="category">Eligible categories</label>
+                    <label id="dept" for="dept">Departments</label>
+                    
+                    {% for dept in depts %}
+                    <span class="check-label">
+                        {% if dept.0 in project.depts %}
+                        <input type="checkbox" name="dept" id="{{dept.0}}" value="{{dept.0}}" checked="true">
+                        {% else %}
+                        <input type="checkbox" name="dept" id="{{dept.0}}" value="{{dept.0}}">
+                        {% endif %}
+                        {{dept.1}}
+                    </span>
+                    {% endfor %}
+                    <!-- <label id="category" for="category">Eligible categories</label>
                     
                     {% for category in categories %}
                     <span class="check-label">
@@ -95,7 +107,7 @@
                         {% endif %}
                         {{category.1}}
                     </span>
-                    {% endfor %}
+                    {% endfor %} -->
 
                     <label for="min_year">Minimum Year</label>
                     <input type="text" name="min_year" id="min_year" value="{{project.min_year}}">

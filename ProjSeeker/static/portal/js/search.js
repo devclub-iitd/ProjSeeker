@@ -1,6 +1,6 @@
 var multiChoiceFilters = {
   dept: {
-    queryTerm: "prof__dept",
+    queryTerm: "depts__icontains",
     selections: [],
   },
   degree: {
@@ -15,10 +15,10 @@ var multiChoiceFilters = {
     queryTerm: "tag",
     selections: [],
   },
-  category: {
-    queryTerm: "category__icontains",
-    selections: [],
-  },
+  // category: {
+  //   queryTerm: "category__icontains",
+  //   selections: [],
+  // },
   is_paid: {
     queryTerm: "is_paid",
     selections: [],

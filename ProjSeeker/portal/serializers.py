@@ -104,7 +104,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     last_date = DateTimeField(format="%c", required=False)
     tags = InterestSerializer(many=True, read_only=True)
     degree = serializers.MultipleChoiceField(choices=Degree.choices)
-    category = serializers.ChoiceField(choices=Project.Category.choices)
+    depts = serializers.MultipleChoiceField(choices=Departments.choices)
+    # category = serializers.ChoiceField(choices=Project.Category.choices)
     project_type = serializers.MultipleChoiceField(
         choices=Project.ProjectType.choices)
     duration = serializers.ChoiceField(choices=Project.Duration.choices)
@@ -112,7 +113,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['id', 'prof', 'title', 'description', 'cpi', 'vacancy', 'min_year', 'duration', 'learning_outcome',
-                  'prereq', 'selection_procedure', 'release_date', 'last_date', 'tags', 'degree', 'project_type', 'is_paid', 'category']
+                  'prereq', 'selection_procedure', 'release_date', 'last_date', 'tags', 'degree', 'project_type', 'is_paid', 'depts']
 
     def is_valid(self, raise_exception):
         tags = self.initial_data['tags']
