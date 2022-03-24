@@ -34,6 +34,14 @@
       </div>
     </div>
     <div class="filter-container">
+      <h4 class="filter-header">By Category</h4>
+      <div class="filter-main">
+        {% for t in categories %}
+        <label for="{{t.0}}"><input type="checkbox" name="{{t.0}}" id="{{t.0}}" onchange="applyFilter('category')" />{{t.1}}</label>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="filter-container">
       <h4 class="filter-header">By Degree Requirement</h4>
       <div class="filter-main">
         {% for d in degrees %}

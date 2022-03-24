@@ -15,8 +15,8 @@ var multiChoiceFilters = {
     queryTerm: "tag",
     selections: [],
   },
-  duration: {
-    queryTerm: "duration__icontains",
+  category: {
+    queryTerm: "category__icontains",
     selections: [],
   },
   is_paid: {
@@ -131,9 +131,7 @@ const displayData = () => {
   }
 
   if (visibleData.projects.length == 0) {
-    projGrid.append(
-      '<h2 style="color:white;">No projects found for this search term!</h2>'
-    );
+    projGrid.append('<h2 style="color:white;">No projects found for this search term!</h2>');
     return;
   }
   visibleData.projects.forEach((proj) => {

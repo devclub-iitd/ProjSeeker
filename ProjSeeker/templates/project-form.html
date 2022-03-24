@@ -31,10 +31,10 @@
 
                     {% for ptype in project_types %}
                     <span class="check-label">
-                        {% if ptype.1 in project.project_type %}
-                        <input type="checkbox" name="project_type" id="{{ptype.1}}" value="{{ptype.1}}" checked="true">
+                        {% if ptype.0 in project.project_type %}
+                        <input type="checkbox" name="project_type" id="{{ptype.0}}" value="{{ptype.0}}" checked="true">
                         {% else %}
-                        <input type="checkbox" name="project_type" id="{{ptype.1}}" value="{{ptype.1}}">
+                        <input type="checkbox" name="project_type" id="{{ptype.0}}" value="{{ptype.0}}">
                         {% endif %}
                         {{ptype.1}}
                     </span>
@@ -45,9 +45,9 @@
                     {% for d in durations %}
                     <span class="check-label">
                         {% if d.0 in project.duration %}
-                        <input type="checkbox" name="duration" id="{{d.1}}" value="{{d.0}}" checked="true">
+                        <input type="checkbox" name="duration" id="{{d.0}}" value="{{d.0}}" checked="true">
                         {% else %}
-                        <input type="checkbox" name="duration" id="{{d.1}}" value="{{d.0}}">
+                        <input type="checkbox" name="duration" id="{{d.0}}" value="{{d.0}}">
                         {% endif %}
                         {{d.1}}
                     </span>
@@ -76,12 +76,24 @@
 
                     {% for degree in degrees %}
                     <span class="check-label">
-                        {% if degree.1 in project.degree %}
-                        <input type="checkbox" name="degree" id="{{degree.1}}" value="{{degree.1}}" checked="true">
+                        {% if degree.0 in project.degree %}
+                        <input type="checkbox" name="degree" id="{{degree.0}}" value="{{degree.0}}" checked="true">
                         {% else %}
-                        <input type="checkbox" name="degree" id="{{degree.1}}" value="{{degree.1}}">
+                        <input type="checkbox" name="degree" id="{{degree.0}}" value="{{degree.0}}">
                         {% endif %}
                         {{degree.1}}
+                    </span>
+                    {% endfor %}
+                    <label id="category" for="category">Eligible categories</label>
+                    
+                    {% for category in categories %}
+                    <span class="check-label">
+                        {% if category.0 in project.category %}
+                        <input type="radio" name="category" id="{{category.0}}" value="{{category.0}}" checked="true">
+                        {% else %}
+                        <input type="radio" name="category" id="{{category.0}}" value="{{category.0}}">
+                        {% endif %}
+                        {{category.1}}
                     </span>
                     {% endfor %}
 
