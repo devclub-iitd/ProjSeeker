@@ -224,10 +224,14 @@ class BookmarkViewSet(ModelViewSet):
 @ login_required
 def get_uploaded_file(request, pk, file_name):
     user = request.user
-    if user.id != pk or file_name not in ['cv.pdf', 'transcript.pdf', 'pic.jpg']:
+    if user.id != pk or file_name not in ['cv.pdf', 'transcript.pdf', 'pic.jpg', 'noc.pdf']:
         raise PermissionDenied()
     response = HttpResponse()
     response['X-Accel-Redirect'] = f'/protected/user_{pk}/{file_name}'
+    if 'pdf' in file_name:
+        response['Content-Type'] = 'application/pdf'
+    elif 'jpg' in file_name:
+        response['Content-Type'] = 'image/jpeg'
     return response
 
 
