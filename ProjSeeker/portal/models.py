@@ -84,7 +84,7 @@ def upload_noc(s, _): return upload_handler(s, 'noc.pdf')
 class Student(models.Model):
     user = models.ForeignKey(User, verbose_name=_(
         "Auth User"), on_delete=models.CASCADE)
-    bio = models.TextField()
+    bio = models.TextField(null=True)
     degree = models.CharField(
         _("Degree"), choices=Degree.choices, max_length=50, null=True)
     dept = models.CharField(_("department"), max_length=50,
