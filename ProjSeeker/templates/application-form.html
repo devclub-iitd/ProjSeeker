@@ -15,7 +15,7 @@
             <ul class="detail-list">
                 <li><b>Project Title</b> : <a href="/projects/{{project.id}}">{{project.title}}</a></li>
                 {% if is_prof %}
-                <li><b>Student Name</b> : {{student_name}} </li>
+                <li><b>Student Name</b> : <a href="/student-profile?id={{student_user_id}}"> {{student_name}} </a></li>
                 {% else %}
                 <li><b>Professor</b> : {{project.prof.user.first_name}} {{project.prof.user.last_name}}</li>
                 {% endif %}
@@ -57,7 +57,7 @@
             <textarea name="experience" id="experience" cols="30" rows="5">{{application.experience}}</textarea>
             {% if application.status == status_choices.rejected %}
             <label for="remark">Rejection remark</label>
-            <textarea name="remark" id="remark" cols="30" rows="2" readonly="true">{{application.remark}}</textarea>
+            <textarea name="remark" id="remark-display" cols="30" rows="2" readonly="true">{{application.remark}}</textarea>
             {% endif %}
             {% if not is_prof %}
             <!-- TODO: find a better way to display status on both the prof and student side-->
@@ -98,7 +98,7 @@
             </div>
             <form action="#" class="modal-form">
                 <label for="remark">Rejection Remark</label>
-                <textarea name="remark" id="remark" rows="4"></textarea>
+                <textarea name="remark" id="remark" rows="4">{{application.remark}}</textarea>
             </form>
             <div class="modal-actions">
                 <button id="delete-button" type="submit" class="btn btn-red bold wide-text" formmethod="PATCH" value="{{status_choices.rejected}}">Reject</button>
@@ -183,31 +183,11 @@
             $('#applForm').submit();
         });
         $('#applForm').submit(function (event) {
-            let valid = false;
+            let valid = `{{is_prof}}`;
             $('#loader').fadeIn(100);
-            $.ajax({
-                method: 'POST',
-                url: '/check-documents',
-                data: [],
-                headers: {
-                    'X-CSRFTOKEN': $('#applForm > input[type=hidden]').val(),
-                },
-                success: (r) => {
-                    valid = true
-                },
-                error: (e) => {
-                    $('#loader').fadeOut(100)
-                    const errorContainer = $('.message-container').clone();
-                    errorContainer.addClass('error');
-                    errorContainer.text('Please upload your documents (CV, Transcript and NOC if you are PhD student) to proceed further');
-                    errorContainer.html(errorContainer.html() + ' Please <a href="/student-profile">click here</a> to upload your documents');
-                    $('#applForm').append(errorContainer);
-                    errorContainer.fadeIn(250);
-                }
-            });
 
-            const type = $("button[type=submit]:focus").attr('formmethod');
-            if (valid) {
+            const confirmSubmit = () => {
+                const type = $("button[type=submit]:focus").attr('formmethod');
                 $.ajax({
                     method: type,
                     url: $(this).attr('action'),
@@ -232,7 +212,36 @@
                         $('#loader').fadeOut(100);
                     }
                 });
+            
+            };
+
+            if(valid){
+                confirmSubmit();
+                return false;
             }
+            $.ajax({
+                method: 'POST',
+                url: '/check-documents',
+                data: [],
+                headers: {
+                    'X-CSRFTOKEN': $('#applForm > input[type=hidden]').val(),
+                },
+                success: (r) => {
+                    confirmSubmit();
+                },
+                error: (e) => {
+                    $('#loader').fadeOut(100)
+                    const errorContainer = $('.message-container').clone();
+                    errorContainer.addClass('error');
+                    errorContainer.text('Please upload your documents (CV, Transcript) to proceed further');
+                    errorContainer.html(errorContainer.html() + ' Please <a href="/student-profile">click here</a> to upload your documents');
+                    $('#applForm').append(errorContainer);
+                    errorContainer.fadeIn(250);
+                }
+            });
+
+            
+            
             return false;
         });
     });

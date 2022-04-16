@@ -1,100 +1,78 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ProjSeeker - Dashboard</title>
-    <link rel="stylesheet" href="{% static 'portal/css/master.css' %}">
-    <link rel="stylesheet" href="{% static 'portal/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'portal/css/master.css' %}" />
+    <link rel="stylesheet" href="{% static 'portal/css/dashboard.css' %}" />
     {% block style %}{% endblock style %}
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="sidebar-wrapper">
-        <script>
-            var pic_changed = false;
-            const changePic = () => {
-                if (!pic_changed) {
-                    var pic = document.querySelector('#profile-pic');
-                    pic.src = '/static/portal/assets/dp.jpg';
-                    pic_changed = true;
-                }
-
-            };
-        </script>
-        <img src="/uploads/user_{{user.id}}/pic.jpg" onerror="changePic()" alt="Profile-Picture" class="profile-picture" id="profile-pic">
-        <h1 class="name">{{user.first_name}} {{user.last_name}}</h1>
-        <h3 class="dashboard-heading wide-text">Dashboard</h3>
-        <ul class="dash-nav">
-            {% if is_student %}
-            <a href="{% url 'applied-projects' %}">
-                <li class="dash-links">
-                    <img class="dash-icon" src="{% static 'portal/assets/icons/applications.svg' %}">Applied
-                </li>
-            </a>
-            <a href="{% url 'my-projects' %}?bookmarked=true">
-                <li class="dash-links">
-                    <img class="dash-icon" src="{% static 'portal/assets/icons/bookmark.svg' %}"> Bookmarked
-                </li>
-            </a>
-            <a href="{% url 'student-profile' %}">
-                <li class="dash-links">
-                    <img class="dash-icon" src="{% static 'portal/assets/icons/profile.svg' %}">Profile
-                </li>
-            </a>
-            {% elif is_prof %}
-            <a href="{% url 'my-projects' %}?floated=true">
-                <li class="dash-links">
-                    <img class="dash-icon" src="{% static 'portal/assets/icons/projects.svg' %}">My projects
-                </li>
-            </a>
-            <a href="{% url 'view-received-applications' %}">
-                <li class="dash-links">
-                    <img class="dash-icon" src="{% static 'portal/assets/icons/applications.svg' %}">Applications
-                </li>
-            </a>
-            <a href="{% url 'prof-profile' %}">
-                <li class="dash-links">
-                    <img class="dash-icon" src="{% static 'portal/assets/icons/profile.svg' %}">Profile
-                </li>
-            </a>
-            {% endif %}
-        </ul>
+      <script>
+        var pic_changed = false;
+        const changePic = () => {
+          if (!pic_changed) {
+            var pic = document.querySelector("#profile-pic");
+            pic.src = "/static/portal/assets/dp.jpg";
+            pic_changed = true;
+          }
+        };
+      </script>
+      <img src="/uploads/user_{{user.id}}/pic.jpg" onerror="changePic()" alt="Profile-Picture" class="profile-picture" id="profile-pic" />
+      <h1 class="name">{{user.first_name}} {{user.last_name}}</h1>
+      <h3 class="dashboard-heading wide-text">Dashboard</h3>
+      <ul class="dash-nav">
+        {% if is_student %}
+        <a href="{% url 'applied-projects' %}">
+          <li class="dash-links"><img class="dash-icon" src="{% static 'portal/assets/icons/applications.svg' %}" />Applied</li>
+        </a>
+        <a href="{% url 'my-projects' %}?bookmarked=true">
+          <li class="dash-links"><img class="dash-icon" src="{% static 'portal/assets/icons/bookmark.svg' %}" /> Bookmarked</li>
+        </a>
+        <a href="{% url 'student-profile' %}">
+          <li class="dash-links"><img class="dash-icon" src="{% static 'portal/assets/icons/profile.svg' %}" />Profile</li>
+        </a>
+        {% elif is_prof %}
+        <a href="{% url 'my-projects' %}?floated=true">
+          <li class="dash-links"><img class="dash-icon" src="{% static 'portal/assets/icons/projects.svg' %}" />My projects</li>
+        </a>
+        <a href="{% url 'view-received-applications' %}">
+          <li class="dash-links"><img class="dash-icon" src="{% static 'portal/assets/icons/applications.svg' %}" />Applications</li>
+        </a>
+        <a href="{% url 'prof-profile' %}">
+          <li class="dash-links"><img class="dash-icon" src="{% static 'portal/assets/icons/profile.svg' %}" />Profile</li>
+        </a>
+        {% endif %}
+      </ul>
     </div>
     <div class="dashboard-wrapper">
-        <div class="top-nav">
-            <a href="{% url 'find-projects' %}" class="btn bold wide-text" id="searchBtn">Find Projects</a>
-            {% if user.is_authenticated %}
-            <a href="{% url 'logout' %}" class="btn btn-red wide-text bold" id="logout-btn">Logout</a>
-            {% else %}
-            <a href="{% url 'login' %}" class="btn btn-red wide-text bold" id="logout-btn">Login</a>
-            {% endif %}
-        </div>
-        <div class="dashboard-content">
-            {% block content %}
-            {% endblock %}
-        </div>
+      <div class="top-nav">
+        <a href="{% url 'find-projects' %}" class="btn bold wide-text" id="searchBtn">Find Projects</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="btn btn-red wide-text bold" id="logout-btn">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-red wide-text bold" id="logout-btn">Login</a>
+        {% endif %}
+      </div>
+      <div class="dashboard-content">{% block content %} {% endblock %}</div>
     </div>
-    {% block script %}{% endblock %}
+
     <script>
-
-        var sideBarLinks = document.querySelector("body > div.sidebar-wrapper > ul").children;
-        var linkActive = false;
-        for (let i = 0; i < sideBarLinks.length; i++) {
-            const link = sideBarLinks[i];
-            if (location.href.replaceAll('/', '') == link.href.replaceAll('/', '')) {
-                link.firstElementChild.classList.add('dash-active')
-                linkActive = true;
-                break;
-            }
+      var sideBarLinks = document.querySelector("body > div.sidebar-wrapper > ul").children;
+      var linkActive = false;
+      for (let i = 0; i < sideBarLinks.length; i++) {
+        const link = sideBarLinks[i];
+        if (location.href.replaceAll("/", "") == link.href.replaceAll("/", "")) {
+          link.firstElementChild.classList.add("dash-active");
+          linkActive = true;
+          break;
         }
-        if (!linkActive) {
-            sideBarLinks[0].click();
-        }
+      }
     </script>
-</body>
-
+    {% block script %}{% endblock %}
+  </body>
 </html>

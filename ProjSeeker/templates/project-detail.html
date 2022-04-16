@@ -13,7 +13,7 @@
             <div class="project-basic">
                 <ul class="detail-list">
                     <li><b>Project Title :</b> {{ project.title }}</li>
-                    <li><b>Professor</b> :<a href="{{project.prof.webpage_link}}"> Prof. {{ project.prof.user.first_name }} {{ project.prof.user.last_name}}</a></li>
+                    <li><b>Professor</b> :<a href="/prof-profile?id={{project.prof.user.id}}"> Prof. {{ project.prof.user.first_name }} {{ project.prof.user.last_name}}</a></li>
                     <li><b>Department</b> : {{ project.prof.dept }}</li>
                 </ul>
             </div>

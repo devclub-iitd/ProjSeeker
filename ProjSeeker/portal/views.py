@@ -1,3 +1,4 @@
+from django.http import Http404, JsonResponse
 from django.http.response import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls.base import reverse_lazy
@@ -101,13 +102,11 @@ class ProjectViewSet(ModelViewSet):
     filterset_class = ProjectFilter
 
     def update(self, request, *args, **kwargs):
-        print(request.data)
         return super().update(request, *args, **kwargs)
 
     @ method_decorator(login_required)
     @ method_decorator(permission_required('portal.is_prof'))
     def create(self, request, *args, **kwargs):
-        print(request.data)
         kwargs['tags'] = request.data['tags']
 
         serializer = self.get_serializer(data=request.data)
@@ -237,11 +236,15 @@ def get_uploaded_file(request, pk, file_name):
 
 # TODO Refactor Student and Professor view sets and serializer code
 
+class ProfileViewSet(ModelViewSet):
+    model_class = None
 
-class StudentViewSet(ModelViewSet):
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    def get_model_class(self):
+        assert(self.model_class is not None)
+        return self.model_class
+
+    def get_model_obj(self, user):
+        return self.get_model_class().objects.get(user=user)
 
     def check_object_permissions(self, request, obj):
         if(obj.user.id != request.user.id):
@@ -251,14 +254,17 @@ class StudentViewSet(ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         request.data._mutable = True
+        for doc in self.get_model_class().get_docs():
+            if doc in request.data.keys() and request.data[doc] == '':
+                del request.data[doc]
         return super().update(request, *args, **kwargs)
 
     @ action(detail=False, methods=['POST'])
     def delete_file(self, request):
-        student = request.user.student_set.all()[0]
+        student = self.get_model_obj(request.user)
 
         file_type = request.data['type']
-        if file_type not in Student.get_docs():
+        if file_type not in self.get_model_class().get_docs():
             return Response(400)
         getattr(student, file_type).delete()
         return Response(200)
@@ -268,26 +274,29 @@ class StudentViewSet(ModelViewSet):
         user_id = request.GET.get('id', request.user.id)
         user = get_object_or_404(User, id=user_id)
         is_self_profile = (user == request.user)
-        print(user, is_self_profile)
 
-        student = user.student_set.all()[0]
+        student = self.get_model_obj(user)
 
         serializer = self.get_serializer(student, many=False)
         interest_text = ', '.join([it['research_field']
                                    for it in serializer.data['interests']])
-        return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user), 'is_self_profile': is_self_profile})
+        return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user), 'is_self_profile': is_self_profile, 'is_student_render': isStudent(user), 'is_prof_render': isProf(user)})
+
+
+class StudentViewSet(ProfileViewSet):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    model_class = Student
 
     @ action(detail=False, methods=['POST'])
     def check_documents(self, request):
         user = request.user
         student = user.student_set.all()[0]
-        valid = False
+        valid = True
         try:
             valid &= hasattr(student.cv, 'file')
             valid &= hasattr(student.transcript, 'file')
-
-            if student.degree == Degree.phd:
-                valid &= hasattr(student.noc, 'file')
 
             if valid:
                 return Response(200)
@@ -301,41 +310,11 @@ class StudentViewSet(ModelViewSet):
         })
 
 
-class ProfViewSet(ModelViewSet):
+class ProfViewSet(ProfileViewSet):
     queryset = Professor.objects.all()
     serializer_class = ProfSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-    def check_object_permissions(self, request, obj):
-        if(obj.user.id != request.user.id):
-            self.permission_denied(
-                request, message='Unauthorized User', code=403)
-        return super().check_object_permissions(request, obj)
-
-    def update(self, request, *args, **kwargs):
-
-        request.data._mutable = True
-        return super().update(request, *args, **kwargs)
-
-    @ action(detail=False, methods=['POST'])
-    def delete_file(self, request):
-        prof = request.user.professor_set.all()[0]
-
-        file_type = request.data['type']
-        if file_type not in Professor.get_docs():
-            return Response(400)
-        getattr(prof, file_type).delete()
-        return Response(200)
-
-    @ action(detail=False, methods=['GET'])
-    def profile(self, request):
-        user = request.user
-        prof = user.professor_set.all()[0]
-        is_self_profile = True
-        serializer = self.get_serializer(prof, many=False)
-        interest_text = ', '.join([it['research_field']
-                                   for it in serializer.data['interests']])
-        return render(request, template_name='profile.html', context={'user_data': serializer.data, 'interest_text': interest_text, 'is_student': isStudent(request.user), 'is_prof': isProf(request.user), 'is_self_profile': is_self_profile})
+    model_class = Professor
 
 
 class InterestViewSet(ModelViewSet):
@@ -418,4 +397,6 @@ class ApplicationViewSet(ModelViewSet):
         request.data._mutable = True
         request.data['project'] = instance.project.id
         request.data['student'] = instance.student.id
+        if 'status' in request.data.keys() and request.data['status'] != Status.rejected:
+            request.data['remark'] = '-'
         return super().update(request, *args, **kwargs)

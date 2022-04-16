@@ -2,19 +2,21 @@
 {% load static %}
 {% block content %}
 <div class="profile-container">
-    {% if is_student %}
+    {% if is_student_render %}
     <form id="profile-form" method="PUT" action="/students/{{user_data.id}}/">
-        {% elif is_prof %}
+        {% elif is_prof_render %}
         <form id="profile-form" method="PUT" action="/profs/{{user_data.id}}/">
             {% endif %}
             {% csrf_token %}
             <div class="inline">
                 {% if user_data.pic is not None %}
                 <a href="{{user_data.pic}}" class="btn">View Picture</a>
-                {% if is_prof %}
+                {% if is_self_profile %}
+                {% if is_prof_render %}
                 <a href="#" class="btn btn-red" onclick="deleteDoc('pic', true)">Delete Picture</a>
                 {% else %}
                 <a href="#" class="btn btn-red" onclick="deleteDoc('pic', false)">Delete Picture</a>
+                {% endif %}
                 {% endif %}
                 {% endif %}
                 {% if is_self_profile %}
@@ -27,7 +29,7 @@
                     <label for="name">Name</label>
                     <input type="text" name="name" id="name" value="{{user_data.user.first_name}} {{user_data.user.last_name}}" disabled>
                 </div>
-                {% if is_prof %}
+                {% if is_prof_render %}
                 <div style="display: flex; flex-direction: column;">
                     <label for="dept">Department</label>
                     <input type="text" name="dept" id="dept" value="{{user_data.dept}}" disabled>
@@ -50,7 +52,7 @@
             <textarea name="bio" id="bio" cols="30" rows="2" disabled>{{user_data.bio|default_if_none:'' }}</textarea>
             {% endif %}
 
-            {% if not is_prof %}
+            {% if not is_prof_render %}
             <div class="inline">
                 <div style="display: flex; flex-direction: column;">
                     <label for="dept">Degree</label>
@@ -142,7 +144,9 @@
                 {% endif %}
                 {% endfor %}
             </div>
+            {% if is_self_profile %}
             <button type="submit" class="btn wide-text bold">Save</button>
+            {% endif %}
             <img id="loader" src="{% static 'portal/assets/loader2.svg' %}" alt="loader">
         </form>
 </div>
