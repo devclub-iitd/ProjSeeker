@@ -84,14 +84,14 @@
                         {{degree.1}}
                     </span>
                     {% endfor %}
-                    <label id="dept" for="dept">Departments</label>
+                    <label id="depts" for="dept">Departments</label>
                     
                     {% for dept in depts %}
                     <span class="check-label">
                         {% if dept.0 in project.depts %}
-                        <input type="checkbox" name="dept" id="{{dept.0}}" value="{{dept.0}}" checked="true">
+                        <input type="checkbox" name="depts" id="{{dept.0}}" value="{{dept.0}}" checked="true">
                         {% else %}
-                        <input type="checkbox" name="dept" id="{{dept.0}}" value="{{dept.0}}">
+                        <input type="checkbox" name="depts" id="{{dept.0}}" value="{{dept.0}}">
                         {% endif %}
                         {{dept.1}}
                     </span>
