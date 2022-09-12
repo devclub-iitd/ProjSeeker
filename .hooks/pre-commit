@@ -27,14 +27,21 @@ if [ ! -f ${__env_file} ]; then
 	exit 0
 fi
 
+__make_sample_env(){
+	# @param env_keys: a space separated string of env keys
+	echo $* | sed s/' '/'\n'/g > ${__env_file}.sample
+}
+
 __env_keys=$(cat ${__env_file} | cut -d '=' -f 1 | xargs -I{} echo {}= | sort)
 if [ -f ${__env_file}".sample" ]; then
 	
 	__env_sample_keys=$(cat ${__env_file}.sample)
 	if [[ ! ${__env_keys} == ${__env_sample_keys} ]]; then
 		rm ${__env_file}.sample
-		echo ${__env_keys} | sed s/' '/'\n'/g > ${__env_file}.sample
+		__make_sample_env ${__env_keys}
 	fi
+else 
+	__make_sample_env ${__env_keys}
 fi
 
 git add ${__env_file}.sample
