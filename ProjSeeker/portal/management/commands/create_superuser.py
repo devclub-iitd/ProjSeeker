@@ -9,9 +9,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         User = get_user_model()
-        username = os.environ.get('DJANGO_USERNAME')
-        email = os.environ.get('DJANGO_EMAIL')
-        password = os.environ.get('DJANGO_PASSWORD')
+        username = os.environ.get("DJANGO_USERNAME")
+        email = os.environ.get("DJANGO_EMAIL")
+        password = os.environ.get("DJANGO_PASSWORD")
 
         existing_users = User.objects.filter(username=username, email=email)
         if existing_users.exists() and existing_users[0].is_superuser:

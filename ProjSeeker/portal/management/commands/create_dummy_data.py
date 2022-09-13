@@ -12,10 +12,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         User = get_user_model()
-        prof_gp = Group.objects.get(name='prof')
-        username = os.environ.get('DUMMY_USERNAME')
-        email = os.environ.get('DUMMY_EMAIL')
-        password = os.environ.get('DUMMY_PASSWORD')
+        prof_gp = Group.objects.get(name="prof")
+        username = os.environ.get("DUMMY_USERNAME")
+        email = os.environ.get("DUMMY_EMAIL")
+        password = os.environ.get("DUMMY_PASSWORD")
 
         existing_user = User.objects.filter(username=username, email=email)
         if existing_user.exists():
@@ -23,6 +23,5 @@ class Command(BaseCommand):
         user = User.objects.create(username=username, email=email)
         user.set_password(password)
         user.save()
-        Professor.objects.create(
-            user=user, dept=random.sample(list(Departments), 1)[0])
+        Professor.objects.create(user=user, dept=random.sample(list(Departments), 1)[0])
         prof_gp.user_set.add(user)

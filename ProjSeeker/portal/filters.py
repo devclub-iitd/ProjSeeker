@@ -1,4 +1,3 @@
-
 from .models import *
 
 from typing import Callable
@@ -9,18 +8,18 @@ from django.db.models.query_utils import Q
 
 class LazyMultipleChoiceFilter(filters.filters.MultipleChoiceFilter):
     def get_field_choices(self):
-        choices = self.extra.get('choices', [])
+        choices = self.extra.get("choices", [])
         if isinstance(choices, Callable):
             choices = choices()
         return choices
 
     @property
     def field(self):
-        if not hasattr(self, '_field'):
+        if not hasattr(self, "_field"):
             field_kwargs = self.extra.copy()
 
             if settings.DISABLE_HELP_TEXT:
-                field_kwargs.pop('help_text', None)
+                field_kwargs.pop("help_text", None)
 
             field_kwargs.update(choices=self.get_field_choices())
 
@@ -30,31 +29,32 @@ class LazyMultipleChoiceFilter(filters.filters.MultipleChoiceFilter):
 
 class ProjectFilter(filters.FilterSet):
 
-    search = filters.filters.CharFilter(method='search_project')
-    applied = filters.filters.BooleanFilter(method='filter_applied')
-    bookmarked = filters.filters.BooleanFilter(method='filter_bookmarked')
-    floated = filters.filters.BooleanFilter(method='filter_floated')
-    exclude_passed = filters.filters.BooleanFilter(
-        method='filter_out_passed')
+    search = filters.filters.CharFilter(method="search_project")
+    applied = filters.filters.BooleanFilter(method="filter_applied")
+    bookmarked = filters.filters.BooleanFilter(method="filter_bookmarked")
+    floated = filters.filters.BooleanFilter(method="filter_floated")
+    exclude_passed = filters.filters.BooleanFilter(method="filter_out_passed")
 
     status = filters.filters.ChoiceFilter(
-        choices=Status.choices, method='filter_appl_status')
-    is_paid = filters.filters.BooleanFilter(field_name='is_paid')
+        choices=Status.choices, method="filter_appl_status"
+    )
+    is_paid = filters.filters.BooleanFilter(field_name="is_paid")
 
-    depts__icontains = filters.filters.MultipleChoiceFilter(
-        choices=Departments.choices)
+    depts__icontains = filters.filters.MultipleChoiceFilter(choices=Departments.choices)
     # prof__dept = filters.filters.MultipleChoiceFilter(
     #     choices=Departments.choices)
-    degree__icontains = filters.filters.MultipleChoiceFilter(
-        choices=Degree.choices)
+    degree__icontains = filters.filters.MultipleChoiceFilter(choices=Degree.choices)
     project_type__icontains = filters.filters.MultipleChoiceFilter(
-        choices=Project.ProjectType.choices)
+        choices=Project.ProjectType.choices
+    )
     duration__icontains = filters.filters.MultipleChoiceFilter(
-        choices=Project.Duration.choices)
+        choices=Project.Duration.choices
+    )
     # category__icontains = filters.filters.MultipleChoiceFilter(
     #     choices=Project.Category.choices)
     tag = LazyMultipleChoiceFilter(
-        field_name='tags__research_field', choices=Interests.to_choices)
+        field_name="tags__research_field", choices=Interests.to_choices
+    )
 
     def search_project(self, queryset, name, value):
         q = Q(title__icontains=value)
@@ -68,8 +68,9 @@ class ProjectFilter(filters.FilterSet):
         if not isStudent(user):
             return queryset.none()
 
-        applied = Application.objects.select_related(
-            'project').filter(student__user=user)
+        applied = Application.objects.select_related("project").filter(
+            student__user=user
+        )
         pids = [appl.project.id for appl in applied]
 
         return queryset.filter(id__in=pids)
@@ -92,16 +93,16 @@ class ProjectFilter(filters.FilterSet):
     def filter_appl_status(self, queryset, name, value):
 
         user = self.request.user
-        appls = Application.objects.filter(
-            student__user=user, status=value)
+        appls = Application.objects.filter(student__user=user, status=value)
         pids = [appl.project.id for appl in appls]
 
         return queryset.filter(id__in=pids)
 
     def filter_out_passed(self, queryset, name, value):
         from datetime import datetime as dt
+
         return queryset.filter(last_date__gte=dt.now())
 
     class Meta:
         model = Project
-        fields = ['title', 'prof']
+        fields = ["title", "prof"]
