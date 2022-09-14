@@ -16,7 +16,7 @@ router.register(r"bookmarks", BookmarkViewSet)
 urlpatterns = [
     url(r"^$", TemplateView.as_view(template_name="home.html"), name="home"),
     url(r"^index$", index, name="index"),
-    url(r"^auth/iitd/confirm$", authenticate, name="auth-iitd"),
+    # url(r"^auth/iitd/confirm$", authenticate, name="auth-iitd"),
     url("", include(router.urls)),
     url(
         r"^student-profile$",
@@ -74,7 +74,7 @@ urlpatterns = [
         ApplicationViewSet.as_view({"get": "view_received_applications"}),
         name="view-received-applications",
     ),
-    url(r"^auth/iitd$", iitd_redirect, name="iitd_redirect"),
+    # url(r"^auth/iitd$", iitd_redirect, name="iitd_redirect"),
     path(
         "uploads/user_<int:pk>/<str:file_name>",
         get_uploaded_file,

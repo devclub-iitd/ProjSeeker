@@ -18,7 +18,7 @@ def isProf(user):
 
 
 class Departments(models.TextChoices):
-    CSE = "cse", _("Computer Science and Engineering")
+    CS = "cse", _("Computer Science and Engineering")
     EE = "ee", _("Electrical Engineering")
     ME = "mech", _("Mechanical Engineering")
     CH = "chemical", _("Chemical Engineering")
@@ -46,9 +46,16 @@ class Departments(models.TextChoices):
     @staticmethod
     def get_department_by_name(name):
         for department in Departments:
-            if department.value == name:
+            if department.name.lower() == name:
                 return department
         return name
+
+    @staticmethod
+    def get_department_by_value(value):
+        for department in Departments:
+            if department.value == value:
+                return department
+        return value
 
 
 class Status(models.TextChoices):

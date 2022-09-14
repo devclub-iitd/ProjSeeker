@@ -18,5 +18,5 @@ python manage.py create_dummy_data
 python manage.py collectstatic --noinput
 #move to .env
 echo "Starting WEB Server"
-python -u manage.py runserver 0.0.0.0:8000
+python -u manage.py runserver 0.0.0.0:${PORT}
 # echo "Script complete"

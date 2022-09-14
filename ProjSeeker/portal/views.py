@@ -22,9 +22,31 @@ from django.contrib.auth import login, logout
 from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User, Group
 import os
-import requests
 
 # Create your views here.
+IS_PROF_ROLE = os.environ.get("PROJSEEKER_ISPROF_ROLE")
+
+
+def make_new_user(request, user, user_payload):
+    try:
+        user.set_password(get_random_string(32))
+        user.save()
+
+        email = user.email
+        is_student = IS_PROF_ROLE not in user_payload["roles"]
+        # TODO: make student_dept and student_degree using email only
+        _dept = email[:2]
+        student_dept = Departments.get_department_by_name(_dept)
+        student_degree = Degree.btech
+        if is_student:
+            gp = Group.objects.get(name="student")
+            Student.objects.create(user=user, dept=student_dept, degree=student_degree)
+        else:
+            gp = Group.objects.get(name="prof")
+            Professor.objects.create(user=user, dept=student_dept)
+        gp.user_set.add(user)
+    except Exception as e:
+        print("Exception in make_new_user", e)
 
 
 def index(request):
@@ -42,74 +64,74 @@ def dashboard(request):
     )
 
 
-def iitd_redirect(request):
+# def iitd_redirect(request):
 
-    return redirect(
-        f'{os.environ.get("IITD_REDIRECT_URL")}?response_type=code&client_id={os.environ.get("CLIENT_ID")}&state=xyz'
-    )
+#     return redirect(
+#         f'{os.environ.get("IITD_REDIRECT_URL")}?response_type=code&client_id={os.environ.get("CLIENT_ID")}&state=xyz'
+#     )
 
 
-def authenticate(request):
-    def check_student_id(unique_iitd_id):
-        return unique_iitd_id[:4].isnumeric()
+# def authenticate(request):
+#     def check_student_id(unique_iitd_id):
+#         return unique_iitd_id[:4].isnumeric()
 
-    r = requests.post(
-        os.environ.get("IITD_OAUTH_TOKEN_URL"),
-        {
-            "client_id": os.environ.get("CLIENT_ID"),
-            "client_secret": os.environ.get("CLIENT_SECRET"),
-            "grant_type": os.environ.get("AUTHORIZATION_CODE"),
-            "code": request.GET.get("code"),
-        },
-    )
+#     r = requests.post(
+#         os.environ.get("IITD_OAUTH_TOKEN_URL"),
+#         {
+#             "client_id": os.environ.get("CLIENT_ID"),
+#             "client_secret": os.environ.get("CLIENT_SECRET"),
+#             "grant_type": os.environ.get("AUTHORIZATION_CODE"),
+#             "code": request.GET.get("code"),
+#         },
+#     )
 
-    oauth_resp = r.json()
-    if r.status_code != 200:
-        print("An error occured in fetching token:\n %s" % oauth_resp)
-        return HttpResponseForbidden()
-    access_token = oauth_resp["access_token"]
-    print("Fetched access token: %s" % access_token)
-    r = requests.post(
-        os.environ.get("IITD_RESOURCE_URL"), {"access_token": access_token}
-    )
-    profile_resp = r.json()
-    if r.status_code != 200:
-        print("An error occured in fetching user details:\n %s" % profile_resp)
-        return redirect(reverse("home"))
-    try:
-        email = profile_resp["email"]
-        name = profile_resp["name"]
-        uniqueiitdid = profile_resp["uniqueiitdid"]
-        username = profile_resp["user_id"]
-        dept = profile_resp["department"]
-        degree = profile_resp["category"]
+#     oauth_resp = r.json()
+#     if r.status_code != 200:
+#         print("An error occured in fetching token:\n %s" % oauth_resp)
+#         return HttpResponseForbidden()
+#     access_token = oauth_resp["access_token"]
+#     print("Fetched access token: %s" % access_token)
+#     r = requests.post(
+#         os.environ.get("IITD_RESOURCE_URL"), {"access_token": access_token}
+#     )
+#     profile_resp = r.json()
+#     if r.status_code != 200:
+#         print("An error occured in fetching user details:\n %s" % profile_resp)
+#         return redirect(reverse("home"))
+#     try:
+#         email = profile_resp["email"]
+#         name = profile_resp["name"]
+#         uniqueiitdid = profile_resp["uniqueiitdid"]
+#         username = profile_resp["user_id"]
+#         dept = profile_resp["department"]
+#         degree = profile_resp["category"]
 
-        student_dept = Departments.get_department_by_name(dept)
-        student_degree = Degree.get_degree_by_name(degree)
+#         student_dept = Departments.get_department_by_value(dept)
+#         student_degree = Degree.get_degree_by_name(degree)
 
-        is_student = check_student_id(uniqueiitdid)
-        existing_user = User.objects.filter(username=username, email=email)
-        if existing_user.exists():
-            login(request, existing_user[0])
-        else:
-            user = User.objects.create(username=username, email=email, first_name=name)
-            user.set_password(get_random_string(32))
-            user.save()
-            if is_student:
-                gp = Group.objects.get(name="student")
-                Student.objects.create(
-                    user=user, dept=student_dept, degree=student_degree
-                )
-            else:
-                gp = Group.objects.get(name="prof")
-                Professor.objects.create(user=user, dept=student_dept)
-            gp.user_set.add(user)
-            login(request, user)
+#         is_student = check_student_id(uniqueiitdid)
+#         existing_user = User.objects.filter(username=username, email=email)
+#         if existing_user.exists():
+#             login(request, existing_user[0])
+#         else:
+#             user = User.objects.create(username=username, email=email, first_name=name)
+#             user.set_password(get_random_string(32))
+#             user.save()
+#             if is_student:
+#                 gp = Group.objects.get(name="student")
+#                 Student.objects.create(
+#                     user=user, dept=student_dept, degree=student_degree
+#                 )
+#             else:
+#                 gp = Group.objects.get(name="prof")
+#                 Professor.objects.create(user=user, dept=student_dept)
+#             gp.user_set.add(user)
+#             login(request, user)
 
-        return redirect(reverse("find-projects"))
-    except Exception as e:
-        print("Error occured in processing kerberos profile:\n %s" % e)
-        return HttpResponseServerError()
+#         return redirect(reverse("find-projects"))
+#     except Exception as e:
+#         print("Error occured in processing kerberos profile:\n %s" % e)
+#         return HttpResponseServerError()
 
 
 class ProjectViewSet(ModelViewSet):

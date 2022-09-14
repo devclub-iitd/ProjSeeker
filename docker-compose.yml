@@ -32,6 +32,8 @@ services:
       - internal
     env_file:
       - "./.env"
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
     depends_on:
       - db
   nginx:
